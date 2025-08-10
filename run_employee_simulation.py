@@ -296,9 +296,12 @@ class EmployeeStoryExplorer:
         else:
             # Fallback to matplotlib boxplot
             level_groups = [group['salary'].values for name, group in df.groupby('level')]
-            axes[0,0].boxplot(level_groups, labels=sorted(df['level'].unique()))
+            bp = axes[0,0].boxplot(level_groups)
+            axes[0,0].set_xticks(range(1, len(sorted(df['level'].unique())) + 1))
+            axes[0,0].set_xticklabels(sorted(df['level'].unique()))
         axes[0,0].set_title('Salary Distribution by Level')
         axes[0,0].set_ylabel('Salary (£)')
+        axes[0,0].set_xlabel('Level')
         axes[0,0].yaxis.set_major_formatter(plt.FuncFormatter(lambda x, p: f'£{x/1000:.0f}K'))
         
         # 2. Performance rating distribution
