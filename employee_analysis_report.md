@@ -9,18 +9,19 @@ This analysis examines a simulated employee population of 1,000 employees genera
 ### Population Overview
 - **Total Employees**: 1,000
 - **Organizational Levels**: 6
-- **Salary Range**: £69,368 - £103,624
-- **Average Salary**: £86,626
+- **Salary Range**: £26,230 - £122,891
+- **Average Salary**: £72,703
 
 ### Level 5 Analysis
 - **Population**: 101 employees (10.1% of total)
 - **Salary Range**: £76,592 - £103,624
-- **Average Salary**: £90,344
+- **Average Salary**: £88,086
 - **Performance Distribution**:
-  - Achieving: 45 employees (44.6%)
-  - High Performing: 34 employees (33.7%)
-  - Exceeding: 12 employees (11.9%)
-  - Partially met: 10 employees (9.9%)
+  - Achieving: 50 employees (49.5%)
+  - High Performing: 32 employees (31.7%)
+  - Partially met: 8 employees (7.9%)
+  - Exceeding: 7 employees (6.9%)
+  - Not met: 4 employees (4.0%)
 
 ## Story Tracking Results
 
@@ -30,7 +31,7 @@ The system identified several employees with interesting career patterns:
 Identified **20 employees** in this category.
 
 ### Above Range
-Identified **11 employees** in this category.
+Identified **20 employees** in this category.
 
 ## Methodology
 

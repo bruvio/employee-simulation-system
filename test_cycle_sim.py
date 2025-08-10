@@ -12,12 +12,10 @@ print("First employee:", small_population[0])
 
 try:
     # Test cycle simulator initialization
-    cycle_simulator = ReviewCycleSimulator(
-        initial_population=small_population,
-        random_seed=42
-    )
+    cycle_simulator = ReviewCycleSimulator(initial_population=small_population, random_seed=42)
     print("Cycle simulator initialized successfully")
 except Exception as e:
     print(f"Error in cycle simulator initialization: {e}")
     import traceback
+
     traceback.print_exc()

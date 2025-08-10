@@ -5,7 +5,8 @@
 ===============================
 
 A comprehensive tool for generating and analyzing employee populations with 
-story tracking. Designed to find specific employee cases like:
+story tracking and advanced salary progression modeling. Designed to find specific 
+employee cases like:
 - Level 5, £80,692.50, Exceeding performance
 
 Run this script to:
@@ -13,12 +14,18 @@ Run this script to:
 2. Track interesting employee stories
 3. Display human-readable analysis with narratives
 4. Show population distribution graphs
+5. Analyze individual salary progression (NEW)
+6. Model management intervention strategies (NEW)
+7. Generate gender pay gap remediation plans (NEW)
 """
 
 import sys
+import argparse
 import matplotlib.pyplot as plt
 import pandas as pd
 from pathlib import Path
+import json
+from typing import List, Dict, Optional
 
 # Optional seaborn import
 try:
@@ -27,11 +34,15 @@ try:
 except ImportError:
     sns = None
 
-# Try to import the orchestrator
+# Try to import the orchestrator and new analysis modules
 try:
     from employee_simulation_orchestrator import EmployeeSimulationOrchestrator
-except ImportError:
-    print("❌ Could not import EmployeeSimulationOrchestrator")
+    from individual_progression_simulator import IndividualProgressionSimulator
+    from median_convergence_analyzer import MedianConvergenceAnalyzer
+    from intervention_strategy_simulator import InterventionStrategySimulator
+    from logger import LOGGER
+except ImportError as e:
+    print(f"❌ Could not import required modules: {e}")
     print("Make sure you're running from the correct directory")
     sys.exit(1)
 
@@ -42,6 +53,10 @@ class EmployeeStoryExplorer:
         self.population_data = []
         self.tracked_stories = {}
         self.results = {}
+        # New analysis components
+        self.progression_simulator = None
+        self.convergence_analyzer = None
+        self.intervention_simulator = None
         
     def run_simulation(self, population_size=1000, random_seed=42, target_salary=80692.50, target_level=5, level_distribution=None, gender_pay_gap_percent=None, salary_constraints=None):
         """Run employee simulation and return human-readable analysis"""
@@ -114,6 +129,9 @@ class EmployeeStoryExplorer:
             
             print("✅ Simulation completed successfully!")
             print()
+            
+            # Initialize new analysis components
+            self._initialize_analysis_components()
             
             # Generate analysis
             self._analyze_population(target_salary, target_level)
@@ -367,16 +385,333 @@ class EmployeeStoryExplorer:
             total_tracked = sum(len(stories) for stories in self.tracked_stories.values())
             tracked_pct = (total_tracked / len(df)) * 100
             print(f"• Story tracking: {total_tracked} employees ({tracked_pct:.1f}%) identified as interesting cases")
+    
+    def _initialize_analysis_components(self):
+        """Initialize advanced analysis components with population data."""
+        if not self.population_data:
+            LOGGER.warning("No population data available for advanced analysis")
+            return
+        
+        try:
+            self.progression_simulator = IndividualProgressionSimulator(self.population_data)
+            self.convergence_analyzer = MedianConvergenceAnalyzer(self.population_data)
+            self.intervention_simulator = InterventionStrategySimulator(self.population_data)
+            LOGGER.info("Advanced analysis components initialized")
+        except Exception as e:
+            LOGGER.error(f"Failed to initialize analysis components: {e}")
+    
+    def analyze_individual_progression(self, employee_id: int, years: int = 5, 
+                                     scenarios: List[str] = None) -> Optional[Dict]:
+        """Analyze individual employee salary progression."""
+        if not self.progression_simulator:
+            print("❌ Individual progression analysis not available. Run simulation first.")
+            return None
+        
+        # Find employee in population
+        employee = next((emp for emp in self.population_data if emp['employee_id'] == employee_id), None)
+        if not employee:
+            print(f"❌ Employee {employee_id} not found in population")
+            return None
+        
+        print(f"\n📈 INDIVIDUAL SALARY PROGRESSION ANALYSIS")
+        print(f"={'='*60}")
+        print(f"Analyzing Employee {employee_id}...")
+        
+        try:
+            result = self.progression_simulator.project_salary_progression(
+                employee, years=years, scenarios=scenarios or ['conservative', 'realistic', 'optimistic']
+            )
+            
+            # Display key results
+            current = result['current_state']
+            projections = result['projections']
+            
+            print(f"\n👤 CURRENT STATE:")
+            print(f"   Level: {current['level']}")
+            print(f"   Salary: £{current['salary']:,.2f}")
+            print(f"   Performance: {current['performance_rating']}")
+            print(f"   Gender: {current.get('gender', 'N/A')}")
+            
+            print(f"\n🎯 PROJECTIONS ({years}-YEAR):")
+            for scenario, data in projections.items():
+                cagr_pct = data['cagr'] * 100
+                print(f"   {scenario.title()}: £{data['final_salary']:,.2f} (CAGR: {cagr_pct:.1f}%)")
+            
+            # Recommendations
+            rec = result['recommendations']
+            print(f"\n💡 RECOMMENDATION: {rec['primary_action'].replace('_', ' ').title()}")
+            if rec['rationale']:
+                print(f"   Rationale: {rec['rationale']}")
+            
+            return result
+            
+        except Exception as e:
+            print(f"❌ Analysis failed: {e}")
+            return None
+    
+    def analyze_median_convergence(self, min_gap_percent: float = 5.0) -> Optional[Dict]:
+        """Analyze median salary convergence for below-median employees."""
+        if not self.convergence_analyzer:
+            print("❌ Median convergence analysis not available. Run simulation first.")
+            return None
+        
+        print(f"\n📊 MEDIAN CONVERGENCE ANALYSIS")
+        print(f"={'='*60}")
+        print(f"Analyzing employees >{min_gap_percent}% below level median...")
+        
+        try:
+            below_median_result = self.convergence_analyzer.identify_below_median_employees(
+                min_gap_percent=min_gap_percent, include_gender_analysis=True
+            )
+            
+            stats = below_median_result['summary_statistics']
+            print(f"\n📈 SUMMARY:")
+            print(f"   Below-median employees: {below_median_result['below_median_count']} ")
+            print(f"   ({below_median_result['below_median_percent']:.1f}% of population)")
+            print(f"   Average gap: £{stats['average_gap_amount']:,.2f} ({stats['average_gap_percent']:.1f}%)")
+            print(f"   Total gap amount: £{stats['total_gap_amount']:,.2f}")
+            
+            if 'gender_analysis' in below_median_result:
+                gender_analysis = below_median_result['gender_analysis']
+                print(f"\n👥 GENDER BREAKDOWN:")
+                for gender, data in gender_analysis.items():
+                    if gender not in ['gender_disparity', 'disparity_significant']:
+                        print(f"   {gender}: {data['count']} employees (avg gap: {data['average_gap_percent']:.1f}%)")
+            
+            # Get intervention recommendations
+            intervention_rec = self.convergence_analyzer.recommend_intervention_strategies(below_median_result)
+            rec_strategy = intervention_rec['recommended_strategy']
+            
+            print(f"\n💡 RECOMMENDED INTERVENTION:")
+            print(f"   Strategy: {rec_strategy['primary_strategy'].replace('_', ' ').title()}")
+            print(f"   Budget required: £{rec_strategy['total_budget_required']:,.2f}")
+            print(f"   Affected employees: {rec_strategy['strategy_details']['affected_employees']}")
+            
+            return {
+                'below_median_analysis': below_median_result,
+                'intervention_recommendations': intervention_rec
+            }
+            
+        except Exception as e:
+            print(f"❌ Analysis failed: {e}")
+            return None
+    
+    def model_gender_gap_remediation(self, target_gap: float = 0.0, max_years: int = 3, 
+                                   budget_limit: float = 0.5) -> Optional[Dict]:
+        """Model gender pay gap remediation strategies."""
+        if not self.intervention_simulator:
+            print("❌ Gender gap remediation modeling not available. Run simulation first.")
+            return None
+        
+        print(f"\n💼 GENDER PAY GAP REMEDIATION ANALYSIS")
+        print(f"={'='*60}")
+        print(f"Target gap: {target_gap:.1f}%, Max timeline: {max_years} years, Budget limit: {budget_limit:.1f}% of payroll")
+        
+        try:
+            result = self.intervention_simulator.model_gender_gap_remediation(
+                target_gap_percent=target_gap,
+                max_years=max_years,
+                budget_constraint=budget_limit / 100.0
+            )
+            
+            current = result['current_state']
+            recommended = result['recommended_strategy']
+            
+            print(f"\n📊 CURRENT STATE:")
+            print(f"   Gender pay gap: {current['gender_pay_gap_percent']:.1f}%")
+            print(f"   Affected female employees: {current['affected_female_employees']}")
+            print(f"   Total payroll: £{current['total_payroll']:,.2f}")
+            
+            print(f"\n✅ RECOMMENDED STRATEGY:")
+            print(f"   Strategy: {recommended['strategy_name'].replace('_', ' ').title()}")
+            print(f"   Total cost: £{recommended['total_cost']:,.2f} ({recommended['cost_as_percent_payroll']*100:.2f}% of payroll)")
+            print(f"   Timeline: {recommended['timeline_years']} years")
+            print(f"   Gap reduction: {recommended['gap_reduction_percent']:.1f}%")
+            print(f"   Final gap: {recommended['projected_final_gap']:.1f}%")
+            
+            # ROI Analysis
+            roi = result['roi_analysis']
+            print(f"\n💰 ROI ANALYSIS:")
+            print(f"   Investment: £{roi['total_investment']:,.2f}")
+            print(f"   Payback period: {roi['payback_years']:.1f} years")
+            print(f"   3-year ROI: {roi['roi_3_year']*100:.1f}%")
+            
+            return result
+            
+        except Exception as e:
+            print(f"❌ Analysis failed: {e}")
+            return None
 
 
 def main():
-    """Main execution function"""
+    """Main execution function with command-line interface."""
+    parser = argparse.ArgumentParser(
+        description="Employee Simulation Explorer with Advanced Analysis",
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        epilog="""
+Examples:
+  # Basic simulation with default scenario
+  python run_employee_simulation.py
+  
+  # Individual progression analysis
+  python run_employee_simulation.py --analyze-individual 123
+  
+  # Median convergence analysis
+  python run_employee_simulation.py --analyze-convergence --min-gap 10.0
+  
+  # Gender gap remediation modeling
+  python run_employee_simulation.py --model-gender-gap --target-gap 0.0 --budget-limit 0.5
+  
+  # Custom population with analysis
+  python run_employee_simulation.py --population-size 2000 --analyze-individual 456 --years 10
+        """
+    )
+    
+    # Population generation parameters
+    parser.add_argument('--population-size', type=int, default=1000,
+                       help='Population size to generate (default: 1000)')
+    parser.add_argument('--random-seed', type=int, default=42,
+                       help='Random seed for reproducible results (default: 42)')
+    parser.add_argument('--target-salary', type=float, default=80692.50,
+                       help='Target salary for analysis focus (default: 80692.50)')
+    parser.add_argument('--target-level', type=int, default=5,
+                       help='Target level for analysis focus (default: 5)')
+    parser.add_argument('--gender-pay-gap', type=float, default=15.8,
+                       help='Gender pay gap percentage to simulate (default: 15.8)')
+    
+    # Advanced analysis options
+    parser.add_argument('--analyze-individual', type=int, metavar='EMPLOYEE_ID',
+                       help='Analyze individual employee salary progression')
+    parser.add_argument('--years', type=int, default=5,
+                       help='Years for progression analysis (default: 5)')
+    parser.add_argument('--scenarios', nargs='*',
+                       choices=['conservative', 'realistic', 'optimistic'],
+                       default=['conservative', 'realistic', 'optimistic'],
+                       help='Scenarios for progression modeling')
+    
+    parser.add_argument('--analyze-convergence', action='store_true',
+                       help='Analyze median salary convergence')
+    parser.add_argument('--min-gap', type=float, default=5.0,
+                       help='Minimum gap percentage for convergence analysis (default: 5.0)')
+    
+    parser.add_argument('--model-gender-gap', action='store_true',
+                       help='Model gender pay gap remediation strategies')
+    parser.add_argument('--target-gap', type=float, default=0.0,
+                       help='Target gender gap percentage (default: 0.0)')
+    parser.add_argument('--max-years', type=int, default=3,
+                       help='Maximum years for intervention (default: 3)')
+    parser.add_argument('--budget-limit', type=float, default=0.5,
+                       help='Budget limit as percentage of payroll (default: 0.5)')
+    
+    # Output options
+    parser.add_argument('--no-visualizations', action='store_true',
+                       help='Skip generating visualizations')
+    parser.add_argument('--quiet', action='store_true',
+                       help='Reduce output verbosity')
+    parser.add_argument('--output-json', action='store_true',
+                       help='Output analysis results in JSON format')
+    
+    # Backwards compatibility - run example scenarios when no args provided
+    if len(sys.argv) == 1:
+        run_example_scenarios()
+        return
+    
+    args = parser.parse_args()
     
     explorer = EmployeeStoryExplorer()
     
-    # Run with different scenarios
+    # Configure scenario based on arguments
+    scenario = {
+        'population_size': args.population_size,
+        'random_seed': args.random_seed,
+        'target_salary': args.target_salary,
+        'target_level': args.target_level,
+        'gender_pay_gap_percent': args.gender_pay_gap,
+    }
+    
+    if not args.quiet:
+        print(f"\n{'='*80}")
+        print("🏢 EMPLOYEE SIMULATION EXPLORER - ADVANCED ANALYSIS")
+        print(f"{'='*80}")
+        print(f"Population: {args.population_size:,} employees")
+        print(f"Analysis focus: Level {args.target_level}, £{args.target_salary:,.2f}")
+        if args.analyze_individual:
+            print(f"Individual analysis: Employee {args.analyze_individual} ({args.years}-year projection)")
+        if args.analyze_convergence:
+            print(f"Convergence analysis: >{args.min_gap}% below median")
+        if args.model_gender_gap:
+            print(f"Gender gap modeling: {args.target_gap}% target, {args.budget_limit}% budget")
+        print(f"{'='*80}")
+    
+    # Run simulation
+    success = explorer.run_simulation(**scenario)
+    
+    if not success:
+        print("❌ Simulation failed")
+        sys.exit(1)
+    
+    # Run advanced analysis based on arguments
+    analysis_results = {}
+    
+    # Individual progression analysis
+    if args.analyze_individual:
+        if not args.quiet:
+            print(f"\n🔍 Running individual progression analysis...")
+        result = explorer.analyze_individual_progression(
+            args.analyze_individual, years=args.years, scenarios=args.scenarios
+        )
+        if result:
+            analysis_results['individual_progression'] = result
+    
+    # Median convergence analysis
+    if args.analyze_convergence:
+        if not args.quiet:
+            print(f"\n🔍 Running median convergence analysis...")
+        result = explorer.analyze_median_convergence(min_gap_percent=args.min_gap)
+        if result:
+            analysis_results['median_convergence'] = result
+    
+    # Gender gap remediation modeling
+    if args.model_gender_gap:
+        if not args.quiet:
+            print(f"\n🔍 Running gender gap remediation modeling...")
+        result = explorer.model_gender_gap_remediation(
+            target_gap=args.target_gap, max_years=args.max_years, budget_limit=args.budget_limit
+        )
+        if result:
+            analysis_results['gender_gap_remediation'] = result
+    
+    # Output results
+    if args.output_json and analysis_results:
+        print("\n" + json.dumps(analysis_results, indent=2, default=str))
+    
+    # Create comprehensive report
+    if not args.quiet:
+        create_comprehensive_report(explorer, scenario, analysis_results)
+    
+    if not args.quiet:
+        print("\n🎉 Employee Simulation and Analysis Complete!")
+        print("📝 Check 'comprehensive_employee_analysis.md' for detailed analysis")
+        if not args.no_visualizations:
+            print("📊 Check 'employee_population_analysis.png' for visualizations")
+
+
+def run_example_scenarios():
+    """Run example scenarios for backwards compatibility."""
+    print("🏢 EMPLOYEE SIMULATION EXPLORER")
+    print("=" * 60)
+    print("Running example scenarios...")
+    print("💡 Use --help to see advanced analysis options!")
+    print()
+    
+    explorer = EmployeeStoryExplorer()
+    
+    # Run with different scenarios - uncomment as needed
     scenarios = [
         {'population_size': 1000, 'random_seed': 42, 'target_salary': 80692.50, 'target_level': 5},
+        
+        # Uncomment to run additional scenarios:
+        
         # Example with level skewing - more Level 3 employees
         # {'population_size': 1000, 'random_seed': 42, 'target_salary': 80692.50, 'target_level': 5, 
         #  'level_distribution': [0.20, 0.20, 0.35, 0.10, 0.10, 0.05]},  # 35% Level 3 vs 20% default
@@ -407,13 +742,81 @@ def main():
         
         # Option to continue or exit
         if i < len(scenarios):
-            response = input("\n🤔 Try another scenario? (y/n): ").strip().lower()
-            if response != 'y':
+            try:
+                response = input("\n🤔 Try another scenario? (y/n): ").strip().lower()
+                if response != 'y':
+                    break
+            except KeyboardInterrupt:
+                print("\n\n👋 Interrupted by user")
                 break
     
     print("\n🎉 Employee Story Exploration Complete!")
     print("📝 Check 'employee_analysis_report.md' for detailed narrative analysis")
     print("📊 Check 'employee_population_analysis.png' for population visualizations")
+
+
+def create_comprehensive_report(explorer, scenario, analysis_results):
+    """Create a comprehensive markdown report with all analysis results."""
+    
+    report_path = Path('comprehensive_employee_analysis.md')
+    
+    with open(report_path, 'w') as f:
+        f.write("# Comprehensive Employee Analysis Report\n\n")
+        f.write("## Executive Summary\n\n")
+        f.write(f"This comprehensive analysis examines a simulated employee population of {scenario['population_size']:,} employees "
+                f"generated with random seed {scenario['random_seed']}. The analysis includes population overview, "
+                f"story tracking, and advanced salary progression modeling.\n\n")
+        
+        if analysis_results:
+            f.write("### Advanced Analysis Completed\n\n")
+            if 'individual_progression' in analysis_results:
+                emp_id = analysis_results['individual_progression'].get('employee_id', 'N/A')
+                f.write(f"- **Individual Progression Analysis**: Employee {emp_id}\n")
+            if 'median_convergence' in analysis_results:
+                convergence = analysis_results['median_convergence']['below_median_analysis']
+                f.write(f"- **Median Convergence Analysis**: {convergence['below_median_count']} employees below median\n")
+            if 'gender_gap_remediation' in analysis_results:
+                gap_data = analysis_results['gender_gap_remediation']['current_state']
+                f.write(f"- **Gender Gap Remediation**: {gap_data['gender_pay_gap_percent']:.1f}% current gap\n")
+            f.write("\n")
+        
+        # Standard population analysis
+        if explorer.population_data:
+            df = pd.DataFrame(explorer.population_data)
+            
+            f.write("## Key Findings\n\n")
+            
+            # Population overview
+            f.write(f"### Population Overview\n")
+            f.write(f"- **Total Employees**: {len(df):,}\n")
+            f.write(f"- **Organizational Levels**: {df['level'].nunique()}\n")
+            f.write(f"- **Salary Range**: £{df['salary'].min():,.0f} - £{df['salary'].max():,.0f}\n")
+            f.write(f"- **Average Salary**: £{df['salary'].mean():,.0f}\n\n")
+            
+            # Target level analysis
+            target_employees = df[df['level'] == scenario['target_level']]
+            if len(target_employees) > 0:
+                f.write(f"### Level {scenario['target_level']} Analysis\n")
+                f.write(f"- **Population**: {len(target_employees)} employees ({len(target_employees)/len(df)*100:.1f}% of total)\n")
+                f.write(f"- **Salary Range**: £{target_employees['salary'].min():,.0f} - £{target_employees['salary'].max():,.0f}\n")
+                f.write(f"- **Average Salary**: £{target_employees['salary'].mean():,.0f}\n")
+                
+                # Performance breakdown
+                perf_dist = target_employees['performance_rating'].value_counts()
+                f.write(f"- **Performance Distribution**:\n")
+                for perf, count in perf_dist.items():
+                    pct = (count / len(target_employees)) * 100
+                    f.write(f"  - {perf}: {count} employees ({pct:.1f}%)\n")
+                f.write("\n")
+
+        # Advanced analysis results section would continue here...
+        f.write("## Methodology\n\n")
+        f.write("This analysis uses a sophisticated employee simulation system with advanced analytics.\n")
+        
+        f.write("---\n")
+        f.write("*Report generated by Employee Simulation Explorer with Advanced Analysis*\n")
+    
+    print(f"📝 Comprehensive analysis report saved as: {report_path}")
 
 
 def create_markdown_report(explorer, scenario):
