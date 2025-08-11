@@ -1,1 +1,1 @@
-# Test package for Employee Simulation System
+"""Test package for Employee Simulation System."""

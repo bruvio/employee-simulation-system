@@ -1,0 +1,148 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "employee-simulation-system"
+version = "1.0.0"
+description = "Advanced employee salary progression modeling and simulation system"
+readme = "README.md"
+license = {text = "MIT"}
+authors = [
+    {name = "Bruno Viola", email = "bruno.viola@example.com"}
+]
+maintainers = [
+    {name = "Bruno Viola", email = "bruno.viola@example.com"}
+]
+keywords = [
+    "employee",
+    "simulation", 
+    "salary",
+    "progression",
+    "modeling",
+    "analytics"
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Topic :: Scientific/Engineering",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+]
+requires-python = ">=3.9"
+dependencies = [
+    "pandas>=2.0.0,<2.3.0",
+    "numpy>=1.24.0,<2.0.0",
+    "matplotlib>=3.8.0,<3.10.0",
+    "seaborn>=0.12.0,<1.0.0",
+    "plotly>=5.15.0,<6.0.0",
+    "scipy>=1.9.0,<2.0.0",
+    "jupyter>=1.0.0,<2.0.0",
+    "ipywidgets>=8.0.0,<9.0.0",
+    "openpyxl>=3.1.0,<4.0.0",
+    "xlsxwriter>=3.1.0,<4.0.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0.0,<8.0.0",
+    "pytest-cov>=4.0.0,<5.0.0",
+    "black>=23.0.0,<24.0.0",
+    "flake8>=6.0.0,<7.0.0",
+    "safety>=3.0.0,<4.0.0",
+]
+test = [
+    "pytest>=7.0.0,<8.0.0",
+    "pytest-cov>=4.0.0,<5.0.0",
+    "pytest-mock>=3.10.0,<4.0.0",
+    "coverage>=7.0.0,<8.0.0",
+]
+
+[project.scripts]
+analyze-progression = "analyze_individual_progression:main"
+model-interventions = "model_interventions:main" 
+run-simulation = "employee_simulation_orchestrator:main"
+
+[project.urls]
+Homepage = "https://github.com/bruvio/employee-simulation-system"
+Documentation = "https://github.com/bruvio/employee-simulation-system#readme"
+Repository = "https://github.com/bruvio/employee-simulation-system"
+"Bug Reports" = "https://github.com/bruvio/employee-simulation-system/issues"
+
+[tool.setuptools]
+include-package-data = true
+
+[tool.setuptools.packages.find]
+exclude = ["tests*"]
+
+[tool.black]
+line-length = 120
+target-version = ['py39']
+include = '\.pyi?$'
+extend-exclude = '''
+/(
+  # directories
+  \.eggs
+  | \.git
+  | \.hg
+  | \.mypy_cache
+  | \.pytest_cache
+  | \.tox
+  | \.venv
+  | build
+  | dist
+)/
+'''
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py", "*_test.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+addopts = [
+    "-v",
+    "--strict-markers",
+    "--strict-config",
+    "--cov=.",
+    "--cov-report=term-missing",
+    "--cov-report=xml",
+    "--cov-report=html",
+]
+markers = [
+    "slow: marks tests as slow (deselect with '-m \"not slow\"')",
+    "integration: marks tests as integration tests",
+]
+
+[tool.coverage.run]
+source = ["."]
+omit = [
+    "*/tests/*",
+    "*/test_*",
+    "*/__pycache__/*",
+    "*/venv/*", 
+    "*/.venv/*",
+    "*/build/*",
+    "*/dist/*",
+    "*/artifacts/*",
+    "*/images/*",
+]
+
+[tool.coverage.report]
+exclude_lines = [
+    "pragma: no cover",
+    "def __repr__",
+    "if self.debug:",
+    "if settings.DEBUG",
+    "raise AssertionError",
+    "raise NotImplementedError",
+    "if 0:",
+    "if __name__ == .__main__.:",
+    "class .*\bProtocol\):",
+    "@(abc\.)?abstractmethod",
+]
