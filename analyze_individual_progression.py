@@ -188,10 +188,7 @@ def create_progression_report(progression_result: Dict, output_format: str = "te
         report_lines.extend(
             [
                 "Secondary Actions:",
-                *[
-                    f"  • {action.replace('_', ' ').title()}"
-                    for action in recommendations["secondary_actions"]
-                ],
+                *[f"  • {action.replace('_', ' ').title()}" for action in recommendations["secondary_actions"]],
             ]
         )
 

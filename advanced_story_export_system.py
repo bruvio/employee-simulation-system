@@ -330,12 +330,8 @@ class AdvancedStoryExportSystem:
                         {
                             "Category": category.replace("_", " ").title(),
                             "Story Count": len(category_stories),
-                            "Avg Current Salary": (
-                                sum(salaries) / len(salaries) if salaries else 0
-                            ),
-                            "Avg Growth %": (
-                                sum(growths) / len(growths) if growths else 0
-                            ),
+                            "Avg Current Salary": (sum(salaries) / len(salaries) if salaries else 0),
+                            "Avg Growth %": (sum(growths) / len(growths) if growths else 0),
                             "Min Salary": min(salaries, default=0),
                             "Max Salary": max(salaries, default=0),
                         }
