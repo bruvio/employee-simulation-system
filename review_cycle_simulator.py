@@ -187,7 +187,7 @@ class ReviewCycleSimulator:
                     emp["salary"] for emp in self.population if emp["gender"] == "Female" and emp["level"] == level
                 ]
 
-                if level_males and len(level_females) > 0:
+                if level_males and level_females:
                     level_gap = (np.median(level_males) - np.median(level_females)) / np.median(level_males) * 100
                     level_gaps[level] = level_gap
         else:
@@ -221,7 +221,7 @@ class ReviewCycleSimulator:
                     "std": np.std(level_salaries),
                 }
 
-        metrics = {
+        return {
             "cycle": cycle,
             "gini_coefficient": float(gini_coefficient),
             "coefficient_of_variation": float(coefficient_of_variation),
@@ -231,14 +231,12 @@ class ReviewCycleSimulator:
             "salary_std": float(np.std(salaries)),
             "gender_gap_percent": float(gender_gap_percent),
             "gender_gap_by_level": level_gaps,
-            "performance_salary_correlation": float(performance_correlation),
-            "level_salary_correlation": float(level_correlation),
+            "performance_salary_correlation": performance_correlation,
+            "level_salary_correlation": level_correlation,
             "level_statistics": level_stats,
             "population_size": len(self.population),
             "timestamp": datetime.now().isoformat(),
         }
-
-        return metrics
 
     def _calculate_gini(self, salaries):
         """Calculate Gini coefficient for salary inequality measurement.

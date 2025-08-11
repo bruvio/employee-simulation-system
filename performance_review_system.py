@@ -276,7 +276,7 @@ class PerformanceReviewSystem:
         if all_passed:
             LOGGER.info(f"✓ All {len(test_cases)} uplift calculations validated successfully")
         else:
-            failed_count = sum(bool(not r["passed"]) for r in validation_results)
+            failed_count = sum(not r["passed"] for r in validation_results)
             LOGGER.error(f"✗ {failed_count} of {len(test_cases)} uplift calculations failed validation")
 
         return validation_results, all_passed

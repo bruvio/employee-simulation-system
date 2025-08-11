@@ -810,10 +810,9 @@ class MedianConvergenceAnalyzer:
         if initial_count == 0:
             return 100.0
 
-        else:
-            final_count = convergence_timeline[-1]["remaining_below_median"]
+        final_count = convergence_timeline[-1]["remaining_below_median"]
 
-            return max(0.0, ((initial_count - final_count) / initial_count) * 100)
+        return max(0.0, ((initial_count - final_count) / initial_count) * 100)
 
     def _analyze_gap_distribution(self) -> Dict:
         """Analyze the distribution of salary gaps across the population."""

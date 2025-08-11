@@ -158,9 +158,10 @@ def create_gender_gap_report(remediation_result: Dict, output_format: str = "tex
     implementation = remediation_result["implementation_plan"]
     report_lines.extend(["📅 IMPLEMENTATION PLAN", "-" * 23])
 
-    for phase in implementation:
-        report_lines.append(f"Phase {phase['phase']}: {phase['activity']} (Month {phase['timeline_months']})")
-
+    report_lines.extend(
+        f"Phase {phase['phase']}: {phase['activity']} (Month {phase['timeline_months']})"
+        for phase in implementation
+    )
     report_lines.append("")
 
     # ROI Analysis

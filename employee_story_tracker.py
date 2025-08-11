@@ -213,10 +213,9 @@ class EmployeeStoryTracker:
         if num_cycles <= 0:
             return None
 
-        else:
-            current_salary = history_sorted[-1]["salary"]
+        current_salary = history_sorted[-1]["salary"]
 
-            return (current_salary / initial_salary - 1) / num_cycles
+        return (current_salary / initial_salary - 1) / num_cycles
 
     def generate_employee_story(self, employee_id: int, category: str) -> Optional[EmployeeStory]:
         """Generate narrative story for a specific employee."""

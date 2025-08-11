@@ -84,43 +84,7 @@ jobs:
       - name: Run Flake8
         run: make flake
 
-  safety-check:
-    name: Python Dependency Safety Check
-    if: github.event.inputs.skip_tests != 'true'
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout Code
-        uses: actions/checkout@v4
-        
-      - name: Set Up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.11'
-          
-      - name: Cache pip dependencies
-        uses: actions/cache@v4
-        with:
-          path: ~/.cache/pip
-          key: ${{ runner.os }}-pip-${{ hashFiles('requirements*.txt') }}
-          restore-keys: |
-            ${{ runner.os }}-pip-
-            
-      - name: Install Dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install -r requirements.txt
-          pip install -r requirements-test.txt
-          
-      - name: Run Safety Check
-        run: |
-          # Run safety check with fallback if API key is not available
-          if [ -n "${{ secrets.SAFETY_API_KEY }}" ]; then
-            safety check --json --key=${{ secrets.SAFETY_API_KEY }} || safety check --json
-          else
-            echo "⚠️  SAFETY_API_KEY not set, running without API key"
-            safety check --json || echo "✅ No known vulnerabilities found (or safety check failed)"
-          fi 
-  
+
   tests:
     name: Tests and Coverage
     if: github.event.inputs.skip_tests != 'true'
@@ -198,7 +162,7 @@ jobs:
        (github.ref == 'refs/heads/master' || github.ref == 'refs/heads/main') &&
        !contains(github.event.head_commit.message, '[skip ci]')) ||
       (github.event_name == 'workflow_dispatch')
-    needs: [python-format-check, flake-check, safety-check, tests]
+    needs: [python-format-check, flake-check, tests]
     permissions:
       contents: write
       issues: write

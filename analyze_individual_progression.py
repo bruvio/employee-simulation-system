@@ -95,19 +95,15 @@ def create_progression_report(progression_result: Dict, output_format: str = "te
     if output_format == "json":
         return json.dumps(progression_result, indent=2, default=str)
 
-    # Text format report
+    # Employee Information
+    current = progression_result["current_state"]
+    employee_id = current.get("employee_id", progression_result.get("employee_id", "Unknown"))
     report_lines = [
         "=" * 70,
         "📈 INDIVIDUAL SALARY PROGRESSION ANALYSIS",
         "=" * 70,
         "",
-    ]
-
-    # Employee Information
-    current = progression_result["current_state"]
-    employee_id = current.get("employee_id", progression_result.get("employee_id", "Unknown"))
-    report_lines.extend(
-        [
+        *[
             "👤 EMPLOYEE INFORMATION",
             "-" * 30,
             f"Employee ID: {employee_id}",
@@ -117,9 +113,8 @@ def create_progression_report(progression_result: Dict, output_format: str = "te
             f"Gender: {current.get('gender', 'Not specified')}",
             f"Years at Company: {current.get('years_at_company', 'N/A'):.1f}",
             "",
-        ]
-    )
-
+        ],
+    ]
     # Projections
     projections = progression_result["projections"]
     report_lines.extend(["🎯 SALARY PROJECTIONS (5-Year)", "-" * 35])
@@ -192,8 +187,11 @@ def create_progression_report(progression_result: Dict, output_format: str = "te
     if recommendations["secondary_actions"]:
         report_lines.extend(
             [
-                f"Secondary Actions:",
-                *[f"  • {action.replace('_', ' ').title()}" for action in recommendations["secondary_actions"]],
+                "Secondary Actions:",
+                *[
+                    f"  • {action.replace('_', ' ').title()}"
+                    for action in recommendations["secondary_actions"]
+                ],
             ]
         )
 

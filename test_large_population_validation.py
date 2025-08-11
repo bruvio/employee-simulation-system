@@ -227,7 +227,7 @@ def test_large_population_validation():
         passed_checks = sum(sum(group) for group in all_tests)
 
         # Adjust for warnings as partial passes
-        warning_count = sum(bool(not passed) for passed in memory_efficiency_tests.values())
+        warning_count = sum(not passed for passed in memory_efficiency_tests.values())
         adjusted_passed = passed_checks - (warning_count * 0.5)
 
         success_rate = (adjusted_passed / total_checks) * 100
