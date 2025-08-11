@@ -40,7 +40,7 @@ class EmployeeSimulationOrchestrator:
     """
 
     def __init__(self, config=None):
-        self.config = config or self._get_default_config()
+        self.config = config or self._load_config_with_fallback()
         self.timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
         self.artifacts_dir = Path("artifacts")
         self.images_dir = Path("images")
@@ -91,6 +91,16 @@ class EmployeeSimulationOrchestrator:
         self.run_images_dir = self.run_directories["images_root"]
 
         self.smart_logger.log_success(f"Initialized employee simulation orchestrator with timestamp: {self.timestamp}")
+
+    def _load_config_with_fallback(self):
+        """Load configuration from config.json with fallback to defaults."""
+        try:
+            from config_manager import ConfigurationManager
+            config_manager = ConfigurationManager("config.json")
+            return config_manager.get_orchestrator_config()
+        except Exception as e:
+            print(f"Warning: Could not load config.json ({e}), using default configuration")
+            return self._get_default_config()
 
     def _get_default_config(self):
         """Get default simulation configuration."""
@@ -1629,7 +1639,8 @@ def main():
         help="Simulation mode to run",
     )
     parser.add_argument("--config", help="Path to JSON configuration file")
-    parser.add_argument("--population-size", type=int, default=1000, help="Number of employees to generate")
+    parser.add_argument("--scenario", help="Use predefined scenario from config.json")
+    parser.add_argument("--population-size", type=int, help="Number of employees to generate (overrides config)")
     parser.add_argument("--max-cycles", type=int, default=15, help="Maximum number of review cycles to simulate")
     parser.add_argument("--random-seed", type=int, default=42, help="Random seed for reproducibility")
     parser.add_argument("--no-viz", action="store_true", help="Skip visualization generation")
@@ -1674,12 +1685,29 @@ def main():
         except Exception as e:
             get_smart_logger().log_error(f"Failed to load configuration: {e}")
             sys.exit(1)
+    elif args.scenario:
+        # Load configuration with scenario
+        try:
+            from config_manager import ConfigurationManager
+            config_manager = ConfigurationManager("config.json")
+            config = config_manager.get_orchestrator_config(scenario=args.scenario)
+            get_smart_logger().log_info(f"Loaded scenario '{args.scenario}' configuration")
+        except Exception as e:
+            get_smart_logger().log_error(f"Failed to load scenario configuration: {e}")
+            sys.exit(1)
     else:
-        # Use command-line arguments to build config
-        config = {
-            "population_size": args.population_size,
-            "random_seed": args.random_seed,
-            "max_cycles": args.max_cycles,
+        # Try to load default config.json, fall back to command-line arguments
+        try:
+            from config_manager import ConfigurationManager
+            config_manager = ConfigurationManager("config.json")
+            config = config_manager.get_orchestrator_config()
+            get_smart_logger().log_info("Loaded default configuration from config.json")
+        except Exception as e:
+            get_smart_logger().log_warning(f"Could not load config.json ({e}), using command-line arguments")
+            config = {
+                "population_size": args.population_size or 1000,
+                "random_seed": args.random_seed,
+                "max_cycles": args.max_cycles,
             "convergence_threshold": 0.001,
             "export_formats": args.export_formats,
             "generate_visualizations": not args.no_viz,
@@ -1700,6 +1728,14 @@ def main():
             "progression_analysis_years": args.analysis_years,
             "log_level": args.log_level,
         }
+    
+    # Apply command-line overrides to config if provided
+    if args.population_size:
+        config["population_size"] = args.population_size
+    if hasattr(args, 'max_cycles') and args.max_cycles != 15:  # Only override if different from default
+        config["max_cycles"] = args.max_cycles
+    if hasattr(args, 'random_seed') and args.random_seed != 42:  # Only override if different from default
+        config["random_seed"] = args.random_seed
 
     # Initialize orchestrator
     orchestrator = EmployeeSimulationOrchestrator(config=config)
