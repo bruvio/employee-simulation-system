@@ -941,43 +941,47 @@ class InterventionStrategySimulator:
         """Prioritize interventions by impact."""
         return list(allocation.get("allocation", {}).keys())  # Placeholder
 
-
-    def model_equity_intervention(self, intervention_type: str = "comprehensive_equity", 
-                                 budget_constraint: float = 0.005, 
-                                 years_to_achieve: int = 5) -> Dict:
+    def model_equity_intervention(
+        self,
+        intervention_type: str = "comprehensive_equity",
+        budget_constraint: float = 0.005,
+        years_to_achieve: int = 5,
+    ) -> Dict:
         """
         Model comprehensive equity intervention strategies.
-        
+
         Args:
             intervention_type: Type of equity intervention to model
             budget_constraint: Maximum percentage of payroll to spend (default: 0.5%)
             years_to_achieve: Target years to achieve equity
-            
+
         Returns:
             Dict with equity intervention analysis and recommendations
         """
         LOGGER.info(f"Modeling {intervention_type} intervention strategy")
-        
+
         baseline = self._calculate_baseline_metrics()
         total_payroll = baseline["total_payroll"]
         max_budget = total_payroll * budget_constraint
-        
+
         LOGGER.info(f"Budget constraint: £{max_budget:,.0f} ({budget_constraint:.1%} of £{total_payroll:,.0f} payroll)")
-        
+
         # Identify equity gaps across different dimensions
         equity_gaps = self._analyze_comprehensive_equity_gaps()
-        
+
         # Model different intervention approaches
         intervention_approaches = {
-            "comprehensive_equity": self._model_comprehensive_equity_approach(equity_gaps, max_budget, years_to_achieve),
+            "comprehensive_equity": self._model_comprehensive_equity_approach(
+                equity_gaps, max_budget, years_to_achieve
+            ),
             "targeted_adjustment": self._model_targeted_adjustment_approach(equity_gaps, max_budget, years_to_achieve),
             "gradual_remediation": self._model_gradual_remediation_approach(equity_gaps, max_budget, years_to_achieve),
-            "performance_based": self._model_performance_based_approach(equity_gaps, max_budget, years_to_achieve)
+            "performance_based": self._model_performance_based_approach(equity_gaps, max_budget, years_to_achieve),
         }
-        
+
         # Find optimal approach
         optimal_approach = self._select_optimal_equity_approach(intervention_approaches, budget_constraint)
-        
+
         result = {
             "intervention_type": intervention_type,
             "baseline_metrics": baseline,
@@ -987,13 +991,15 @@ class InterventionStrategySimulator:
             "budget_constraint": {
                 "percentage": budget_constraint,
                 "amount": max_budget,
-                "total_payroll": total_payroll
+                "total_payroll": total_payroll,
             },
-            "timeline_years": years_to_achieve
+            "timeline_years": years_to_achieve,
         }
-        
-        LOGGER.info(f"Optimal approach: {optimal_approach['approach_name']} (£{optimal_approach['total_investment']:,.0f})")
-        
+
+        LOGGER.info(
+            f"Optimal approach: {optimal_approach['approach_name']} (£{optimal_approach['total_investment']:,.0f})"
+        )
+
         return result
 
     def _analyze_comprehensive_equity_gaps(self) -> Dict:
@@ -1002,9 +1008,9 @@ class InterventionStrategySimulator:
             "gender_gap": self._calculate_baseline_metrics()["gender_pay_gap_percent"],
             "level_inequities": {},
             "performance_inequities": {},
-            "tenure_inequities": {}
+            "tenure_inequities": {},
         }
-        
+
         # Level-based inequities
         for level in sorted(self.population_df["level"].unique()):
             level_data = self.population_df[self.population_df["level"] == level]
@@ -1015,9 +1021,9 @@ class InterventionStrategySimulator:
                 gaps["level_inequities"][level] = {
                     "coefficient_variation": cv,
                     "salary_range": level_data["salary"].max() - level_data["salary"].min(),
-                    "employee_count": len(level_data)
+                    "employee_count": len(level_data),
                 }
-        
+
         return gaps
 
     def _model_comprehensive_equity_approach(self, equity_gaps: Dict, max_budget: float, years: int) -> Dict:
@@ -1025,7 +1031,7 @@ class InterventionStrategySimulator:
         # Address all equity dimensions simultaneously
         total_investment = min(max_budget, max_budget * 0.8)  # Use 80% of budget for comprehensive approach
         affected_employees = len(self.population_df) // 3  # Assume 1/3 of employees affected
-        
+
         return {
             "approach_name": "comprehensive_equity",
             "description": "Address all equity gaps simultaneously across gender, level, and performance dimensions",
@@ -1035,13 +1041,13 @@ class InterventionStrategySimulator:
             "expected_outcomes": {
                 "gender_gap_reduction": min(equity_gaps["gender_gap"] * 0.8, 80),  # 80% reduction or 8pp max
                 "level_inequity_reduction": 60,  # 60% reduction in level inequities
-                "overall_equity_score": 85  # Target 85% equity score
+                "overall_equity_score": 85,  # Target 85% equity score
             },
             "implementation_phases": [
                 "Phase 1: Immediate high-priority adjustments (6 months)",
-                "Phase 2: Performance-based interventions (18 months)", 
-                "Phase 3: Long-term equity maintenance (remaining time)"
-            ]
+                "Phase 2: Performance-based interventions (18 months)",
+                "Phase 3: Long-term equity maintenance (remaining time)",
+            ],
         }
 
     def _model_targeted_adjustment_approach(self, equity_gaps: Dict, max_budget: float, years: int) -> Dict:
@@ -1055,14 +1061,14 @@ class InterventionStrategySimulator:
             "expected_outcomes": {
                 "gender_gap_reduction": min(equity_gaps["gender_gap"] * 0.6, 60),
                 "immediate_impact": "high",
-                "sustainable_change": "medium"
-            }
+                "sustainable_change": "medium",
+            },
         }
 
     def _model_gradual_remediation_approach(self, equity_gaps: Dict, max_budget: float, years: int) -> Dict:
         """Model gradual remediation approach."""
         return {
-            "approach_name": "gradual_remediation", 
+            "approach_name": "gradual_remediation",
             "description": "Spread equity improvements over extended timeline",
             "total_investment": max_budget,  # Use full budget over longer period
             "affected_employees": len(self.population_df) // 2,
@@ -1070,8 +1076,8 @@ class InterventionStrategySimulator:
             "expected_outcomes": {
                 "gender_gap_reduction": min(equity_gaps["gender_gap"] * 0.9, 90),
                 "sustainability": "high",
-                "budget_efficiency": "high"
-            }
+                "budget_efficiency": "high",
+            },
         }
 
     def _model_performance_based_approach(self, equity_gaps: Dict, max_budget: float, years: int) -> Dict:
@@ -1085,38 +1091,38 @@ class InterventionStrategySimulator:
             "expected_outcomes": {
                 "performance_improvement": "high",
                 "equity_improvement": "medium",
-                "retention_impact": "high"
-            }
+                "retention_impact": "high",
+            },
         }
 
     def _select_optimal_equity_approach(self, approaches: Dict, budget_constraint: float) -> Dict:
         """Select the optimal equity approach based on multiple criteria."""
         # Simple scoring based on expected outcomes and feasibility
         scores = {}
-        
+
         for name, approach in approaches.items():
             outcomes = approach.get("expected_outcomes", {})
-            
+
             # Score based on impact and feasibility
             impact_score = 0
             if "gender_gap_reduction" in outcomes:
                 impact_score += min(outcomes["gender_gap_reduction"], 100) / 100 * 40
             if "overall_equity_score" in outcomes:
                 impact_score += outcomes["overall_equity_score"] / 100 * 30
-            
+
             # Feasibility score based on budget and timeline
             feasibility_score = 0
             if approach["total_investment"] <= budget_constraint * 10000:  # Rough payroll estimate
                 feasibility_score += 30
-            
+
             scores[name] = impact_score + feasibility_score
-        
+
         # Select approach with highest score
         optimal_name = max(scores, key=scores.get)
         optimal_approach = approaches[optimal_name].copy()
         optimal_approach["selection_score"] = scores[optimal_name]
         optimal_approach["alternatives"] = {k: v for k, v in scores.items() if k != optimal_name}
-        
+
         return optimal_approach
 
 

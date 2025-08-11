@@ -11,17 +11,18 @@ try:
     from .performance_review_system import PerformanceReviewSystem
     from .analyze_individual_progression import analyze_progression
     from .model_interventions import model_interventions
-    
+
     __all__ = [
-        'EmployeeSimulationOrchestrator',
-        'SalaryForecastingEngine', 
-        'PerformanceReviewSystem',
-        'analyze_progression',
-        'model_interventions',
-        '__version__',
+        "EmployeeSimulationOrchestrator",
+        "SalaryForecastingEngine",
+        "PerformanceReviewSystem",
+        "analyze_progression",
+        "model_interventions",
+        "__version__",
     ]
 except ImportError as e:
     # Handle import errors gracefully during package installation
     import warnings
+
     warnings.warn(f"Some modules could not be imported: {e}")
-    __all__ = ['__version__']
+    __all__ = ["__version__"]
