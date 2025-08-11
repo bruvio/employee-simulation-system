@@ -4,24 +4,21 @@ on:
   push:
     branches:
       - master
-      - main  # Support both master and main
       - alpha
       - beta
       - next
     tags:
-      - 'v*'  # Only trigger on version tags
-      
+      - '*'
+  pull_request:
+    branches:
+      - master
+      - main
+    types: [opened, synchronize, reopened]
   workflow_dispatch:
-    inputs:
-      env:
-        description: 'Environment to deploy (e.g., dev, staging, prod)'
-        required: true
-        default: 'dev'
-      skip_tests:
-        description: 'Skip tests and linting'
-        required: false
-        default: 'false'
-        type: boolean
+
+
+
+      
 
 permissions:
   contents: read
