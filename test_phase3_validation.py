@@ -7,7 +7,6 @@ Tests concise logging, structured file organization, and progress indicators
 
 import json
 import sys
-from pathlib import Path
 
 
 def test_phase3_validation():

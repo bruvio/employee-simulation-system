@@ -1,21 +1,25 @@
 #!/Users/brunoviola/bruvio-tools/.venv/bin/python3
 
+import argparse
+from typing import Dict, List, Optional, Tuple
+
 import numpy as np
 import pandas as pd
-import argparse
-import json
-from typing import List, Dict, Tuple, Optional, Union
 from scipy import stats
+
+from employee_population_simulator import LEVEL_MAPPING, UPLIFT_MATRIX
 from logger import LOGGER
-from employee_population_simulator import UPLIFT_MATRIX, LEVEL_MAPPING
 
 
 class SalaryForecastingEngine:
-    """
-    Core mathematical utilities for salary progression modeling and forecasting.
+    """Core mathematical utilities for salary progression modeling and forecasting.
 
-    Provides CAGR calculations, compound growth formulas, confidence intervals,
-    and statistical modeling for individual employee salary projections.
+    Provides CAGR calculations, compound growth formulas, confidence intervals, and statistical modeling for individual
+    employee salary projections.
+
+    Args:
+
+    Returns:
     """
 
     def __init__(self, confidence_level=0.95, market_inflation_rate=0.025):
@@ -27,56 +31,60 @@ class SalaryForecastingEngine:
         LOGGER.info(f"Market inflation rate: {market_inflation_rate:.2%}")
 
     def calculate_cagr(self, starting_value: float, ending_value: float, years: int) -> float:
-        """
-        Calculate Compound Annual Growth Rate (CAGR)
+        """Calculate Compound Annual Growth Rate (CAGR)
 
         Formula: CAGR = (ending_value / starting_value)^(1/years) - 1
 
         Args:
-            starting_value: Initial salary
-            ending_value: Final salary after specified years
-            years: Number of years between starting and ending values
+          starting_value: Initial salary
+          ending_value: Final salary after specified years
+          years: Number of years between starting and ending values
+          starting_value: float:
+          ending_value: float:
+          years: int:
 
         Returns:
-            CAGR as decimal (e.g., 0.05 for 5%)
+          : CAGR as decimal (e.g., 0.05 for 5%)
         """
         if starting_value <= 0 or ending_value <= 0 or years <= 0:
             raise ValueError("All values must be positive")
 
-        cagr = (ending_value / starting_value) ** (1 / years) - 1
-        return cagr
+        return (ending_value / starting_value) ** (1 / years) - 1
 
     def project_compound_growth(self, initial_value: float, growth_rate: float, years: int) -> float:
-        """
-        Project future value using compound growth
+        """Project future value using compound growth.
 
         Formula: future_value = initial_value × (1 + growth_rate)^years
 
         Args:
-            initial_value: Starting salary
-            growth_rate: Annual growth rate as decimal
-            years: Number of years to project
+          initial_value: Starting salary
+          growth_rate: Annual growth rate as decimal
+          years: Number of years to project
+          initial_value: float:
+          growth_rate: float:
+          years: int:
 
         Returns:
-            Projected future salary
+          : Projected future salary
         """
         if initial_value <= 0 or years < 0:
             raise ValueError("Initial value must be positive and years non-negative")
 
-        future_value = initial_value * ((1 + growth_rate) ** years)
-        return future_value
+        return initial_value * ((1 + growth_rate) ** years)
 
     def calculate_uplift_increase(self, current_salary: float, level: int, performance_rating: str) -> float:
-        """
-        Calculate salary increase based on UPLIFT_MATRIX
+        """Calculate salary increase based on UPLIFT_MATRIX.
 
         Args:
-            current_salary: Current employee salary
-            level: Employee level (1-6)
-            performance_rating: Performance rating string
+          current_salary: Current employee salary
+          level: Employee level (1-6)
+          performance_rating: Performance rating string
+          current_salary: float:
+          level: int:
+          performance_rating: str:
 
         Returns:
-            New salary after uplift application
+          : New salary after uplift application
         """
         if performance_rating not in UPLIFT_MATRIX:
             raise ValueError(f"Invalid performance rating: {performance_rating}")
@@ -89,21 +97,21 @@ class SalaryForecastingEngine:
 
         total_increase_rate = uplift_data["baseline"] + uplift_data["performance"] + uplift_data[level_category]
 
-        new_salary = current_salary * (1 + total_increase_rate)
-        return new_salary
+        return current_salary * (1 + total_increase_rate)
 
     def calculate_confidence_interval(
         self, projected_values: List[float], confidence_level: Optional[float] = None
     ) -> Tuple[float, float]:
-        """
-        Calculate confidence interval for projected salary values
+        """Calculate confidence interval for projected salary values.
 
         Args:
-            projected_values: List of projected salary values
-            confidence_level: Confidence level (defaults to instance setting)
+          projected_values: List of projected salary values
+          confidence_level: Confidence level (defaults to instance setting)
+          projected_values: List[float]:
+          confidence_level: Optional[float]:  (Default value = None)
 
         Returns:
-            Tuple of (lower_bound, upper_bound)
+          : Tuple of (lower_bound, upper_bound)
         """
         if not projected_values:
             raise ValueError("projected_values cannot be empty")
@@ -121,19 +129,17 @@ class SalaryForecastingEngine:
 
         # Calculate confidence interval using t-distribution
         degrees_freedom = len(values_array) - 1
-        confidence_interval = stats.t.interval(confidence, degrees_freedom, loc=mean, scale=std_error)
-
-        return confidence_interval
+        return stats.t.interval(confidence, degrees_freedom, loc=mean, scale=std_error)
 
     def generate_performance_scenarios(self, current_rating: str) -> Dict[str, List[str]]:
-        """
-        Generate realistic performance rating paths for different scenarios
+        """Generate realistic performance rating paths for different scenarios.
 
         Args:
-            current_rating: Current performance rating
+          current_rating: Current performance rating
+          current_rating: str:
 
         Returns:
-            Dict with conservative, realistic, optimistic scenario paths
+          : Dict with conservative, realistic, optimistic scenario paths
         """
         rating_progression = {
             "Not met": {
@@ -176,37 +182,39 @@ class SalaryForecastingEngine:
         return rating_progression[current_rating]
 
     def calculate_time_to_target(self, current_salary: float, target_salary: float, annual_growth_rate: float) -> float:
-        """
-        Calculate years needed to reach target salary
+        """Calculate years needed to reach target salary.
 
         Formula: years = log(target / current) / log(1 + growth_rate)
 
         Args:
-            current_salary: Current salary
-            target_salary: Target salary to reach
-            annual_growth_rate: Expected annual growth rate
+          current_salary: Current salary
+          target_salary: Target salary to reach
+          annual_growth_rate: Expected annual growth rate
+          current_salary: float:
+          target_salary: float:
+          annual_growth_rate: float:
 
         Returns:
-            Number of years to reach target (can be fractional)
+          : Number of years to reach target (can be fractional)
         """
         if current_salary <= 0 or target_salary <= current_salary or annual_growth_rate <= 0:
             raise ValueError("Invalid input values for time to target calculation")
 
-        years = np.log(target_salary / current_salary) / np.log(1 + annual_growth_rate)
-        return years
+        return np.log(target_salary / current_salary) / np.log(1 + annual_growth_rate)
 
     def apply_market_adjustments(
         self, salary_path: List[float], market_adjustment_years: List[int] = None
     ) -> List[float]:
-        """
-        Apply market adjustment cycles to salary progression
+        """Apply market adjustment cycles to salary progression.
 
         Args:
-            salary_path: List of projected salaries by year
-            market_adjustment_years: Years when market adjustments occur
+          salary_path: List of projected salaries by year
+          market_adjustment_years: Years when market adjustments occur
+          salary_path: List[float]:
+          market_adjustment_years: List[int]:  (Default value = None)
 
         Returns:
-            Adjusted salary path with market corrections
+          : Adjusted salary path with market corrections
         """
         if not salary_path:
             return salary_path
@@ -230,15 +238,16 @@ class SalaryForecastingEngine:
     def calculate_population_median_progression(
         self, population_data: List[Dict], years: int = 5
     ) -> Dict[int, List[float]]:
-        """
-        Calculate median salary progression by level across population
+        """Calculate median salary progression by level across population.
 
         Args:
-            population_data: List of employee dictionaries
-            years: Number of years to project
+          population_data: List of employee dictionaries
+          years: Number of years to project
+          population_data: List[Dict]:
+          years: int:  (Default value = 5)
 
         Returns:
-            Dict mapping level to list of median salaries by year
+          : Dict mapping level to list of median salaries by year
         """
         median_progression = {}
 
@@ -262,11 +271,12 @@ class SalaryForecastingEngine:
         return median_progression
 
     def _calculate_performance_variance(self) -> Dict[str, float]:
-        """
-        Calculate historical variance in performance-based salary increases
+        """Calculate historical variance in performance-based salary increases.
+
+        Args:
 
         Returns:
-            Dict mapping performance ratings to variance estimates
+          : Dict mapping performance ratings to variance estimates
         """
         # Based on industry research - performance rating volatility
         return {
@@ -278,11 +288,12 @@ class SalaryForecastingEngine:
         }
 
     def validate_calculations(self) -> bool:
-        """
-        Validate mathematical calculations with known test cases
+        """Validate mathematical calculations with known test cases.
+
+        Args:
 
         Returns:
-            True if all validations pass
+          : True if all validations pass
         """
         try:
             # Test CAGR calculation
@@ -317,7 +328,7 @@ class SalaryForecastingEngine:
 
 
 def main():
-    """Main function for testing and validation"""
+    """Main function for testing and validation."""
     parser = argparse.ArgumentParser(description="Salary Forecasting Engine")
     parser.add_argument("--test-calculations", action="store_true", help="Run validation tests")
     parser.add_argument(
@@ -372,7 +383,7 @@ def main():
 
         # Demo performance scenarios
         scenarios = engine.generate_performance_scenarios("Achieving")
-        print(f"Performance Scenarios from 'Achieving':")
+        print("Performance Scenarios from 'Achieving':")
         for scenario, path in scenarios.items():
             print(f"  {scenario}: {' → '.join(path)}")
 

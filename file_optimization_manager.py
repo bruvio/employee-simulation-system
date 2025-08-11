@@ -1,18 +1,22 @@
 #!/Users/brunoviola/bruvio-tools/.venv/bin/python3
 
-import os
-import shutil
-from pathlib import Path
 from datetime import datetime
-from typing import Dict, List, Optional, Any
 import json
+from pathlib import Path
+import shutil
+from typing import Any, Dict, List, Optional
+
 import pandas as pd
 
 
 class FileOptimizationManager:
-    """
-    Enhanced file organization and optimization for employee simulation runs.
+    """Enhanced file organization and optimization for employee simulation runs.
+
     Implements structured directories and consolidated outputs as per Phase 3 PRP requirements.
+
+    Args:
+
+    Returns:
     """
 
     def __init__(self, base_output_dir: str = "artifacts", base_images_dir: str = "images"):
@@ -26,15 +30,16 @@ class FileOptimizationManager:
         self.base_images_dir.mkdir(exist_ok=True)
 
     def create_run_directory(self, run_id: str, enable_story_tracking: bool = False) -> Dict[str, Path]:
-        """
-        Create structured directory hierarchy for a simulation run
+        """Create structured directory hierarchy for a simulation run.
 
         Args:
-            run_id: Unique identifier for the simulation run
-            enable_story_tracking: Whether to create story-specific directories
+          run_id: Unique identifier for the simulation run
+          enable_story_tracking: Whether to create story-specific directories
+          run_id: str:
+          enable_story_tracking: bool:  (Default value = False)
 
         Returns:
-            Dict containing all created directory paths
+          : Dict containing all created directory paths
         """
         self.current_run_id = run_id
 
@@ -57,15 +62,13 @@ class FileOptimizationManager:
 
         # Story tracking directories (if enabled)
         if enable_story_tracking:
-            directories.update(
-                {
-                    "employee_stories": run_dir / "employee_stories",
-                    "story_analysis": run_dir / "story_analysis",
-                    "story_visualizations": run_images_dir / "story_visualizations",
-                    "employee_progressions": run_images_dir / "employee_progressions",
-                    "salary_distributions_by_level": run_images_dir / "salary_distributions_by_level",
-                }
-            )
+            directories |= {
+                "employee_stories": run_dir / "employee_stories",
+                "story_analysis": run_dir / "story_analysis",
+                "story_visualizations": run_images_dir / "story_visualizations",
+                "employee_progressions": run_images_dir / "employee_progressions",
+                "salary_distributions_by_level": run_images_dir / "salary_distributions_by_level",
+            }
 
         # Create all directories
         for dir_path in directories.values():
@@ -80,7 +83,14 @@ class FileOptimizationManager:
         return directories
 
     def _create_run_metadata(self, run_id: str, enable_story_tracking: bool):
-        """Create metadata file for the run"""
+        """Create metadata file for the run.
+
+        Args:
+          run_id: str:
+          enable_story_tracking: bool:
+
+        Returns:
+        """
         metadata = {
             "run_id": run_id,
             "created_timestamp": datetime.now().isoformat(),
@@ -96,28 +106,27 @@ class FileOptimizationManager:
     def organize_population_files(
         self, population_data: List[Dict], cycle_progressions: Optional[pd.DataFrame] = None
     ) -> Dict[str, str]:
-        """
-        Organize population-related files in structured format
+        """Organize population-related files in structured format.
 
         Args:
-            population_data: Initial employee population data
-            cycle_progressions: DataFrame with cycle-by-cycle employee progressions
+          population_data: Initial employee population data
+          cycle_progressions: DataFrame with cycle-by-cycle employee progressions
+          population_data: List[Dict]:
+          cycle_progressions: Optional[pd.DataFrame]:  (Default value = None)
 
         Returns:
-            Dict of generated file paths
+          : Dict of generated file paths
         """
         if not self.run_structure:
             raise ValueError("Run directory not created. Call create_run_directory first.")
 
-        files_created = {}
         pop_dir = self.run_structure["population_data"]
 
         # Save initial population
         population_path = pop_dir / "initial_population.json"
         with open(population_path, "w") as f:
             json.dump(population_data, f, indent=2, default=str)
-        files_created["initial_population"] = str(population_path)
-
+        files_created = {"initial_population": str(population_path)}
         # Save population summary
         df = pd.DataFrame(population_data)
         summary = {
@@ -155,27 +164,27 @@ class FileOptimizationManager:
     def organize_simulation_results(
         self, inequality_metrics: pd.DataFrame, convergence_info: Dict[str, Any]
     ) -> Dict[str, str]:
-        """
-        Organize simulation result files
+        """Organize simulation result files.
 
         Args:
-            inequality_metrics: DataFrame with inequality progression across cycles
-            convergence_info: Information about convergence
+          inequality_metrics: DataFrame with inequality progression across cycles
+          convergence_info: Information about convergence
+          inequality_metrics: pd.DataFrame:
+          convergence_info: Dict[str:
+          Any]:
 
         Returns:
-            Dict of generated file paths
+          : Dict of generated file paths
         """
         if not self.run_structure:
             raise ValueError("Run directory not created. Call create_run_directory first.")
 
-        files_created = {}
         sim_dir = self.run_structure["simulation_results"]
 
         # Save inequality metrics
         metrics_path = sim_dir / "inequality_progression.csv"
         inequality_metrics.to_csv(metrics_path, index=False)
-        files_created["inequality_metrics"] = str(metrics_path)
-
+        files_created = {"inequality_metrics": str(metrics_path)}
         # Save convergence analysis
         convergence_path = sim_dir / "convergence_analysis.json"
         with open(convergence_path, "w") as f:
@@ -186,7 +195,7 @@ class FileOptimizationManager:
         summary = {
             "total_cycles": len(inequality_metrics) - 1,  # Subtract initial state
             "final_gini_coefficient": (
-                float(inequality_metrics.iloc[-1]["gini_coefficient"]) if not inequality_metrics.empty else None
+                None if inequality_metrics.empty else float(inequality_metrics.iloc[-1]["gini_coefficient"])
             ),
             "convergence_achieved": convergence_info.get("converged", False),
             "simulation_completed_at": datetime.now().isoformat(),
@@ -202,15 +211,17 @@ class FileOptimizationManager:
     def organize_story_files(
         self, employee_stories: Dict[str, List], story_timeline: Optional[pd.DataFrame] = None
     ) -> Dict[str, str]:
-        """
-        Organize employee story files by category
+        """Organize employee story files by category.
 
         Args:
-            employee_stories: Stories organized by category
-            story_timeline: Timeline data for all tracked employees
+          employee_stories: Stories organized by category
+          story_timeline: Timeline data for all tracked employees
+          employee_stories: Dict[str:
+          List]:
+          story_timeline: Optional[pd.DataFrame]:  (Default value = None)
 
         Returns:
-            Dict of generated file paths
+          : Dict of generated file paths
         """
         if not self.run_structure or "employee_stories" not in self.run_structure:
             raise ValueError(
@@ -260,14 +271,15 @@ class FileOptimizationManager:
         return files_created
 
     def organize_export_files(self, export_data: Dict[str, Any]) -> Dict[str, str]:
-        """
-        Organize exported data files (CSV, Excel, JSON)
+        """Organize exported data files (CSV, Excel, JSON)
 
         Args:
-            export_data: Dictionary containing various export formats
+          export_data: Dictionary containing various export formats
+          export_data: Dict[str:
+          Any]:
 
         Returns:
-            Dict of organized file paths
+          : Dict of organized file paths
         """
         if not self.run_structure:
             raise ValueError("Run directory not created. Call create_run_directory first.")
@@ -290,14 +302,14 @@ class FileOptimizationManager:
         return files_created
 
     def organize_visualization_files(self, viz_files: List[str]) -> Dict[str, str]:
-        """
-        Organize visualization files into appropriate subdirectories
+        """Organize visualization files into appropriate subdirectories.
 
         Args:
-            viz_files: List of visualization file paths
+          viz_files: List of visualization file paths
+          viz_files: List[str]:
 
         Returns:
-            Dict of organized file paths
+          : Dict of organized file paths
         """
         if not self.run_structure:
             raise ValueError("Run directory not created. Call create_run_directory first.")
@@ -329,11 +341,12 @@ class FileOptimizationManager:
         return files_created
 
     def generate_run_index(self) -> str:
-        """
-        Generate comprehensive index file for the simulation run
+        """Generate comprehensive index file for the simulation run.
+
+        Args:
 
         Returns:
-            Path to the generated index file
+          : Path to the generated index file
         """
         if not self.run_structure:
             raise ValueError("Run directory not created. Call create_run_directory first.")
@@ -395,14 +408,14 @@ class FileOptimizationManager:
         return str(index_path)
 
     def cleanup_temporary_files(self, temp_patterns: List[str] = None) -> int:
-        """
-        Clean up temporary files and optimize storage
+        """Clean up temporary files and optimize storage.
 
         Args:
-            temp_patterns: List of glob patterns for temporary files to remove
+          temp_patterns: List of glob patterns for temporary files to remove
+          temp_patterns: List[str]:  (Default value = None)
 
         Returns:
-            Number of files cleaned up
+          : Number of files cleaned up
         """
         if temp_patterns is None:
             temp_patterns = ["*.tmp", "*.temp", "*~", ".DS_Store"]
@@ -420,11 +433,12 @@ class FileOptimizationManager:
         return cleaned_count
 
     def get_run_summary(self) -> Dict[str, Any]:
-        """
-        Get summary information about the current run organization
+        """Get summary information about the current run organization.
+
+        Args:
 
         Returns:
-            Dictionary with run organization summary
+          : Dictionary with run organization summary
         """
         if not self.run_structure:
             return {"error": "No run directory created"}

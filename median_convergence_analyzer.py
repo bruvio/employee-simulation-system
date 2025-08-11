@@ -1,24 +1,27 @@
 #!/Users/brunoviola/bruvio-tools/.venv/bin/python3
 
-import pandas as pd
-import numpy as np
 import argparse
-import json
-from typing import List, Dict, Tuple, Optional, Union
 from datetime import datetime
+import json
+from typing import Dict, List, Tuple
+
+import numpy as np
+import pandas as pd
+
+from individual_progression_simulator import IndividualProgressionSimulator
 from logger import LOGGER
 from salary_forecasting_engine import SalaryForecastingEngine
-from individual_progression_simulator import IndividualProgressionSimulator
-from employee_population_simulator import UPLIFT_MATRIX
 
 
 class MedianConvergenceAnalyzer:
-    """
-    Analyze salary convergence patterns for below-median employees.
+    """Analyze salary convergence patterns for below-median employees.
 
-    Identifies employees below median for their level and calculates convergence
-    timelines under various scenarios. Provides intervention recommendations
-    for accelerating convergence to market competitive levels.
+    Identifies employees below median for their level and calculates convergence timelines under various scenarios.
+    Provides intervention recommendations for accelerating convergence to market competitive levels.
+
+    Args:
+
+    Returns:
     """
 
     def __init__(self, population_data: List[Dict], config: Dict = None):
@@ -51,15 +54,16 @@ class MedianConvergenceAnalyzer:
     def identify_below_median_employees(
         self, min_gap_percent: float = 5.0, include_gender_analysis: bool = True
     ) -> Dict:
-        """
-        Identify employees below median salary for their level.
+        """Identify employees below median salary for their level.
 
         Args:
-            min_gap_percent: Minimum percentage below median to be considered (default: 5%)
-            include_gender_analysis: Whether to include gender-based analysis
+          min_gap_percent: Minimum percentage below median to be considered (default: 5%)
+          include_gender_analysis: Whether to include gender-based analysis
+          min_gap_percent: float:  (Default value = 5.0)
+          include_gender_analysis: bool:  (Default value = True)
 
         Returns:
-            Dict with below-median employees and analysis
+          : Dict with below-median employees and analysis
         """
         LOGGER.info(f"Identifying employees >{min_gap_percent}% below median")
 
@@ -114,15 +118,16 @@ class MedianConvergenceAnalyzer:
         return result
 
     def analyze_convergence_timeline(self, employee_data: Dict, target_performance_level: str = None) -> Dict:
-        """
-        Calculate convergence timeline for below-median employee to reach median.
+        """Calculate convergence timeline for below-median employee to reach median.
 
         Args:
-            employee_data: Employee information including current state
-            target_performance_level: Target performance level for intervention scenario
+          employee_data: Employee information including current state
+          target_performance_level: Target performance level for intervention scenario
+          employee_data: Dict:
+          target_performance_level: str:  (Default value = None)
 
         Returns:
-            Dict with convergence analysis including natural vs intervention scenarios
+          : Dict with convergence analysis including natural vs intervention scenarios
         """
         employee_id = employee_data.get("employee_id", "Unknown")
         current_salary = employee_data["salary"]
@@ -169,14 +174,14 @@ class MedianConvergenceAnalyzer:
         return result
 
     def recommend_intervention_strategies(self, below_median_analysis: Dict) -> Dict:
-        """
-        Recommend population-level intervention strategies for below-median employees.
+        """Recommend population-level intervention strategies for below-median employees.
 
         Args:
-            below_median_analysis: Result from identify_below_median_employees()
+          below_median_analysis: Result from identify_below_median_employees()
+          below_median_analysis: Dict:
 
         Returns:
-            Dict with intervention strategy recommendations
+          : Dict with intervention strategy recommendations
         """
         below_median_employees = below_median_analysis["employees"]
 
@@ -228,14 +233,14 @@ class MedianConvergenceAnalyzer:
         return result
 
     def analyze_population_convergence_trends(self, years_ahead: int = 5) -> Dict:
-        """
-        Analyze overall population convergence trends and project future state.
+        """Analyze overall population convergence trends and project future state.
 
         Args:
-            years_ahead: Number of years to project trends
+          years_ahead: Number of years to project trends
+          years_ahead: int:  (Default value = 5)
 
         Returns:
-            Dict with population-level convergence analysis
+          : Dict with population-level convergence analysis
         """
         LOGGER.info(f"Analyzing population convergence trends over {years_ahead} years")
 
@@ -297,7 +302,13 @@ class MedianConvergenceAnalyzer:
         return medians
 
     def _calculate_employee_tenure(self, employee_data: Dict) -> float:
-        """Calculate employee tenure in years."""
+        """Calculate employee tenure in years.
+
+        Args:
+          employee_data: Dict:
+
+        Returns:
+        """
         if "hire_date" not in employee_data or pd.isna(employee_data["hire_date"]):
             return 2.5  # Default assumption
 
@@ -307,7 +318,13 @@ class MedianConvergenceAnalyzer:
         return tenure_days / 365.25
 
     def _calculate_natural_convergence(self, employee_data: Dict) -> Dict:
-        """Calculate convergence timeline under natural performance progression."""
+        """Calculate convergence timeline under natural performance progression.
+
+        Args:
+          employee_data: Dict:
+
+        Returns:
+        """
         # Use current performance rating to project natural progression
         projection = self.progression_simulator.project_salary_progression(
             employee_data, years=10, scenarios=["conservative", "realistic", "optimistic"]
@@ -316,13 +333,10 @@ class MedianConvergenceAnalyzer:
         level_median = self.medians_by_level[employee_data["level"]]
         realistic_progression = projection["projections"]["realistic"]["salary_progression"]
 
-        # Find year when salary reaches median
-        years_to_median = None
-        for year, salary in enumerate(realistic_progression):
-            if salary >= level_median:
-                years_to_median = year
-                break
-
+        years_to_median = next(
+            (year for year, salary in enumerate(realistic_progression) if salary >= level_median),
+            None,
+        )
         if years_to_median is None:
             years_to_median = 10  # Beyond projection horizon
 
@@ -337,7 +351,13 @@ class MedianConvergenceAnalyzer:
         }
 
     def _calculate_accelerated_convergence(self, employee_data: Dict) -> Dict:
-        """Calculate convergence timeline under accelerated performance improvement."""
+        """Calculate convergence timeline under accelerated performance improvement.
+
+        Args:
+          employee_data: Dict:
+
+        Returns:
+        """
         # Project with optimistic scenario (but include all scenarios for analysis)
         projection = self.progression_simulator.project_salary_progression(
             employee_data, years=10, scenarios=["conservative", "realistic", "optimistic"]
@@ -346,13 +366,10 @@ class MedianConvergenceAnalyzer:
         level_median = self.medians_by_level[employee_data["level"]]
         optimistic_progression = projection["projections"]["optimistic"]["salary_progression"]
 
-        # Find year when salary reaches median
-        years_to_median = None
-        for year, salary in enumerate(optimistic_progression):
-            if salary >= level_median:
-                years_to_median = year
-                break
-
+        years_to_median = next(
+            (year for year, salary in enumerate(optimistic_progression) if salary >= level_median),
+            None,
+        )
         if years_to_median is None:
             years_to_median = 8  # Shorter than natural due to optimistic assumptions
 
@@ -367,7 +384,14 @@ class MedianConvergenceAnalyzer:
         }
 
     def _calculate_intervention_convergence(self, employee_data: Dict, target_performance: str = None) -> Dict:
-        """Calculate convergence timeline under direct salary intervention."""
+        """Calculate convergence timeline under direct salary intervention.
+
+        Args:
+          employee_data: Dict:
+          target_performance: str:  (Default value = None)
+
+        Returns:
+        """
         level_median = self.medians_by_level[employee_data["level"]]
         current_salary = employee_data["salary"]
         gap_amount = level_median - current_salary
@@ -399,7 +423,14 @@ class MedianConvergenceAnalyzer:
         }
 
     def _calculate_performance_intervention_timeline(self, employee_data: Dict, target_performance: str) -> float:
-        """Calculate timeline for performance-based intervention."""
+        """Calculate timeline for performance-based intervention.
+
+        Args:
+          employee_data: Dict:
+          target_performance: str:
+
+        Returns:
+        """
         # Simulate improved performance rating
         improved_employee = employee_data.copy()
         improved_employee["performance_rating"] = target_performance
@@ -411,21 +442,27 @@ class MedianConvergenceAnalyzer:
         level_median = self.medians_by_level[employee_data["level"]]
         progression = projection["projections"]["realistic"]["salary_progression"]
 
-        for year, salary in enumerate(progression):
-            if salary >= level_median:
-                return year
-
-        return 8  # Default if not reached within projection
+        return next(
+            (year for year, salary in enumerate(progression) if salary >= level_median),
+            8,
+        )
 
     def _determine_convergence_recommendation(self, employee_data: Dict, scenarios: Dict) -> str:
-        """Determine recommended convergence action based on scenario analysis."""
+        """Determine recommended convergence action based on scenario analysis.
+
+        Args:
+          employee_data: Dict:
+          scenarios: Dict:
+
+        Returns:
+        """
         gap_percent = (
             (self.medians_by_level[employee_data["level"]] - employee_data["salary"])
             / self.medians_by_level[employee_data["level"]]
         ) * 100
 
         natural_years = scenarios["natural"]["years_to_median"]
-        intervention_years = scenarios["intervention"]["years_to_median"]
+        scenarios["intervention"]["years_to_median"]
 
         # Decision logic
         if gap_percent > 25 or natural_years > 7:
@@ -438,7 +475,13 @@ class MedianConvergenceAnalyzer:
             return "moderate_intervention"
 
     def _assess_convergence_feasibility(self, scenarios: Dict) -> Dict:
-        """Assess feasibility of different convergence approaches."""
+        """Assess feasibility of different convergence approaches.
+
+        Args:
+          scenarios: Dict:
+
+        Returns:
+        """
         return {
             "natural_feasibility": scenarios["natural"]["feasibility"],
             "accelerated_feasibility": scenarios["accelerated"]["feasibility"],
@@ -448,7 +491,13 @@ class MedianConvergenceAnalyzer:
 
     # Additional helper methods for intervention strategies and analysis
     def _calculate_immediate_adjustment_strategy(self, high_priority_employees: List[Dict]) -> Dict:
-        """Calculate cost and impact of immediate salary adjustments."""
+        """Calculate cost and impact of immediate salary adjustments.
+
+        Args:
+          high_priority_employees: List[Dict]:
+
+        Returns:
+        """
         if not high_priority_employees:
             return {"applicable": False, "reason": "no_high_priority_employees"}
 
@@ -468,7 +517,13 @@ class MedianConvergenceAnalyzer:
         }
 
     def _calculate_performance_acceleration_strategy(self, target_employees: List[Dict]) -> Dict:
-        """Calculate cost and impact of performance acceleration programs."""
+        """Calculate cost and impact of performance acceleration programs.
+
+        Args:
+          target_employees: List[Dict]:
+
+        Returns:
+        """
         if not target_employees:
             return {"applicable": False, "reason": "no_target_employees"}
 
@@ -487,7 +542,13 @@ class MedianConvergenceAnalyzer:
         }
 
     def _calculate_natural_progression_strategy(self, low_priority_employees: List[Dict]) -> Dict:
-        """Calculate impact of letting natural progression work."""
+        """Calculate impact of letting natural progression work.
+
+        Args:
+          low_priority_employees: List[Dict]:
+
+        Returns:
+        """
         return {
             "applicable": True,
             "affected_employees": len(low_priority_employees),
@@ -498,7 +559,13 @@ class MedianConvergenceAnalyzer:
         }
 
     def _calculate_targeted_development_strategy(self, all_employees: List[Dict]) -> Dict:
-        """Calculate cost and impact of targeted skill development."""
+        """Calculate cost and impact of targeted skill development.
+
+        Args:
+          all_employees: List[Dict]:
+
+        Returns:
+        """
         # Focus on employees with specific skill gaps
         development_candidates = [
             emp for emp in all_employees if emp["performance_rating"] in ["Partially met", "Achieving"]
@@ -518,8 +585,15 @@ class MedianConvergenceAnalyzer:
         }
 
     def _find_optimal_strategy_mix(self, strategies: Dict, below_median_analysis: Dict) -> Dict:
-        """Find optimal mix of intervention strategies within budget constraints."""
-        total_affected = below_median_analysis["below_median_count"]
+        """Find optimal mix of intervention strategies within budget constraints.
+
+        Args:
+          strategies: Dict:
+          below_median_analysis: Dict:
+
+        Returns:
+        """
+        below_median_analysis["below_median_count"]
 
         # Simple heuristic: prioritize high-impact, cost-effective strategies
         strategy_scores = {}
@@ -544,12 +618,19 @@ class MedianConvergenceAnalyzer:
         return {
             "primary_strategy": primary_strategy,
             "strategy_details": strategies[primary_strategy],
-            "alternative_strategies": [s for s in strategy_scores.keys() if s != primary_strategy],
+            "alternative_strategies": [s for s in strategy_scores if s != primary_strategy],
             "total_budget_required": strategies[primary_strategy]["total_cost"],
         }
 
     def _calculate_cost_benefit_analysis(self, strategy: Dict, employees: List[Dict]) -> Dict:
-        """Calculate cost-benefit analysis for recommended strategy."""
+        """Calculate cost-benefit analysis for recommended strategy.
+
+        Args:
+          strategy: Dict:
+          employees: List[Dict]:
+
+        Returns:
+        """
         strategy_cost = strategy["total_budget_required"]
         affected_count = strategy["strategy_details"]["affected_employees"]
 
@@ -570,29 +651,54 @@ class MedianConvergenceAnalyzer:
         }
 
     def _create_implementation_timeline(self, strategy: Dict) -> List[Dict]:
-        """Create implementation timeline for recommended strategy."""
+        """Create implementation timeline for recommended strategy.
+
+        Args:
+          strategy: Dict:
+
+        Returns:
+        """
         timeline_months = strategy["strategy_details"]["timeline_months"]
 
-        milestones = []
-        if timeline_months <= 6:
-            milestones = [
-                {"month": 1, "milestone": "Strategy approval and budget allocation"},
+        return (
+            [
+                {
+                    "month": 1,
+                    "milestone": "Strategy approval and budget allocation",
+                },
                 {"month": 2, "milestone": "Employee selection and communication"},
                 {"month": timeline_months, "milestone": "Implementation complete"},
             ]
-        else:
-            milestones = [
-                {"month": 1, "milestone": "Strategy approval and budget allocation"},
-                {"month": 2, "milestone": "Phase 1 rollout (high priority employees)"},
-                {"month": timeline_months // 2, "milestone": "Mid-point review and adjustments"},
-                {"month": timeline_months, "milestone": "Full implementation complete"},
+            if timeline_months <= 6
+            else [
+                {
+                    "month": 1,
+                    "milestone": "Strategy approval and budget allocation",
+                },
+                {
+                    "month": 2,
+                    "milestone": "Phase 1 rollout (high priority employees)",
+                },
+                {
+                    "month": timeline_months // 2,
+                    "milestone": "Mid-point review and adjustments",
+                },
+                {
+                    "month": timeline_months,
+                    "milestone": "Full implementation complete",
+                },
             ]
-
-        return milestones
+        )
 
     # Additional analysis methods
     def _calculate_below_median_statistics(self, below_median_employees: List[Dict]) -> Dict:
-        """Calculate summary statistics for below-median employees."""
+        """Calculate summary statistics for below-median employees.
+
+        Args:
+          below_median_employees: List[Dict]:
+
+        Returns:
+        """
         if not below_median_employees:
             return {"count": 0}
 
@@ -611,7 +717,14 @@ class MedianConvergenceAnalyzer:
         }
 
     def _analyze_gender_patterns(self, gender_patterns: Dict[str, List[Dict]]) -> Dict:
-        """Analyze gender-based patterns in below-median employees."""
+        """Analyze gender-based patterns in below-median employees.
+
+        Args:
+          gender_patterns: Dict[str:
+          List[Dict]]:
+
+        Returns:
+        """
         analysis = {}
 
         for gender, employees in gender_patterns.items():
@@ -640,15 +753,23 @@ class MedianConvergenceAnalyzer:
             LOGGER.info(f"  Level {level}: £{median:,.2f}")
 
     def _project_year_convergence(self, below_median_employees: List[Dict], year: int, scenario: str) -> Dict:
-        """Project convergence for a specific year under a given scenario."""
+        """Project convergence for a specific year under a given scenario.
+
+        Args:
+          below_median_employees: List[Dict]:
+          year: int:
+          scenario: str:
+
+        Returns:
+        """
         remaining_below_median = 0
         converged_count = 0
-        
+
         for employee in below_median_employees:
             # Simulate salary growth for this year
             current_salary = employee["salary"]
             level_median = self.medians_by_level[employee["level"]]
-            
+
             # Apply growth based on scenario
             if scenario == "natural":
                 growth_rate = 0.05  # 5% natural growth
@@ -656,147 +777,185 @@ class MedianConvergenceAnalyzer:
                 growth_rate = 0.08  # 8% accelerated growth
             else:  # intervention
                 growth_rate = 0.12  # 12% intervention growth
-            
+
             projected_salary = current_salary * ((1 + growth_rate) ** year)
-            
+
             if projected_salary >= level_median * (1 - self.acceptable_gap_percent / 100):
                 converged_count += 1
             else:
                 remaining_below_median += 1
-        
+
         return {
             "year": year,
             "scenario": scenario,
             "remaining_below_median": remaining_below_median,
             "converged_this_period": converged_count,
-            "convergence_rate_year": converged_count / len(below_median_employees) if below_median_employees else 0
+            "convergence_rate_year": converged_count / len(below_median_employees) if below_median_employees else 0,
         }
 
     def _calculate_convergence_rate(self, convergence_timeline: List[Dict]) -> float:
-        """Calculate overall convergence rate across timeline."""
+        """Calculate overall convergence rate across timeline.
+
+        Args:
+          convergence_timeline: List[Dict]:
+
+        Returns:
+        """
         if not convergence_timeline:
             return 0.0
-        
-        initial_count = convergence_timeline[0]["remaining_below_median"] + convergence_timeline[0]["converged_this_period"]
-        final_count = convergence_timeline[-1]["remaining_below_median"]
-        
+
+        initial_count = (
+            convergence_timeline[0]["remaining_below_median"] + convergence_timeline[0]["converged_this_period"]
+        )
         if initial_count == 0:
             return 100.0
-        
-        convergence_rate = ((initial_count - final_count) / initial_count) * 100
-        return max(0.0, convergence_rate)
+
+        final_count = convergence_timeline[-1]["remaining_below_median"]
+
+        return max(0.0, ((initial_count - final_count) / initial_count) * 100)
 
     def _analyze_gap_distribution(self) -> Dict:
         """Analyze the distribution of salary gaps across the population."""
         below_median_analysis = self.identify_below_median_employees(min_gap_percent=0.0)
         employees = below_median_analysis.get("employees", [])
-        
+
         if not employees:
             return {"total_below_median": 0, "distribution": {}}
-        
+
         gaps = [emp["gap_percent"] for emp in employees]
-        
+
         # Categorize gaps
         small_gaps = len([g for g in gaps if 0 < g <= 5])
         medium_gaps = len([g for g in gaps if 5 < g <= 15])
         large_gaps = len([g for g in gaps if 15 < g <= 25])
         severe_gaps = len([g for g in gaps if g > 25])
-        
+
         return {
             "total_below_median": len(employees),
             "distribution": {
                 "small_gaps_0_5_percent": small_gaps,
                 "medium_gaps_5_15_percent": medium_gaps,
                 "large_gaps_15_25_percent": large_gaps,
-                "severe_gaps_over_25_percent": severe_gaps
+                "severe_gaps_over_25_percent": severe_gaps,
             },
             "average_gap_percent": sum(gaps) / len(gaps),
-            "median_gap_percent": sorted(gaps)[len(gaps) // 2]
+            "median_gap_percent": sorted(gaps)[len(gaps) // 2],
         }
 
     def _calculate_convergence_velocity(self, trend_projections: Dict) -> Dict:
-        """Calculate how quickly each scenario achieves convergence."""
+        """Calculate how quickly each scenario achieves convergence.
+
+        Args:
+          trend_projections: Dict:
+
+        Returns:
+        """
         velocity_metrics = {}
-        
+
         for scenario, projection in trend_projections.items():
             timeline = projection["timeline"]
             if not timeline:
                 velocity_metrics[scenario] = {"velocity": 0, "peak_year": 0}
                 continue
-            
+
             # Find year with maximum convergence rate
             max_rate_year = max(timeline, key=lambda x: x.get("convergence_rate_year", 0))
             peak_velocity = max_rate_year.get("convergence_rate_year", 0) * 100
-            
+
             velocity_metrics[scenario] = {
                 "peak_velocity_percent_per_year": peak_velocity,
                 "peak_year": max_rate_year.get("year", 1),
-                "final_convergence_rate": projection["convergence_rate"]
+                "final_convergence_rate": projection["convergence_rate"],
             }
-        
+
         return velocity_metrics
 
     def _calculate_intervention_impact(self, trend_projections: Dict) -> Dict:
-        """Calculate the impact of interventions compared to natural progression."""
+        """Calculate the impact of interventions compared to natural progression.
+
+        Args:
+          trend_projections: Dict:
+
+        Returns:
+        """
         natural = trend_projections.get("natural", {})
         intervention = trend_projections.get("intervention", {})
-        
+
         if not natural or not intervention:
             return {"impact_analysis": "insufficient_data"}
-        
+
         natural_rate = natural.get("convergence_rate", 0)
         intervention_rate = intervention.get("convergence_rate", 0)
-        
+
         improvement = intervention_rate - natural_rate
         relative_improvement = (improvement / natural_rate * 100) if natural_rate > 0 else 0
-        
+
         return {
             "natural_convergence_rate": natural_rate,
             "intervention_convergence_rate": intervention_rate,
             "absolute_improvement": improvement,
             "relative_improvement_percent": relative_improvement,
-            "intervention_effectiveness": "high" if relative_improvement > 50 else "medium" if relative_improvement > 20 else "low"
+            "intervention_effectiveness": (
+                "high" if relative_improvement > 50 else "medium" if relative_improvement > 20 else "low"
+            ),
         }
 
     def _generate_strategic_recommendations(self, trend_projections: Dict, population_health: Dict) -> List[str]:
-        """Generate strategic recommendations based on analysis."""
+        """Generate strategic recommendations based on analysis.
+
+        Args:
+          trend_projections: Dict:
+          population_health: Dict:
+
+        Returns:
+        """
         recommendations = []
-        
+
         # Analyze convergence patterns
         intervention_impact = population_health.get("intervention_impact", {})
         gap_distribution = population_health.get("current_median_gap_distribution", {})
-        
+
         # Severe gaps require immediate action
         severe_gaps = gap_distribution.get("distribution", {}).get("severe_gaps_over_25_percent", 0)
         if severe_gaps > 0:
-            recommendations.append(f"URGENT: Address {severe_gaps} employees with >25% salary gaps through immediate interventions")
-        
+            recommendations.append(
+                f"URGENT: Address {severe_gaps} employees with >25% salary gaps through immediate interventions"
+            )
+
         # Medium/large gaps need structured approach
         medium_gaps = gap_distribution.get("distribution", {}).get("medium_gaps_5_15_percent", 0)
         large_gaps = gap_distribution.get("distribution", {}).get("large_gaps_15_25_percent", 0)
         if medium_gaps + large_gaps > 0:
-            recommendations.append(f"Implement performance acceleration programs for {medium_gaps + large_gaps} employees with 5-25% gaps")
-        
+            recommendations.append(
+                f"Implement performance acceleration programs for {medium_gaps + large_gaps} employees with 5-25% gaps"
+            )
+
         # Intervention effectiveness assessment
         effectiveness = intervention_impact.get("intervention_effectiveness", "unknown")
         if effectiveness == "high":
-            recommendations.append("High intervention effectiveness detected - prioritize intervention strategies over natural progression")
+            recommendations.append(
+                "High intervention effectiveness detected - prioritize intervention strategies over natural progression"
+            )
         elif effectiveness == "low":
-            recommendations.append("Low intervention effectiveness - focus on natural progression and performance improvement")
-        
+            recommendations.append(
+                "Low intervention effectiveness - focus on natural progression and performance improvement"
+            )
+
         # Population-level recommendations
         total_below = gap_distribution.get("total_below_median", 0)
         if total_below > len(self.population_data) * 0.3:  # >30% below median
-            recommendations.append("Population-wide salary review recommended - high percentage of below-median employees")
-        
+            recommendations.append(
+                "Population-wide salary review recommended - high percentage of below-median employees"
+            )
+
         # Timeline recommendations
         natural_proj = trend_projections.get("natural", {})
         if natural_proj.get("convergence_rate", 0) < 50:  # <50% natural convergence
             recommendations.append("Natural convergence insufficient - intervention required for equitable outcomes")
-        
+
         if not recommendations:
             recommendations.append("Monitor current progression - population shows healthy convergence patterns")
-        
+
         return recommendations
 
 

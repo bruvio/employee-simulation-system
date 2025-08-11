@@ -1,20 +1,19 @@
 #!/Users/brunoviola/bruvio-tools/.venv/bin/python3
 
-import pandas as pd
-import numpy as np
-import json
 import argparse
 from datetime import datetime
+import json
 from pathlib import Path
-import openpyxl
-from openpyxl.styles import Font, PatternFill, Alignment
-from openpyxl.utils.dataframe import dataframe_to_rows
+
+from openpyxl.styles import Alignment, Font, PatternFill
+import pandas as pd
+
 from logger import LOGGER
 
 
 class DataExportSystem:
-    """
-    Comprehensive data export system for employee simulation results.
+    """Comprehensive data export system for employee simulation results.
+
     Supports CSV, Excel, and JSON formats with enhanced formatting.
     """
 
@@ -25,8 +24,7 @@ class DataExportSystem:
         LOGGER.info(f"Initialized data export system with output directory: {self.output_dir}")
 
     def export_employee_population(self, population_data, format_types=None):
-        """
-        Export employee population data in multiple formats
+        """Export employee population data in multiple formats.
 
         Args:
             population_data: List of employee dictionaries or DataFrame
@@ -73,8 +71,7 @@ class DataExportSystem:
         return exported_files
 
     def export_simulation_results(self, simulation_data, format_types=None):
-        """
-        Export multi-cycle simulation results
+        """Export multi-cycle simulation results.
 
         Args:
             simulation_data: Dictionary with cycle results or DataFrame
@@ -125,8 +122,7 @@ class DataExportSystem:
         return exported_files
 
     def export_analysis_report(self, population_data, simulation_results, format_types=None):
-        """
-        Export comprehensive analysis report combining population and simulation data
+        """Export comprehensive analysis report combining population and simulation data.
 
         Args:
             population_data: Employee population data
@@ -164,12 +160,11 @@ class DataExportSystem:
         return exported_files
 
     def _export_excel_population(self, df, filepath):
-        """Export population data to Excel with formatting"""
+        """Export population data to Excel with formatting."""
         with pd.ExcelWriter(filepath, engine="openpyxl") as writer:
             df.to_excel(writer, sheet_name="Population", index=False)
 
-            # Get workbook and worksheet
-            workbook = writer.book
+            # Get worksheet
             worksheet = writer.sheets["Population"]
 
             # Apply header formatting
@@ -189,7 +184,7 @@ class DataExportSystem:
                     try:
                         if len(str(cell.value)) > max_length:
                             max_length = len(str(cell.value))
-                    except:
+                    except (AttributeError, TypeError):
                         pass
                 adjusted_width = min(max_length + 2, 50)
                 worksheet.column_dimensions[column_letter].width = adjusted_width
@@ -200,9 +195,8 @@ class DataExportSystem:
             summary_df.to_excel(writer, sheet_name="Summary", index=False)
 
     def _export_excel_simulation(self, simulation_data, filepath):
-        """Export simulation results to Excel with multiple sheets"""
+        """Export simulation results to Excel with multiple sheets."""
         with pd.ExcelWriter(filepath, engine="openpyxl") as writer:
-
             # Main inequality metrics sheet
             if isinstance(simulation_data, dict):
                 if "inequality_metrics" in simulation_data:
@@ -221,9 +215,8 @@ class DataExportSystem:
                 self._format_excel_sheet(writer.sheets[sheet_name])
 
     def _export_excel_analysis(self, population_data, simulation_results, analysis_summary, filepath):
-        """Export comprehensive analysis to Excel"""
+        """Export comprehensive analysis to Excel."""
         with pd.ExcelWriter(filepath, engine="openpyxl") as writer:
-
             # Executive Summary sheet
             summary_df = pd.DataFrame(list(analysis_summary.items()), columns=["Metric", "Value"])
             summary_df.to_excel(writer, sheet_name="Executive_Summary", index=False)
@@ -249,7 +242,7 @@ class DataExportSystem:
                 self._format_excel_sheet(writer.sheets[sheet_name])
 
     def _export_json_population(self, df, filepath):
-        """Export population data to JSON with metadata"""
+        """Export population data to JSON with metadata."""
         export_data = {
             "metadata": {
                 "export_timestamp": datetime.now().isoformat(),
@@ -265,7 +258,7 @@ class DataExportSystem:
             json.dump(export_data, f, indent=2, default=str)
 
     def _export_json_simulation(self, simulation_data, filepath):
-        """Export simulation results to JSON"""
+        """Export simulation results to JSON."""
         if isinstance(simulation_data, dict):
             export_data = simulation_data.copy()
             # Convert DataFrames to records
@@ -281,7 +274,7 @@ class DataExportSystem:
             json.dump(export_data, f, indent=2, default=str)
 
     def _export_json_analysis(self, population_data, simulation_results, analysis_summary, filepath):
-        """Export comprehensive analysis to JSON"""
+        """Export comprehensive analysis to JSON."""
         export_data = {
             "metadata": {
                 "export_timestamp": datetime.now().isoformat(),
@@ -305,7 +298,7 @@ class DataExportSystem:
             json.dump(export_data, f, indent=2, default=str)
 
     def _format_excel_sheet(self, worksheet):
-        """Apply consistent formatting to Excel worksheet"""
+        """Apply consistent formatting to Excel worksheet."""
         header_font = Font(bold=True, color="FFFFFF")
         header_fill = PatternFill(start_color="366092", end_color="366092", fill_type="solid")
 
@@ -323,13 +316,13 @@ class DataExportSystem:
                 try:
                     if len(str(cell.value)) > max_length:
                         max_length = len(str(cell.value))
-                except:
+                except (AttributeError, TypeError):
                     pass
             adjusted_width = min(max_length + 2, 50)
             worksheet.column_dimensions[column_letter].width = adjusted_width
 
     def _generate_population_summary(self, df):
-        """Generate summary statistics for population data"""
+        """Generate summary statistics for population data."""
         summary = {
             "Total Employees": len(df),
             "Average Salary": f"£{df['salary'].mean():.2f}" if "salary" in df.columns else "N/A",
@@ -350,7 +343,7 @@ class DataExportSystem:
         return summary
 
     def _generate_analysis_summary(self, population_data, simulation_results):
-        """Generate executive summary for comprehensive analysis"""
+        """Generate executive summary for comprehensive analysis."""
         summary = {
             "Analysis Date": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
             "Population Size": len(population_data) if isinstance(population_data, list) else len(population_data),
@@ -371,7 +364,7 @@ class DataExportSystem:
 
 
 def main():
-    """Command-line interface for data export system"""
+    """Command-line interface for data export system."""
     parser = argparse.ArgumentParser(description="Export employee simulation data")
     parser.add_argument("--population-file", required=True, help="Path to population data file")
     parser.add_argument("--simulation-file", help="Path to simulation results file")

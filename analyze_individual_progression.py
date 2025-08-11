@@ -1,32 +1,31 @@
 #!/Users/brunoviola/bruvio-tools/.venv/bin/python3
 
-import pandas as pd
-import numpy as np
 import argparse
-import json
-import sys
-import os
-from typing import List, Dict, Optional
 from datetime import datetime
-from pathlib import Path
+import json
+import os
+import sys
+from typing import Dict, List, Optional
+
+import pandas as pd
 
 # Add current directory to path for imports
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
-from logger import LOGGER
-from individual_progression_simulator import IndividualProgressionSimulator
 from employee_population_simulator import EmployeePopulationGenerator
+from individual_progression_simulator import IndividualProgressionSimulator
+from logger import LOGGER
 
 
 def load_population_data(data_source: str) -> List[Dict]:
-    """
-    Load population data from various sources.
+    """Load population data from various sources.
 
     Args:
-        data_source: Path to JSON/CSV file or 'generate' to create test data
+      data_source: Path to JSON/CSV file or 'generate' to create test data
+      data_source: str:
 
     Returns:
-        List of employee dictionaries
+      : List of employee dictionaries
     """
     if data_source == "generate":
         LOGGER.info("Generating test population data")
@@ -48,39 +47,63 @@ def load_population_data(data_source: str) -> List[Dict]:
 
 
 def find_employee_by_id(population_data: List[Dict], employee_id: int) -> Optional[Dict]:
-    """Find employee by ID in population data."""
-    for employee in population_data:
-        if employee.get("employee_id") == employee_id:
-            return employee
-    return None
+    """Find employee by ID in population data.
+
+    Args:
+      population_data: List[Dict]:
+      employee_id: int:
+
+    Returns:
+    """
+    return next(
+        (employee for employee in population_data if employee.get("employee_id") == employee_id),
+        None,
+    )
 
 
 def format_currency(amount: float) -> str:
-    """Format currency amount for display."""
+    """Format currency amount for display.
+
+    Args:
+      amount: float:
+
+    Returns:
+    """
     return f"£{amount:,.2f}"
 
 
 def format_percentage(percent: float) -> str:
-    """Format percentage for display."""
+    """Format percentage for display.
+
+    Args:
+      percent: float:
+
+    Returns:
+    """
     return f"{percent:.1f}%"
 
 
 def create_progression_report(progression_result: Dict, output_format: str = "text") -> str:
-    """Create formatted progression analysis report."""
+    """Create formatted progression analysis report.
+
+    Args:
+      progression_result: Dict:
+      output_format: str:  (Default value = "text")
+
+    Returns:
+    """
     if output_format == "json":
         return json.dumps(progression_result, indent=2, default=str)
-
-    # Text format report
-    report_lines = []
-
-    # Header
-    report_lines.extend(["=" * 70, "📈 INDIVIDUAL SALARY PROGRESSION ANALYSIS", "=" * 70, ""])
 
     # Employee Information
     current = progression_result["current_state"]
     employee_id = current.get("employee_id", progression_result.get("employee_id", "Unknown"))
-    report_lines.extend(
-        [
+    report_lines = [
+        "=" * 70,
+        "📈 INDIVIDUAL SALARY PROGRESSION ANALYSIS",
+        "=" * 70,
+        "",
+        *[
             "👤 EMPLOYEE INFORMATION",
             "-" * 30,
             f"Employee ID: {employee_id}",
@@ -90,9 +113,8 @@ def create_progression_report(progression_result: Dict, output_format: str = "te
             f"Gender: {current.get('gender', 'Not specified')}",
             f"Years at Company: {current.get('years_at_company', 'N/A'):.1f}",
             "",
-        ]
-    )
-
+        ],
+    ]
     # Projections
     projections = progression_result["projections"]
     report_lines.extend(["🎯 SALARY PROJECTIONS (5-Year)", "-" * 35])
@@ -121,7 +143,7 @@ def create_progression_report(progression_result: Dict, output_format: str = "te
     median_comp = analysis["median_comparison"]
     report_lines.extend(
         [
-            f"Position vs Level Median:",
+            "Position vs Level Median:",
             f"  Current: {median_comp['current_status'].replace('_', ' ').title()}",
             f"  Gap: {format_percentage(median_comp['current_gap_percent'])} ({format_currency(median_comp['current_gap_amount'])})",
             f"  Projected: {median_comp['projected_status'].replace('_', ' ').title()}",
@@ -133,7 +155,7 @@ def create_progression_report(progression_result: Dict, output_format: str = "te
     market_comp = analysis["market_competitiveness"]
     report_lines.extend(
         [
-            f"Market Position:",
+            "Market Position:",
             f"  Current Percentile: {market_comp['current_percentile']:.0f}th",
             f"  Current Quartile: {market_comp['current_quartile'].replace('_', ' ').title()}",
             f"  Projected Percentile: {market_comp['projected_percentile']:.0f}th",
@@ -144,7 +166,11 @@ def create_progression_report(progression_result: Dict, output_format: str = "te
     # Risk factors
     if analysis["risk_factors"]:
         report_lines.extend(
-            [f"⚠️  Risk Factors:", *[f"  • {risk.replace('_', ' ').title()}" for risk in analysis["risk_factors"]], ""]
+            [
+                "⚠️  Risk Factors:",
+                *[f"  • {risk.replace('_', ' ').title()}" for risk in analysis["risk_factors"]],
+                "",
+            ]
         )
 
     # Recommendations
@@ -161,7 +187,7 @@ def create_progression_report(progression_result: Dict, output_format: str = "te
     if recommendations["secondary_actions"]:
         report_lines.extend(
             [
-                f"Secondary Actions:",
+                "Secondary Actions:",
                 *[f"  • {action.replace('_', ' ').title()}" for action in recommendations["secondary_actions"]],
             ]
         )
@@ -175,7 +201,15 @@ def create_progression_report(progression_result: Dict, output_format: str = "te
 
 
 def save_report(report_content: str, output_file: str, format_type: str):
-    """Save report to file."""
+    """Save report to file.
+
+    Args:
+      report_content: str:
+      output_file: str:
+      format_type: str:
+
+    Returns:
+    """
     os.makedirs(os.path.dirname(output_file), exist_ok=True)
 
     with open(output_file, "w") as f:
@@ -187,7 +221,17 @@ def save_report(report_content: str, output_file: str, format_type: str):
 def analyze_multiple_employees(
     population_data: List[Dict], employee_ids: List[int], years: int, scenarios: List[str], output_format: str
 ) -> Dict:
-    """Analyze multiple employees and create summary report."""
+    """Analyze multiple employees and create summary report.
+
+    Args:
+      population_data: List[Dict]:
+      employee_ids: List[int]:
+      years: int:
+      scenarios: List[str]:
+      output_format: str:
+
+    Returns:
+    """
     simulator = IndividualProgressionSimulator(population_data)
 
     all_results = {}
@@ -230,7 +274,13 @@ def analyze_multiple_employees(
 
 
 def create_multi_employee_summary(summary_data: List[Dict]) -> Dict:
-    """Create summary statistics for multiple employee analysis."""
+    """Create summary statistics for multiple employee analysis.
+
+    Args:
+      summary_data: List[Dict]:
+
+    Returns:
+    """
     if not summary_data:
         return {}
 
@@ -251,12 +301,19 @@ def create_multi_employee_summary(summary_data: List[Dict]) -> Dict:
 
 
 def create_batch_report(multi_results: Dict, output_format: str = "text") -> str:
-    """Create batch analysis report."""
+    """Create batch analysis report.
+
+    Args:
+      multi_results: Dict:
+      output_format: str:  (Default value = "text")
+
+    Returns:
+    """
     if output_format == "json":
         return json.dumps(multi_results, indent=2, default=str)
 
     summary = multi_results["analysis_summary"]
-    detailed = multi_results["detailed_results"]
+    multi_results["detailed_results"]
 
     report_lines = [
         "=" * 80,
@@ -269,13 +326,12 @@ def create_batch_report(multi_results: Dict, output_format: str = "text") -> str
         f"Average Current Salary: {format_currency(summary['avg_current_salary'])}",
         f"Average Projected Salary: {format_currency(summary['avg_projected_salary'])}",
         f"Average Growth Rate (CAGR): {format_percentage(summary['avg_cagr'])}",
-        f"Below Median: {summary['below_median_count']} ({summary['below_median_count']/summary['total_employees']*100:.1f}%)",
-        f"Requiring Intervention: {summary['high_risk_count']} ({summary['high_risk_count']/summary['total_employees']*100:.1f}%)",
+        f"Below Median: {summary['below_median_count']} ({summary['below_median_count'] / summary['total_employees'] * 100:.1f}%)",
+        f"Requiring Intervention: {summary['high_risk_count']} ({summary['high_risk_count'] / summary['total_employees'] * 100:.1f}%)",
         "",
+        *["👥 LEVEL DISTRIBUTION", "-" * 20],
     ]
 
-    # Level distribution
-    report_lines.extend(["👥 LEVEL DISTRIBUTION", "-" * 20])
     for level, count in sorted(summary["level_distribution"].items()):
         percentage = count / summary["total_employees"] * 100
         report_lines.append(f"Level {level}: {count} employees ({percentage:.1f}%)")
@@ -315,6 +371,7 @@ def create_batch_report(multi_results: Dict, output_format: str = "text") -> str
 
 
 def main():
+    """"""
     parser = argparse.ArgumentParser(
         description="Analyze individual employee salary progression",
         formatter_class=argparse.RawDescriptionHelpFormatter,
@@ -322,13 +379,13 @@ def main():
 Examples:
   # Analyze single employee from generated test data
   python analyze_individual_progression.py --data-source generate --employee-id 123
-  
+
   # Analyze multiple employees from CSV file
   python analyze_individual_progression.py --data-source employees.csv --employee-id 123 456 789
-  
+
   # Extended 10-year analysis with custom scenarios
   python analyze_individual_progression.py --data-source data.json --employee-id 123 --years 10 --scenarios conservative optimistic
-  
+
   # Batch analysis with report output
   python analyze_individual_progression.py --data-source generate --employee-id 100-110 --output-file reports/batch_analysis.txt
         """,
@@ -405,8 +462,7 @@ Examples:
         if args.validate:
             LOGGER.info("Running in validation mode")
             for emp_id in employee_ids:
-                employee = find_employee_by_id(population_data, emp_id)
-                if employee:
+                if employee := find_employee_by_id(population_data, emp_id):
                     print(
                         f"✅ Employee {emp_id}: Level {employee['level']}, "
                         f"{format_currency(employee['salary'])}, {employee.get('performance_rating', 'Unknown')}"

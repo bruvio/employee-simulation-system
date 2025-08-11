@@ -1,19 +1,18 @@
 #!/Users/brunoviola/bruvio-tools/.venv/bin/python3
 
-"""
-Test Advanced Story Export System
-"""
+"""Test Advanced Story Export System."""
 
 import json
-import sys
-import pandas as pd
 from pathlib import Path
-import tempfile
 import shutil
+import sys
+import tempfile
+
+import pandas as pd
 
 
 def test_advanced_story_export():
-    """Test advanced story export functionality"""
+    """Test advanced story export functionality."""
 
     print("🚀 Testing Advanced Story Export System")
     print("=" * 50)
@@ -29,26 +28,23 @@ def test_advanced_story_export():
 
         print("📊 Test Configuration:")
         print(f"   Test directory: {test_dir}")
-        print(f"   Export formats: json, csv, excel, xml, markdown")
+        print("   Export formats: json, csv, excel, xml, markdown")
         print("")
 
         # Create sample data
         print("🔧 Creating sample data...")
 
-        # Sample population data
-        sample_population = []
-        for i in range(30):
-            sample_population.append(
-                {
-                    "employee_id": f"EMP{i+1:03d}",
-                    "level": (i % 6) + 1,
-                    "gender": "Female" if i % 2 == 0 else "Male",
-                    "salary": 35000 + (i * 1500) + ((i % 6) * 4000),
-                    "performance_rating": 2.0 + (i % 4) * 0.75,
-                    "department": ["Engineering", "Marketing", "Sales", "HR"][i % 4],
-                }
-            )
-
+        sample_population = [
+            {
+                "employee_id": f"EMP{i+1:03d}",
+                "level": (i % 6) + 1,
+                "gender": "Female" if i % 2 == 0 else "Male",
+                "salary": 35000 + (i * 1500) + ((i % 6) * 4000),
+                "performance_rating": 2.0 + (i % 4) * 0.75,
+                "department": ["Engineering", "Marketing", "Sales", "HR"][i % 4],
+            }
+            for i in range(30)
+        ]
         # Sample employee stories
         sample_stories = {
             "gender_gap": [
@@ -278,7 +274,7 @@ def test_advanced_story_export():
                 content_tests["markdown_readable"] = True
                 content_tests["markdown_has_title"] = "# Employee Story Analysis Report" in md_content
                 content_tests["markdown_has_categories"] = any(
-                    cat.replace("_", " ").title() in md_content for cat in sample_stories.keys()
+                    cat.replace("_", " ").title() in md_content for cat in sample_stories
                 )
             except Exception:
                 content_tests["markdown_readable"] = False
@@ -303,8 +299,8 @@ def test_advanced_story_export():
 
         total_checks = sum(len(list(group)) for group in all_test_groups)
         passed_checks = (
-            sum(1 for test in export_tests.values() if test["file_exists"] and test["file_size"] > 100)
-            + sum(1 for test in comparative_tests.values() if test["file_exists"] and test["file_size"] > 50)
+            sum(bool(test["file_exists"] and test["file_size"] > 100) for test in export_tests.values())
+            + sum(bool(test["file_exists"] and test["file_size"] > 50) for test in comparative_tests.values())
             + sum(capability_tests.values())
             + sum(content_tests.values())
         )

@@ -1,19 +1,18 @@
 #!/Users/brunoviola/bruvio-tools/.venv/bin/python3
 
-import plotly.graph_objects as go
-import plotly.express as px
-from plotly.subplots import make_subplots
-import pandas as pd
-import json
-from pathlib import Path
 from datetime import datetime
-from typing import Dict, List, Optional, Any, Tuple
+from pathlib import Path
+from typing import Any, Dict, List, Optional
+
 import numpy as np
+import pandas as pd
+import plotly.graph_objects as go
+from plotly.subplots import make_subplots
 
 
 class InteractiveDashboardGenerator:
-    """
-    Advanced interactive dashboard generator for comprehensive employee story exploration.
+    """Advanced interactive dashboard generator for comprehensive employee story exploration.
+
     Implements Phase 4 PRP requirements for interactive data exploration.
     """
 
@@ -31,15 +30,14 @@ class InteractiveDashboardGenerator:
         }
 
     def _log(self, message: str, level: str = "info"):
-        """Helper method for logging"""
+        """Helper method for logging."""
         if self.smart_logger:
             getattr(self.smart_logger, f"log_{level}")(message)
         else:
             print(f"[{level.upper()}] {message}")
 
     def create_salary_distribution_explorer(self, population_data: List[Dict]) -> Dict[str, Any]:
-        """
-        Create interactive salary distribution explorer with filtering capabilities
+        """Create interactive salary distribution explorer with filtering capabilities.
 
         Args:
             population_data: Employee population data
@@ -210,8 +208,7 @@ class InteractiveDashboardGenerator:
     def create_employee_story_timeline(
         self, tracked_employees: Dict[str, List], cycle_data: Optional[pd.DataFrame] = None
     ) -> Dict[str, Any]:
-        """
-        Create interactive timeline showing employee progression stories
+        """Create interactive timeline showing employee progression stories.
 
         Args:
             tracked_employees: Tracked employees by category
@@ -230,7 +227,6 @@ class InteractiveDashboardGenerator:
 
         y_position = 0
         employee_positions = {}
-        hover_data = []
 
         # Process each category
         for category, employees in tracked_employees.items():
@@ -241,11 +237,7 @@ class InteractiveDashboardGenerator:
 
             for employee in employees:
                 # Extract employee data
-                if hasattr(employee, "__dict__"):
-                    emp_data = employee.__dict__
-                else:
-                    emp_data = employee
-
+                emp_data = employee.__dict__ if hasattr(employee, "__dict__") else employee
                 emp_id = emp_data.get("employee_id", "Unknown")
                 employee_positions[emp_id] = y_position
 
@@ -300,13 +292,17 @@ class InteractiveDashboardGenerator:
 
         # Update layout
         fig.update_layout(
-            title=dict(text="Employee Story Timeline Explorer", x=0.5, font_size=self.layout_config["title_font_size"]),
+            title=dict(
+                text="Employee Story Timeline Explorer",
+                x=0.5,
+                font_size=self.layout_config["title_font_size"],
+            ),
             xaxis=dict(title="Review Cycle", showgrid=True, zeroline=True),
             yaxis=dict(
                 title="Employee Stories",
                 tickmode="array",
                 tickvals=list(range(len(employee_positions))),
-                ticktext=[f"Emp {emp_id}" for emp_id in employee_positions.keys()],
+                ticktext=[f"Emp {emp_id}" for emp_id in employee_positions],
                 showgrid=True,
             ),
             template=self.layout_config["theme"],
@@ -327,8 +323,7 @@ class InteractiveDashboardGenerator:
     def create_comparative_analysis_dashboard(
         self, population_data: List[Dict], tracked_employees: Dict[str, List]
     ) -> Dict[str, Any]:
-        """
-        Create comparative analysis dashboard across different employee categories
+        """Create comparative analysis dashboard across different employee categories.
 
         Args:
             population_data: Full employee population data
@@ -479,7 +474,7 @@ class InteractiveDashboardGenerator:
                         level_analysis[level] = {}
                     level_analysis[level][category] = count
 
-        for category in tracked_ids_by_category.keys():
+        for category in tracked_ids_by_category:
             levels = sorted(level_analysis.keys())
             counts = [level_analysis.get(level, {}).get(category, 0) for level in levels]
             fig.add_trace(
@@ -561,7 +556,7 @@ class InteractiveDashboardGenerator:
         }
 
     def _create_empty_component(self, message: str) -> Dict[str, Any]:
-        """Create empty component with message"""
+        """Create empty component with message."""
         fig = go.Figure()
         fig.add_annotation(text=message, xref="paper", yref="paper", x=0.5, y=0.5, showarrow=False, font=dict(size=16))
         fig.update_layout(template=self.layout_config["theme"], height=self.layout_config["height"])
@@ -575,8 +570,7 @@ class InteractiveDashboardGenerator:
         cycle_data: Optional[pd.DataFrame] = None,
         output_path: Optional[str] = None,
     ) -> str:
-        """
-        Generate comprehensive interactive dashboard combining all components
+        """Generate comprehensive interactive dashboard combining all components.
 
         Args:
             population_data: Full employee population data
@@ -633,7 +627,7 @@ class InteractiveDashboardGenerator:
     def _generate_dashboard_html(
         self, components: Dict[str, Dict], population_data: List[Dict], tracked_employees: Dict[str, List]
     ) -> str:
-        """Generate HTML dashboard with all components"""
+        """Generate HTML dashboard with all components."""
 
         # Convert Plotly figures to HTML
         plots_html = []
@@ -647,8 +641,7 @@ class InteractiveDashboardGenerator:
         df = pd.DataFrame(population_data)
         total_tracked = sum(len(employees) for employees in tracked_employees.values()) if tracked_employees else 0
 
-        # HTML template
-        html_template = f"""
+        return f"""
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -738,7 +731,7 @@ class InteractiveDashboardGenerator:
         <h1>Employee Simulation Dashboard</h1>
         <div class="subtitle">Interactive Analysis & Story Exploration</div>
     </div>
-    
+
     <div class="stats-grid">
         <div class="stat-card">
             <div class="stat-value">{len(population_data):,}</div>
@@ -765,9 +758,9 @@ class InteractiveDashboardGenerator:
             <div class="stat-label">Interactive Components</div>
         </div>
     </div>
-    
+
     {''.join(plots_html)}
-    
+
     <div class="footer">
         <p>Generated on {datetime.now().strftime('%Y-%m-%d %H:%M:%S')} | Employee Simulation Dashboard v1.0</p>
         <p>🤖 Generated with Enhanced Employee Simulator</p>
@@ -775,10 +768,8 @@ class InteractiveDashboardGenerator:
 </body>
 </html>"""
 
-        return html_template
-
     def get_dashboard_metadata(self) -> Dict[str, Any]:
-        """Get metadata about generated dashboard components"""
+        """Get metadata about generated dashboard components."""
         return {
             "components_available": list(self.dashboard_components.keys()),
             "layout_config": self.layout_config,

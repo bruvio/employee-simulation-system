@@ -1,17 +1,15 @@
 #!/Users/brunoviola/bruvio-tools/.venv/bin/python3
 
-"""
-Test Interactive Dashboard Generation
-"""
+"""Test Interactive Dashboard Generation."""
 
-import json
-import sys
-import pandas as pd
 from pathlib import Path
+import sys
+
+import pandas as pd
 
 
 def test_interactive_dashboard():
-    """Test interactive dashboard generation functionality"""
+    """Test interactive dashboard generation functionality."""
 
     print("🚀 Testing Interactive Dashboard Generation")
     print("=" * 50)
@@ -75,19 +73,16 @@ def test_interactive_dashboard():
         # Test standalone dashboard generator
         print("🎨 Testing Standalone Dashboard Generator:")
 
-        # Create sample population data
-        sample_population = []
-        for i in range(20):
-            sample_population.append(
-                {
-                    "employee_id": f"EMP{i+1:03d}",
-                    "level": (i % 6) + 1,
-                    "gender": "Female" if i % 2 == 0 else "Male",
-                    "salary": 40000 + (i * 2000) + ((i % 6) * 5000),
-                    "performance_rating": 2.5 + (i % 3) * 0.5,
-                }
-            )
-
+        sample_population = [
+            {
+                "employee_id": f"EMP{i+1:03d}",
+                "level": (i % 6) + 1,
+                "gender": "Female" if i % 2 == 0 else "Male",
+                "salary": 40000 + (i * 2000) + ((i % 6) * 5000),
+                "performance_rating": 2.5 + (i % 3) * 0.5,
+            }
+            for i in range(20)
+        ]
         # Create sample tracked employees
         sample_tracked = {
             "gender_gap": [

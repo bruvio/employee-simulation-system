@@ -1,22 +1,26 @@
 #!/Users/brunoviola/bruvio-tools/.venv/bin/python3
 
-import pandas as pd
-import numpy as np
 import argparse
+from datetime import datetime
 import json
-from typing import List, Dict, Tuple, Optional, Union
-from datetime import datetime, timedelta
+from typing import Dict, List
+
+import pandas as pd
+
+from employee_population_simulator import UPLIFT_MATRIX
 from logger import LOGGER
 from salary_forecasting_engine import SalaryForecastingEngine
-from employee_population_simulator import UPLIFT_MATRIX, LEVEL_MAPPING
 
 
 class IndividualProgressionSimulator:
-    """
-    Individual employee salary progression simulator with multi-year forecasting.
+    """Individual employee salary progression simulator with multi-year forecasting.
 
-    Provides scenario modeling, performance path generation, and detailed analysis
-    for individual employees including confidence intervals and market adjustments.
+    Provides scenario modeling, performance path generation, and detailed analysis for individual employees including
+    confidence intervals and market adjustments.
+
+    Args:
+
+    Returns:
     """
 
     def __init__(self, population_data: List[Dict], uplift_matrix: Dict = None, config: Dict = None):
@@ -41,17 +45,20 @@ class IndividualProgressionSimulator:
     def project_salary_progression(
         self, employee_data: Dict, years: int = 5, scenarios: List[str] = None, include_market_adjustments: bool = True
     ) -> Dict:
-        """
-        Project individual employee salary progression over multiple years.
+        """Project individual employee salary progression over multiple years.
 
         Args:
-            employee_data: Current employee state (level, salary, performance_rating, etc.)
-            years: Number of years to project (default: 5)
-            scenarios: Performance scenarios to model (default: conservative, realistic, optimistic)
-            include_market_adjustments: Whether to include market adjustment cycles
+          employee_data: Current employee state (level, salary, performance_rating, etc.)
+          years: Number of years to project (default: 5)
+          scenarios: Performance scenarios to model (default: conservative, realistic, optimistic)
+          include_market_adjustments: Whether to include market adjustment cycles
+          employee_data: Dict:
+          years: int:  (Default value = 5)
+          scenarios: List[str]:  (Default value = None)
+          include_market_adjustments: bool:  (Default value = True)
 
         Returns:
-            Dict with detailed projections for each scenario
+          : Dict with detailed projections for each scenario
         """
         scenarios = scenarios or ["conservative", "realistic", "optimistic"]
 
@@ -126,16 +133,18 @@ class IndividualProgressionSimulator:
     def analyze_multiple_employees(
         self, employee_ids: List[int], years: int = 5, output_format: str = "summary"
     ) -> Dict:
-        """
-        Analyze salary progression for multiple employees.
+        """Analyze salary progression for multiple employees.
 
         Args:
-            employee_ids: List of employee IDs to analyze
-            years: Number of years to project
-            output_format: 'summary' or 'detailed'
+          employee_ids: List of employee IDs to analyze
+          years: Number of years to project
+          output_format: 'summary' or 'detailed'
+          employee_ids: List[int]:
+          years: int:  (Default value = 5)
+          output_format: str:  (Default value = "summary")
 
         Returns:
-            Dict with analysis for all requested employees
+          : Dict with analysis for all requested employees
         """
         LOGGER.info(f"Analyzing progression for {len(employee_ids)} employees")
 
@@ -168,11 +177,17 @@ class IndividualProgressionSimulator:
         return results
 
     def _generate_performance_path(self, employee_data: Dict, years: int, scenario: str) -> List[str]:
-        """
-        Generate realistic performance rating progression for specific scenario.
+        """Generate realistic performance rating progression for specific scenario.
 
-        Uses the existing forecasting engine's scenario generation with adaptations
-        for individual context and career stage.
+        Uses the existing forecasting engine's scenario generation with adaptations for individual context and career
+        stage.
+
+        Args:
+          employee_data: Dict:
+          years: int:
+          scenario: str:
+
+        Returns:
         """
         current_rating = employee_data["performance_rating"]
         level = employee_data["level"]
@@ -202,10 +217,17 @@ class IndividualProgressionSimulator:
         return adapted_path
 
     def _adapt_performance_path(self, base_path: List[str], level: int, tenure: float, target_years: int) -> List[str]:
-        """
-        Adapt base performance path based on individual context.
+        """Adapt base performance path based on individual context.
 
         Considers career stage, level, and tenure to make realistic adjustments.
+
+        Args:
+          base_path: List[str]:
+          level: int:
+          tenure: float:
+          target_years: int:
+
+        Returns:
         """
         adapted_path = base_path.copy()
 
@@ -236,23 +258,25 @@ class IndividualProgressionSimulator:
                     adapted_path[i + 1] = "Achieving"  # Accelerate improvement
 
         # Long-tenure employees (tenure > 5 years) have more stable patterns
-        if tenure > 5.0:
-            # Reduce variability - more consistent performance
-            if len(adapted_path) >= 3:
-                # Smooth out dramatic changes
-                for i in range(1, len(adapted_path) - 1):
-                    prev_rating = adapted_path[i - 1]
-                    next_rating = adapted_path[i + 1]
-                    if prev_rating == next_rating:
-                        adapted_path[i] = prev_rating  # Smooth intermediate rating
+        if tenure > 5.0 and len(adapted_path) >= 3:
+            for i in range(1, len(adapted_path) - 1):
+                prev_rating = adapted_path[i - 1]
+                next_rating = adapted_path[i + 1]
+                if prev_rating == next_rating:
+                    adapted_path[i] = prev_rating  # Smooth intermediate rating
 
         return adapted_path
 
     def _calculate_salary_path(self, employee_data: Dict, performance_path: List[str]) -> List[float]:
-        """
-        Calculate year-by-year salary progression based on performance path.
+        """Calculate year-by-year salary progression based on performance path.
 
         Uses UPLIFT_MATRIX calculations with compound growth effects.
+
+        Args:
+          employee_data: Dict:
+          performance_path: List[str]:
+
+        Returns:
         """
         salary_path = [employee_data["salary"]]  # Start with current salary
         current_salary = employee_data["salary"]
@@ -298,7 +322,13 @@ class IndividualProgressionSimulator:
         }
 
     def _calculate_tenure(self, employee_data: Dict) -> float:
-        """Calculate employee tenure in years."""
+        """Calculate employee tenure in years.
+
+        Args:
+          employee_data: Dict:
+
+        Returns:
+        """
         if "hire_date" not in employee_data:
             return 2.5  # Default assumption
 
@@ -308,7 +338,14 @@ class IndividualProgressionSimulator:
         return tenure_days / 365.25
 
     def _analyze_median_position(self, employee_data: Dict, projections: Dict) -> Dict:
-        """Analyze employee's position relative to level median."""
+        """Analyze employee's position relative to level median.
+
+        Args:
+          employee_data: Dict:
+          projections: Dict:
+
+        Returns:
+        """
         current_salary = employee_data["salary"]
         level = employee_data["level"]
         level_median = self.level_medians[level]
@@ -331,7 +368,14 @@ class IndividualProgressionSimulator:
         }
 
     def _analyze_market_competitiveness(self, employee_data: Dict, projections: Dict) -> Dict:
-        """Analyze employee's market competitiveness."""
+        """Analyze employee's market competitiveness.
+
+        Args:
+          employee_data: Dict:
+          projections: Dict:
+
+        Returns:
+        """
         level = employee_data["level"]
         level_range = self.market_trends["level_ranges"][level]
         current_salary = employee_data["salary"]
@@ -356,7 +400,14 @@ class IndividualProgressionSimulator:
         }
 
     def _get_quartile(self, salary: float, level_range: Dict) -> str:
-        """Determine quartile position within level."""
+        """Determine quartile position within level.
+
+        Args:
+          salary: float:
+          level_range: Dict:
+
+        Returns:
+        """
         if salary <= level_range["q25"]:
             return "bottom_quartile"
         elif salary <= level_range["median"]:
@@ -367,7 +418,14 @@ class IndividualProgressionSimulator:
             return "top_quartile"
 
     def _identify_risk_factors(self, employee_data: Dict, projections: Dict) -> List[str]:
-        """Identify potential risk factors for salary progression."""
+        """Identify potential risk factors for salary progression.
+
+        Args:
+          employee_data: Dict:
+          projections: Dict:
+
+        Returns:
+        """
         risks = []
 
         # Performance consistency risk
@@ -399,7 +457,14 @@ class IndividualProgressionSimulator:
         return risks
 
     def _generate_recommendations(self, employee_data: Dict, projections: Dict) -> Dict:
-        """Generate actionable recommendations based on analysis."""
+        """Generate actionable recommendations based on analysis.
+
+        Args:
+          employee_data: Dict:
+          projections: Dict:
+
+        Returns:
+        """
         risks = self._identify_risk_factors(employee_data, projections)
         recommendations = {
             "primary_action": "monitor_progress",
@@ -450,7 +515,17 @@ def create_test_employee(
     performance_rating: str = "High Performing",
     gender: str = "Female",
 ) -> Dict:
-    """Create test employee data for validation and testing."""
+    """Create test employee data for validation and testing.
+
+    Args:
+      employee_id: int:  (Default value = 123)
+      level: int:  (Default value = 5)
+      salary: float:  (Default value = 80692.50)
+      performance_rating: str:  (Default value = "High Performing")
+      gender: str:  (Default value = "Female")
+
+    Returns:
+    """
     return {
         "employee_id": employee_id,
         "level": level,
@@ -500,12 +575,12 @@ def main():
             print(json.dumps(result, indent=2, default=str))
         else:
             # Summary output
-            print(f"\n🧮 Individual Progression Analysis")
+            print("\n🧮 Individual Progression Analysis")
             print(f"{'='*50}")
             print(f"Employee ID: {result['employee_id']}")
             print(f"Current: Level {result['current_state']['level']}, £{result['current_state']['salary']:,.2f}")
             print(f"Performance: {result['current_state']['performance_rating']}")
-            print(f"\n📈 5-Year Projections:")
+            print("\n📈 5-Year Projections:")
 
             for scenario, projection in result["projections"].items():
                 print(f"  {scenario.capitalize()}: £{projection['final_salary']:,.2f} (CAGR: {projection['cagr']:.2%})")

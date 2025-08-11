@@ -1,19 +1,23 @@
 #!/Users/brunoviola/bruvio-tools/.venv/bin/python3
 
-import pandas as pd
+import csv
+from datetime import datetime
 import json
 from pathlib import Path
-from datetime import datetime
-from typing import Dict, List, Optional, Any, Union
-import csv
-from dataclasses import asdict
+from typing import Any, Dict, List, Optional
 import xml.etree.ElementTree as ET
+
+import pandas as pd
 
 
 class AdvancedStoryExportSystem:
-    """
-    Advanced story export and reporting system for employee simulation data.
+    """Advanced story export and reporting system for employee simulation data.
+
     Implements Phase 4 PRP requirements for comprehensive story export functionality.
+
+    Args:
+
+    Returns:
     """
 
     def __init__(self, output_base_dir: str = "exports", smart_logger=None):
@@ -25,7 +29,14 @@ class AdvancedStoryExportSystem:
         self.output_base_dir.mkdir(parents=True, exist_ok=True)
 
     def _log(self, message: str, level: str = "info"):
-        """Helper method for logging"""
+        """Helper method for logging.
+
+        Args:
+          message: str:
+          level: str:  (Default value = "info")
+
+        Returns:
+        """
         if self.smart_logger:
             getattr(self.smart_logger, f"log_{level}")(message)
         else:
@@ -38,17 +49,21 @@ class AdvancedStoryExportSystem:
         cycle_data: Optional[pd.DataFrame] = None,
         formats: List[str] = None,
     ) -> Dict[str, str]:
-        """
-        Export comprehensive employee stories in multiple formats
+        """Export comprehensive employee stories in multiple formats.
 
         Args:
-            employee_stories: Stories organized by category
-            population_data: Full population data for context
-            cycle_data: Optional cycle progression data
-            formats: Export formats ['json', 'csv', 'excel', 'xml', 'markdown']
+          employee_stories: Stories organized by category
+          population_data: Full population data for context
+          cycle_data: Optional cycle progression data
+          formats: Export formats ['json', 'csv', 'excel', 'xml', 'markdown']
+          employee_stories: Dict[str:
+          List]:
+          population_data: List[Dict]:
+          cycle_data: Optional[pd.DataFrame]:  (Default value = None)
+          formats: List[str]:  (Default value = None)
 
         Returns:
-            Dict of format -> file path mappings
+          : Dict of format -> file path mappings
         """
         if formats is None:
             formats = ["json", "csv", "excel", "markdown"]
@@ -96,7 +111,16 @@ class AdvancedStoryExportSystem:
     def _prepare_comprehensive_story_data(
         self, employee_stories: Dict[str, List], population_data: List[Dict], cycle_data: Optional[pd.DataFrame] = None
     ) -> List[Dict]:
-        """Prepare comprehensive story data for export"""
+        """Prepare comprehensive story data for export.
+
+        Args:
+          employee_stories: Dict[str:
+          List]:
+          population_data: List[Dict]:
+          cycle_data: Optional[pd.DataFrame]:  (Default value = None)
+
+        Returns:
+        """
 
         # Create lookup for population data
         pop_lookup = {emp["employee_id"]: emp for emp in population_data}
@@ -170,7 +194,13 @@ class AdvancedStoryExportSystem:
         return comprehensive_stories
 
     def _calculate_growth_rate(self, values: List[float]) -> float:
-        """Calculate compound growth rate"""
+        """Calculate compound growth rate.
+
+        Args:
+          values: List[float]:
+
+        Returns:
+        """
         if len(values) < 2:
             return 0.0
 
@@ -185,7 +215,15 @@ class AdvancedStoryExportSystem:
         return round(growth_rate * 100, 2)  # Return as percentage
 
     def _export_stories_json(self, comprehensive_data: List[Dict], employee_stories: Dict[str, List]) -> Path:
-        """Export stories as comprehensive JSON"""
+        """Export stories as comprehensive JSON.
+
+        Args:
+          comprehensive_data: List[Dict]:
+          employee_stories: Dict[str:
+          List]:
+
+        Returns:
+        """
 
         json_export = {
             "metadata": {
@@ -200,9 +238,8 @@ class AdvancedStoryExportSystem:
         }
 
         # Add category summaries
-        for category in employee_stories.keys():
-            category_stories = [story for story in comprehensive_data if story.get("category") == category]
-            if category_stories:
+        for category in employee_stories:
+            if category_stories := [story for story in comprehensive_data if story.get("category") == category]:
                 salaries = [story.get("current_salary", 0) for story in category_stories if story.get("current_salary")]
                 growths = [
                     story.get("total_growth_percent", 0)
@@ -225,7 +262,13 @@ class AdvancedStoryExportSystem:
         return json_file
 
     def _export_stories_csv(self, comprehensive_data: List[Dict]) -> Path:
-        """Export stories as flat CSV for analysis"""
+        """Export stories as flat CSV for analysis.
+
+        Args:
+          comprehensive_data: List[Dict]:
+
+        Returns:
+        """
 
         if not comprehensive_data:
             # Create empty CSV with headers
@@ -263,16 +306,23 @@ class AdvancedStoryExportSystem:
         return csv_file
 
     def _export_stories_excel(self, comprehensive_data: List[Dict], employee_stories: Dict[str, List]) -> Path:
-        """Export stories as multi-sheet Excel workbook"""
+        """Export stories as multi-sheet Excel workbook.
+
+        Args:
+          comprehensive_data: List[Dict]:
+          employee_stories: Dict[str:
+          List]:
+
+        Returns:
+        """
 
         excel_file = self.output_base_dir / f"employee_stories_workbook_{self.export_timestamp}.xlsx"
 
         with pd.ExcelWriter(excel_file, engine="openpyxl") as writer:
             # Summary sheet
             summary_data = []
-            for category, stories in employee_stories.items():
-                category_stories = [s for s in comprehensive_data if s.get("category") == category]
-                if category_stories:
+            for category in employee_stories:
+                if category_stories := [s for s in comprehensive_data if s.get("category") == category]:
                     salaries = [s.get("current_salary", 0) for s in category_stories]
                     growths = [s.get("total_growth_percent", 0) for s in category_stories]
 
@@ -280,10 +330,10 @@ class AdvancedStoryExportSystem:
                         {
                             "Category": category.replace("_", " ").title(),
                             "Story Count": len(category_stories),
-                            "Avg Current Salary": sum(salaries) / len(salaries) if salaries else 0,
-                            "Avg Growth %": sum(growths) / len(growths) if growths else 0,
-                            "Min Salary": min(salaries) if salaries else 0,
-                            "Max Salary": max(salaries) if salaries else 0,
+                            "Avg Current Salary": (sum(salaries) / len(salaries) if salaries else 0),
+                            "Avg Growth %": (sum(growths) / len(growths) if growths else 0),
+                            "Min Salary": min(salaries, default=0),
+                            "Max Salary": max(salaries, default=0),
                         }
                     )
 
@@ -291,9 +341,8 @@ class AdvancedStoryExportSystem:
                 pd.DataFrame(summary_data).to_excel(writer, sheet_name="Summary", index=False)
 
             # Individual category sheets
-            for category in employee_stories.keys():
-                category_stories = [s for s in comprehensive_data if s.get("category") == category]
-                if category_stories:
+            for category in employee_stories:
+                if category_stories := [s for s in comprehensive_data if s.get("category") == category]:
                     # Create DataFrame for category
                     df = pd.DataFrame(category_stories)
 
@@ -313,7 +362,15 @@ class AdvancedStoryExportSystem:
         return excel_file
 
     def _export_stories_xml(self, comprehensive_data: List[Dict], employee_stories: Dict[str, List]) -> Path:
-        """Export stories as structured XML"""
+        """Export stories as structured XML.
+
+        Args:
+          comprehensive_data: List[Dict]:
+          employee_stories: Dict[str:
+          List]:
+
+        Returns:
+        """
 
         root = ET.Element("employee_stories")
         root.set("export_timestamp", self.export_timestamp)
@@ -325,7 +382,7 @@ class AdvancedStoryExportSystem:
         ET.SubElement(metadata, "total_categories").text = str(len(employee_stories))
 
         categories_elem = ET.SubElement(metadata, "categories")
-        for category in employee_stories.keys():
+        for category in employee_stories:
             cat_elem = ET.SubElement(categories_elem, "category")
             cat_elem.set("name", category)
             cat_elem.set("story_count", str(len([s for s in comprehensive_data if s.get("category") == category])))
@@ -333,7 +390,7 @@ class AdvancedStoryExportSystem:
         # Add stories by category
         stories_elem = ET.SubElement(root, "stories")
 
-        for category in employee_stories.keys():
+        for category in employee_stories:
             category_elem = ET.SubElement(stories_elem, "category")
             category_elem.set("name", category)
 
@@ -368,37 +425,38 @@ class AdvancedStoryExportSystem:
         return xml_file
 
     def _export_stories_markdown(self, comprehensive_data: List[Dict], employee_stories: Dict[str, List]) -> Path:
-        """Export stories as formatted Markdown report"""
+        """Export stories as formatted Markdown report.
+
+        Args:
+          comprehensive_data: List[Dict]:
+          employee_stories: Dict[str:
+          List]:
+
+        Returns:
+        """
 
         markdown_file = self.output_base_dir / f"employee_stories_report_{self.export_timestamp}.md"
 
-        lines = []
-        lines.append("# Employee Story Analysis Report")
-        lines.append(f"")
-        lines.append(f"**Generated:** {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
+        lines = [
+            "# Employee Story Analysis Report",
+            "",
+            f"**Generated:** {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}",
+        ]
         lines.append(f"**Total Stories:** {len(comprehensive_data)}")
-        lines.append(f"**Categories:** {len(employee_stories)}")
-        lines.append("")
-
-        # Executive Summary
-        lines.append("## Executive Summary")
-        lines.append("")
-
+        lines.extend((f"**Categories:** {len(employee_stories)}", ""))
+        lines.extend(("## Executive Summary", ""))
         total_tracked = len(comprehensive_data)
         if total_tracked > 0:
             avg_growth = sum(s.get("total_growth_percent", 0) for s in comprehensive_data) / total_tracked
             avg_salary = sum(s.get("current_salary", 0) for s in comprehensive_data if s.get("current_salary", 0) > 0)
-            salary_count = sum(1 for s in comprehensive_data if s.get("current_salary", 0) > 0)
+            salary_count = sum(bool(s.get("current_salary", 0) > 0) for s in comprehensive_data)
             avg_salary = avg_salary / salary_count if salary_count > 0 else 0
 
             lines.append(f"- **Average Salary Growth:** {avg_growth:.1f}%")
             lines.append(f"- **Average Current Salary:** £{avg_salary:,.0f}")
             lines.append("")
 
-        # Category Analysis
-        lines.append("## Category Analysis")
-        lines.append("")
-
+        lines.extend(("## Category Analysis", ""))
         for category, stories in employee_stories.items():
             if not stories:
                 continue
@@ -440,17 +498,14 @@ class AdvancedStoryExportSystem:
                     lines.append(f"*... and {len(category_stories) - 5} more stories in this category*")
                     lines.append("")
 
-        # Detailed Analysis
-        lines.append("## Detailed Statistical Analysis")
-        lines.append("")
-
+        lines.extend(("## Detailed Statistical Analysis", ""))
         if comprehensive_data:
             # Growth distribution
             growths = [s.get("total_growth_percent", 0) for s in comprehensive_data]
-            positive_growth = sum(1 for g in growths if g > 0)
-            negative_growth = sum(1 for g in growths if g < 0)
+            positive_growth = sum(bool(g > 0) for g in growths)
+            negative_growth = sum(bool(g < 0) for g in growths)
 
-            lines.append(f"### Growth Analysis")
+            lines.append("### Growth Analysis")
             lines.append(
                 f"- **Positive Growth:** {positive_growth} employees ({positive_growth/len(growths)*100:.1f}%)"
             )
@@ -460,25 +515,25 @@ class AdvancedStoryExportSystem:
             lines.append(f"- **Average Growth:** {sum(growths)/len(growths):.1f}%")
             lines.append("")
 
-            # Level distribution
-            levels = [s.get("initial_level", 0) for s in comprehensive_data if s.get("initial_level", 0) > 0]
-            if levels:
+            if levels := [s.get("initial_level", 0) for s in comprehensive_data if s.get("initial_level", 0) > 0]:
                 level_dist = {}
                 for level in levels:
                     level_dist[level] = level_dist.get(level, 0) + 1
 
-                lines.append(f"### Level Distribution")
+                lines.append("### Level Distribution")
                 for level in sorted(level_dist.keys()):
                     count = level_dist[level]
                     percentage = count / len(levels) * 100
                     lines.append(f"- **Level {level}:** {count} employees ({percentage:.1f}%)")
                 lines.append("")
 
-        # Footer
-        lines.append("---")
-        lines.append(f"*Report generated by Advanced Story Export System v1.0*")
-        lines.append(f"*Export ID: {self.export_timestamp}*")
-
+        lines.extend(
+            (
+                "---",
+                "*Report generated by Advanced Story Export System v1.0*",
+                f"*Export ID: {self.export_timestamp}*",
+            )
+        )
         # Write markdown file
         with open(markdown_file, "w", encoding="utf-8") as f:
             f.write("\n".join(lines))
@@ -488,16 +543,19 @@ class AdvancedStoryExportSystem:
     def export_comparative_analysis(
         self, employee_stories: Dict[str, List], population_data: List[Dict], output_format: str = "json"
     ) -> str:
-        """
-        Export comparative analysis across employee categories
+        """Export comparative analysis across employee categories.
 
         Args:
-            employee_stories: Stories organized by category
-            population_data: Full population data
-            output_format: Output format ('json', 'csv', 'excel')
+          employee_stories: Stories organized by category
+          population_data: Full population data
+          output_format: Output format ('json', 'csv', 'excel')
+          employee_stories: Dict[str:
+          List]:
+          population_data: List[Dict]:
+          output_format: str:  (Default value = "json")
 
         Returns:
-            Path to exported file
+          : Path to exported file
         """
         self._log(f"Generating comparative analysis in {output_format} format")
 
@@ -541,16 +599,12 @@ class AdvancedStoryExportSystem:
             # Collect employee data for this category
             emp_data = []
             for story in stories:
-                if hasattr(story, "__dict__"):
-                    story_dict = story.__dict__
-                else:
-                    story_dict = story
-
-                emp_id = story_dict.get("employee_id")
-                if emp_id:
-                    # Find corresponding population data
-                    pop_record = next((emp for emp in population_data if emp["employee_id"] == emp_id), None)
-                    if pop_record:
+                story_dict = story.__dict__ if hasattr(story, "__dict__") else story
+                if emp_id := story_dict.get("employee_id"):
+                    if pop_record := next(
+                        (emp for emp in population_data if emp["employee_id"] == emp_id),
+                        None,
+                    ):
                         combined_data = {**pop_record, **story_dict}
                         emp_data.append(combined_data)
                         all_story_data.append({**combined_data, "category": category})
@@ -627,7 +681,7 @@ class AdvancedStoryExportSystem:
             flattened_rows = []
             for category, metrics in analysis_data["category_comparisons"].items():
                 row = {"category": category}
-                row.update(metrics["salary_stats"])
+                row |= metrics["salary_stats"]
                 if metrics["growth_stats"]:
                     row.update({f"growth_{k}": v for k, v in metrics["growth_stats"].items()})
                 flattened_rows.append(row)
@@ -668,7 +722,7 @@ class AdvancedStoryExportSystem:
         return str(output_file)
 
     def get_export_summary(self) -> Dict[str, Any]:
-        """Get summary of export capabilities and recent exports"""
+        """Get summary of export capabilities and recent exports."""
 
         # Count recent exports
         recent_exports = list(self.output_base_dir.glob(f"*{self.export_timestamp}*"))

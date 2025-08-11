@@ -1,21 +1,20 @@
 #!/Users/brunoviola/bruvio-tools/.venv/bin/python3
 
-import time
-import psutil
-import gc
-from functools import wraps
-from typing import Dict, List, Any, Optional, Callable
-import pandas as pd
-import numpy as np
-from pathlib import Path
-import json
 from datetime import datetime
+from functools import wraps
+import gc
+import time
+from typing import Any, Callable, Dict, List, Optional
 import warnings
+
+import numpy as np
+import pandas as pd
+import psutil
 
 
 class PerformanceOptimizationManager:
-    """
-    Performance optimization manager for large-scale employee simulations.
+    """Performance optimization manager for large-scale employee simulations.
+
     Implements Phase 4 PRP requirements for handling 10K+ employee populations.
     """
 
@@ -39,14 +38,14 @@ class PerformanceOptimizationManager:
         self.optimization_applied = []
 
     def _log(self, message: str, level: str = "info"):
-        """Helper method for logging"""
+        """Helper method for logging."""
         if self.smart_logger:
             getattr(self.smart_logger, f"log_{level}")(message)
         else:
             print(f"[{level.upper()}] {message}")
 
     def performance_monitor(self, operation_name: str):
-        """Decorator to monitor performance of operations"""
+        """Decorator to monitor performance of operations."""
 
         def decorator(func: Callable):
             @wraps(func)
@@ -90,7 +89,7 @@ class PerformanceOptimizationManager:
         return decorator
 
     def _get_memory_usage(self) -> float:
-        """Get current memory usage in MB"""
+        """Get current memory usage in MB."""
         try:
             process = psutil.Process()
             return process.memory_info().rss / 1024 / 1024  # Convert to MB
@@ -98,8 +97,7 @@ class PerformanceOptimizationManager:
             return 0.0
 
     def optimize_population_generation(self, population_size: int) -> Dict[str, Any]:
-        """
-        Optimize population generation for large sizes
+        """Optimize population generation for large sizes.
 
         Args:
             population_size: Target population size
@@ -158,8 +156,7 @@ class PerformanceOptimizationManager:
     def optimize_story_identification(
         self, population_data: List[Dict], max_per_category: int, chunk_size: Optional[int] = None
     ) -> Dict[str, List]:
-        """
-        Optimize employee story identification for large populations
+        """Optimize employee story identification for large populations.
 
         Args:
             population_data: Full employee population
@@ -282,7 +279,7 @@ class PerformanceOptimizationManager:
         return tracked_employees
 
     def _optimize_dataframe_dtypes(self, df: pd.DataFrame) -> pd.DataFrame:
-        """Optimize DataFrame data types to reduce memory usage"""
+        """Optimize DataFrame data types to reduce memory usage."""
         original_memory = df.memory_usage(deep=True).sum() / 1024 / 1024  # MB
 
         # Optimize numeric columns
@@ -313,8 +310,7 @@ class PerformanceOptimizationManager:
         return df
 
     def optimize_visualization_generation(self, population_size: int, story_count: int) -> Dict[str, Any]:
-        """
-        Optimize visualization generation for large datasets
+        """Optimize visualization generation for large datasets.
 
         Args:
             population_size: Size of population dataset
@@ -356,8 +352,7 @@ class PerformanceOptimizationManager:
         return viz_config
 
     def optimize_export_operations(self, data_size: int, export_formats: List[str]) -> Dict[str, Any]:
-        """
-        Optimize export operations for large datasets
+        """Optimize export operations for large datasets.
 
         Args:
             data_size: Size of data to export
@@ -391,7 +386,7 @@ class PerformanceOptimizationManager:
         return export_config
 
     def monitor_memory_usage(self, checkpoint_name: str):
-        """Create memory usage checkpoint"""
+        """Create memory usage checkpoint."""
         if self.optimization_config["memory_monitoring"]:
             memory_mb = self._get_memory_usage()
             self.memory_checkpoints[checkpoint_name] = {"memory_mb": memory_mb, "timestamp": datetime.now().isoformat()}
@@ -409,8 +404,7 @@ class PerformanceOptimizationManager:
                     self._log(f"Garbage collection freed {memory_freed:.1f}MB ({collected} objects)")
 
     def apply_performance_optimizations(self, population_size: int, enable_story_tracking: bool) -> Dict[str, Any]:
-        """
-        Apply comprehensive performance optimizations based on population size
+        """Apply comprehensive performance optimizations based on population size.
 
         Args:
             population_size: Size of employee population
@@ -461,7 +455,7 @@ class PerformanceOptimizationManager:
         return applied_optimizations
 
     def get_performance_summary(self) -> Dict[str, Any]:
-        """Get comprehensive performance analysis summary"""
+        """Get comprehensive performance analysis summary."""
 
         # Calculate total execution time
         total_time = sum(metric["duration_seconds"] for metric in self.operation_times.values())
@@ -469,7 +463,7 @@ class PerformanceOptimizationManager:
         # Memory usage analysis
         memory_usage = [checkpoint["memory_mb"] for checkpoint in self.memory_checkpoints.values()]
 
-        peak_memory = max(memory_usage) if memory_usage else 0
+        peak_memory = max(memory_usage, default=0)
         avg_memory = sum(memory_usage) / len(memory_usage) if memory_usage else 0
 
         return {
@@ -491,13 +485,10 @@ class PerformanceOptimizationManager:
         }
 
     def _generate_performance_recommendations(self) -> List[str]:
-        """Generate performance improvement recommendations"""
+        """Generate performance improvement recommendations."""
         recommendations = []
 
-        # Memory-based recommendations
-        memory_usage = [checkpoint["memory_mb"] for checkpoint in self.memory_checkpoints.values()]
-
-        if memory_usage:
+        if memory_usage := [checkpoint["memory_mb"] for checkpoint in self.memory_checkpoints.values()]:
             peak_memory = max(memory_usage)
 
             if peak_memory > 1000:
@@ -506,10 +497,9 @@ class PerformanceOptimizationManager:
             if peak_memory > 2000:
                 recommendations.append("Use distributed processing or reduce batch sizes")
 
-        # Time-based recommendations
-        slow_operations = [name for name, metrics in self.operation_times.items() if metrics["duration_seconds"] > 60]
-
-        if slow_operations:
+        if slow_operations := [
+            name for name, metrics in self.operation_times.items() if metrics["duration_seconds"] > 60
+        ]:
             recommendations.append(f"Optimize slow operations: {', '.join(slow_operations)}")
 
         # Optimization coverage recommendations

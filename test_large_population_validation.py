@@ -6,14 +6,15 @@ This test validates the complete system with performance optimizations for large
 """
 
 import json
+from pathlib import Path
 import sys
 import time
+
 import psutil
-from pathlib import Path
 
 
 def get_memory_usage():
-    """Get current memory usage in MB"""
+    """Get current memory usage in MB."""
     try:
         process = psutil.Process()
         return process.memory_info().rss / 1024 / 1024
@@ -22,7 +23,7 @@ def get_memory_usage():
 
 
 def test_large_population_validation():
-    """Final validation test with 5000 employees and comprehensive features"""
+    """Final validation test with 5000 employees and comprehensive features."""
 
     print("🚀 FINAL VALIDATION: Large Population Test (5000 Employees)")
     print("=" * 70)
@@ -197,7 +198,7 @@ def test_large_population_validation():
                 print(f"   Optimizations Applied: {optimizations.get('total_applied', 0)}")
 
                 if recommendations:
-                    print(f"   Performance Recommendations:")
+                    print("   Performance Recommendations:")
                     for rec in recommendations[:3]:  # Show first 3
                         print(f"     • {rec}")
                 print("")
@@ -226,7 +227,7 @@ def test_large_population_validation():
         passed_checks = sum(sum(group) for group in all_tests)
 
         # Adjust for warnings as partial passes
-        warning_count = sum(1 for passed in memory_efficiency_tests.values() if not passed)
+        warning_count = sum(not passed for passed in memory_efficiency_tests.values())
         adjusted_passed = passed_checks - (warning_count * 0.5)
 
         success_rate = (adjusted_passed / total_checks) * 100
@@ -253,7 +254,7 @@ def test_large_population_validation():
             print("⚡ Performance optimizations effective for large-scale workloads")
             return True
         else:
-            print(f"❌ FINAL VALIDATION FAILED")
+            print("❌ FINAL VALIDATION FAILED")
             print(f"Success rate {success_rate:.1f}% below threshold (90%)")
             return False
 

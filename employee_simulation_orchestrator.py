@@ -1,37 +1,42 @@
 #!/Users/brunoviola/bruvio-tools/.venv/bin/python3
 
 import argparse
-import json
-import pandas as pd
 from datetime import datetime
+import json
 from pathlib import Path
-from typing import Dict, List
 import sys
+from typing import Dict, List
+
+import pandas as pd
+
+from advanced_story_export_system import AdvancedStoryExportSystem
+from data_export_system import DataExportSystem
 
 # Import our simulation modules
 from employee_population_simulator import EmployeePopulationGenerator
-from performance_review_system import PerformanceReviewSystem
-from review_cycle_simulator import ReviewCycleSimulator
-from visualization_generator import VisualizationGenerator
-from data_export_system import DataExportSystem
 from employee_story_tracker import EmployeeStoryTracker
-from smart_logging_manager import SmartLoggingManager, get_smart_logger
 from file_optimization_manager import FileOptimizationManager
-from interactive_dashboard_generator import InteractiveDashboardGenerator
-from advanced_story_export_system import AdvancedStoryExportSystem
-from performance_optimization_manager import PerformanceOptimizationManager
 
 # Import advanced analysis modules
-from salary_forecasting_engine import SalaryForecastingEngine
 from individual_progression_simulator import IndividualProgressionSimulator
-from median_convergence_analyzer import MedianConvergenceAnalyzer
+from interactive_dashboard_generator import InteractiveDashboardGenerator
 from intervention_strategy_simulator import InterventionStrategySimulator
+from median_convergence_analyzer import MedianConvergenceAnalyzer
+from performance_optimization_manager import PerformanceOptimizationManager
+from performance_review_system import PerformanceReviewSystem
+from review_cycle_simulator import ReviewCycleSimulator
+from smart_logging_manager import SmartLoggingManager, get_smart_logger
+from visualization_generator import VisualizationGenerator
 
 
 class EmployeeSimulationOrchestrator:
-    """
-    Main orchestrator for the complete employee population simulation system.
+    """Main orchestrator for the complete employee population simulation system.
+
     Coordinates all phases of the simulation pipeline.
+
+    Args:
+
+    Returns:
     """
 
     def __init__(self, config=None):
@@ -88,7 +93,7 @@ class EmployeeSimulationOrchestrator:
         self.smart_logger.log_success(f"Initialized employee simulation orchestrator with timestamp: {self.timestamp}")
 
     def _get_default_config(self):
-        """Get default simulation configuration"""
+        """Get default simulation configuration."""
         return {
             "population_size": 1000,
             "random_seed": 42,
@@ -127,11 +132,12 @@ class EmployeeSimulationOrchestrator:
         }
 
     def run_complete_simulation(self):
-        """
-        Run the complete end-to-end employee simulation pipeline
+        """Run the complete end-to-end employee simulation pipeline.
+
+        Args:
 
         Returns:
-            dict: Results and file paths from the simulation
+          dict: Results and file paths from the simulation
         """
         self.smart_logger.log_info("Starting complete employee simulation pipeline")
 
@@ -214,9 +220,9 @@ class EmployeeSimulationOrchestrator:
 
             results["summary_metrics"].update(
                 {
-                    "cycles_completed": len(inequality_df) - 1 if not inequality_df.empty else 0,
+                    "cycles_completed": 0 if inequality_df.empty else len(inequality_df) - 1,
                     "final_gini_coefficient": (
-                        float(inequality_df.iloc[-1]["gini_coefficient"]) if not inequality_df.empty else "N/A"
+                        "N/A" if inequality_df.empty else float(inequality_df.iloc[-1]["gini_coefficient"])
                     ),
                     "convergence_achieved": convergence_achieved,
                 }
@@ -323,11 +329,12 @@ class EmployeeSimulationOrchestrator:
             raise
 
     def run_quick_validation(self):
-        """
-        Run a quick validation of all system components without full simulation
+        """Run a quick validation of all system components without full simulation.
+
+        Args:
 
         Returns:
-            dict: Validation results
+          dict: Validation results
         """
         self.smart_logger.log_info("Running quick validation of all system components")
 
@@ -363,14 +370,14 @@ class EmployeeSimulationOrchestrator:
                 validation_results["cycle_simulator"] = {"status": "FAIL", "details": f"Error: {str(e)}"}
 
             # Test visualization generator
-            viz_generator = VisualizationGenerator()
+            VisualizationGenerator()
             validation_results["visualization_generator"] = {
                 "status": "PASS",
                 "details": "Visualization generator initialized successfully",
             }
 
             # Test data export system
-            exporter = DataExportSystem()
+            DataExportSystem()
             validation_results["data_export_system"] = {
                 "status": "PASS",
                 "details": "Data export system initialized successfully",
@@ -395,7 +402,13 @@ class EmployeeSimulationOrchestrator:
             return validation_results
 
     def _validate_population(self, population_data):
-        """Validate population meets all constraints"""
+        """Validate population meets all constraints.
+
+        Args:
+          population_data:
+
+        Returns:
+        """
         df = pd.DataFrame(population_data)
 
         # Check senior engineer median constraint
@@ -404,7 +417,7 @@ class EmployeeSimulationOrchestrator:
         target_median = 90108.0
         median_tolerance = 50.0
 
-        validation = {
+        return {
             "total_employees": len(population_data),
             "senior_engineers": len(senior_salaries),
             "senior_median_salary": median_salary,
@@ -415,12 +428,16 @@ class EmployeeSimulationOrchestrator:
             "level_distribution": df["level"].value_counts().sort_index().to_dict(),
         }
 
-        return validation
-
     def _make_serializable(self, obj):
-        """Convert DataFrames and other non-serializable objects for JSON export"""
+        """Convert DataFrames and other non-serializable objects for JSON export.
+
+        Args:
+          obj:
+
+        Returns:
+        """
         import numpy as np
-        
+
         if isinstance(obj, dict):
             return {str(k): self._make_serializable(v) for k, v in obj.items()}
         elif isinstance(obj, list):
@@ -441,8 +458,14 @@ class EmployeeSimulationOrchestrator:
             return obj
 
     def _generate_final_summary(self, results):
-        """Generate final summary of simulation results"""
-        summary = {
+        """Generate final summary of simulation results.
+
+        Args:
+          results:
+
+        Returns:
+        """
+        return {
             "simulation_timestamp": self.timestamp,
             "configuration": self.config,
             "population_size": results["summary_metrics"].get("population_size", "N/A"),
@@ -458,10 +481,14 @@ class EmployeeSimulationOrchestrator:
             ),
         }
 
-        return summary
-
     def _generate_comprehensive_summary(self, results):
-        """Generate comprehensive summary with file organization and progress tracking"""
+        """Generate comprehensive summary with file organization and progress tracking.
+
+        Args:
+          results:
+
+        Returns:
+        """
         try:
             # Organize population files
             if "population_size" in results.get("summary_metrics", {}):
@@ -488,11 +515,12 @@ class EmployeeSimulationOrchestrator:
             self.smart_logger.log_error("Failed to generate comprehensive summary", e)
 
     def run_with_story_tracking(self):
-        """
-        Run simulation with employee story tracking enabled
+        """Run simulation with employee story tracking enabled.
+
+        Args:
 
         Returns:
-            dict: Results including employee stories and enhanced metrics
+          dict: Results including employee stories and enhanced metrics
         """
         if not self.story_tracker:
             self.smart_logger.log_warning("Story tracking not enabled - falling back to standard simulation")
@@ -586,8 +614,7 @@ class EmployeeSimulationOrchestrator:
             for category, employee_ids in tracked_employees.items():
                 category_stories = []
                 for emp_id in employee_ids:
-                    story = self.story_tracker.generate_employee_story(emp_id, category)
-                    if story:
+                    if story := self.story_tracker.generate_employee_story(emp_id, category):
                         category_stories.append(story)
                 employee_stories[category] = category_stories
 
@@ -610,7 +637,7 @@ class EmployeeSimulationOrchestrator:
                 story_exports = export_system.export_employee_stories_comprehensive(
                     employee_stories=employee_stories,
                     population_data=population_data,
-                    cycle_data=timeline_df if not timeline_df.empty else None,
+                    cycle_data=None if timeline_df.empty else timeline_df,
                     formats=story_export_formats,
                 )
 
@@ -665,9 +692,9 @@ class EmployeeSimulationOrchestrator:
 
             results["summary_metrics"].update(
                 {
-                    "cycles_completed": len(inequality_df) - 1 if not inequality_df.empty else 0,
+                    "cycles_completed": 0 if inequality_df.empty else len(inequality_df) - 1,
                     "final_gini_coefficient": (
-                        float(inequality_df.iloc[-1]["gini_coefficient"]) if not inequality_df.empty else "N/A"
+                        "N/A" if inequality_df.empty else float(inequality_df.iloc[-1]["gini_coefficient"])
                     ),
                     "convergence_achieved": convergence_achieved,
                     "total_tracked_employees": sum(len(stories) for stories in employee_stories.values()),
@@ -717,8 +744,7 @@ class EmployeeSimulationOrchestrator:
 
                 # Generate story-aware visualizations if requested
                 if self.config["create_individual_story_charts"]:
-                    story_viz_files = self._generate_individual_story_charts(employee_stories)
-                    if story_viz_files:
+                    if story_viz_files := self._generate_individual_story_charts(employee_stories):
                         results["files_generated"]["story_visualizations"] = story_viz_files
                         self.smart_logger.update_progress("Individual story charts generated")
 
@@ -791,14 +817,14 @@ class EmployeeSimulationOrchestrator:
             raise
 
     def run_advanced_analysis(self, population_data: List[Dict] = None):
-        """
-        Run advanced salary progression and intervention analysis.
+        """Run advanced salary progression and intervention analysis.
 
         Args:
-            population_data: Employee population data. If None, generates new population.
+          population_data: Employee population data. If None, generates new population.
+          population_data: List[Dict]:  (Default value = None)
 
         Returns:
-            Dict with advanced analysis results
+          : Dict with advanced analysis results
         """
         if not self.config.get("enable_advanced_analysis", False):
             self.smart_logger.log_warning("Advanced analysis not enabled - skipping")
@@ -847,22 +873,25 @@ class EmployeeSimulationOrchestrator:
 
                 for sample_emp in sample_employees:
                     emp_analysis = progression_simulator.project_salary_progression(
-                        sample_emp, years=analysis_config["progression_years"],
-                        scenarios=['conservative', 'realistic', 'optimistic'],
-                        include_market_adjustments=True
+                        sample_emp,
+                        years=analysis_config["progression_years"],
+                        scenarios=["conservative", "realistic", "optimistic"],
+                        include_market_adjustments=True,
                     )
                     progression_results[sample_emp["employee_id"]] = emp_analysis
 
                 results["analysis_results"]["individual_progression"] = {
                     "sample_count": len(sample_employees),
                     "analysis_years": analysis_config["progression_years"],
-                    "employee_analyses": progression_results
+                    "employee_analyses": progression_results,
                 }
 
                 self.smart_logger.complete_phase("Phase 1: Individual Progression Analysis")
-                self.smart_logger.log_success(f"Individual progression analysis completed for {len(sample_employees)} employees")
+                self.smart_logger.log_success(
+                    f"Individual progression analysis completed for {len(sample_employees)} employees"
+                )
 
-            # Phase 2: Median Convergence Analysis  
+            # Phase 2: Median Convergence Analysis
             if self.config.get("run_median_convergence_analysis", False):
                 self.smart_logger.start_phase("Phase 2: Median Convergence Analysis", 4)
 
@@ -870,8 +899,7 @@ class EmployeeSimulationOrchestrator:
 
                 # Identify below-median employees
                 below_median_analysis = convergence_analyzer.identify_below_median_employees(
-                    min_gap_percent=analysis_config["acceptable_gap_percent"],
-                    include_gender_analysis=True
+                    min_gap_percent=analysis_config["acceptable_gap_percent"], include_gender_analysis=True
                 )
 
                 # Analyze convergence timelines for sample of below-median employees
@@ -896,11 +924,13 @@ class EmployeeSimulationOrchestrator:
                     "below_median_summary": below_median_analysis,
                     "sample_convergence_timelines": convergence_timelines,
                     "intervention_recommendations": intervention_recommendations,
-                    "population_trends": population_trends
+                    "population_trends": population_trends,
                 }
 
                 self.smart_logger.complete_phase("Phase 2: Median Convergence Analysis")
-                self.smart_logger.log_success(f"Median convergence analysis completed - found {below_median_analysis['below_median_count']} below-median employees")
+                self.smart_logger.log_success(
+                    f"Median convergence analysis completed - found {below_median_analysis['below_median_count']} below-median employees"
+                )
 
             # Phase 3: Intervention Strategy Analysis
             if self.config.get("run_intervention_strategy_analysis", False):
@@ -912,19 +942,19 @@ class EmployeeSimulationOrchestrator:
                 gender_gap_analysis = intervention_simulator.model_gender_gap_remediation(
                     target_gap_percent=self.config.get("target_gender_gap_percent", 0.0),
                     max_years=analysis_config["progression_years"],
-                    budget_constraint=self.config.get("intervention_budget_constraint", 0.005)
+                    budget_constraint=self.config.get("intervention_budget_constraint", 0.005),
                 )
 
                 # Equity-focused analysis
                 equity_analysis = intervention_simulator.model_equity_intervention(
                     intervention_type="comprehensive_equity",
                     budget_constraint=self.config.get("intervention_budget_constraint", 0.005),
-                    years_to_achieve=analysis_config["progression_years"]
+                    years_to_achieve=analysis_config["progression_years"],
                 )
 
                 results["analysis_results"]["intervention_strategies"] = {
                     "gender_gap_remediation": gender_gap_analysis,
-                    "equity_analysis": equity_analysis
+                    "equity_analysis": equity_analysis,
                 }
 
                 self.smart_logger.complete_phase("Phase 3: Intervention Strategy Analysis")
@@ -938,7 +968,9 @@ class EmployeeSimulationOrchestrator:
                 results["files_generated"] = export_files
 
                 self.smart_logger.complete_phase("Phase 4: Export Advanced Analysis Reports")
-                self.smart_logger.log_success(f"Advanced analysis reports exported: {len(export_files)} files generated")
+                self.smart_logger.log_success(
+                    f"Advanced analysis reports exported: {len(export_files)} files generated"
+                )
 
             self.smart_logger.log_success("Advanced analysis pipeline completed successfully")
             return results
@@ -949,7 +981,13 @@ class EmployeeSimulationOrchestrator:
             raise
 
     def generate_story_report(self, employee_stories):
-        """Generate markdown report of employee stories"""
+        """Generate markdown report of employee stories.
+
+        Args:
+          employee_stories:
+
+        Returns:
+        """
         if not employee_stories:
             return "# Employee Story Report\n\nNo employee stories available."
 
@@ -963,9 +1001,7 @@ class EmployeeSimulationOrchestrator:
         ]
 
         total_tracked = sum(len(stories) for stories in employee_stories.values())
-        report_lines.append(f"Total employees tracked: **{total_tracked}**")
-        report_lines.append("")
-
+        report_lines.extend((f"Total employees tracked: **{total_tracked}**", ""))
         for category, stories in employee_stories.items():
             if not stories:
                 continue
@@ -988,21 +1024,24 @@ class EmployeeSimulationOrchestrator:
                 )
 
                 if story.key_events:
-                    for event in story.key_events:
-                        report_lines.append(f"- {event}")
+                    report_lines.extend(f"- {event}" for event in story.key_events)
                 else:
                     report_lines.append("- No significant events recorded")
 
                 report_lines.extend(["", "**Recommendations:**"])
-                for rec in story.recommendations:
-                    report_lines.append(f"- {rec}")
-
+                report_lines.extend(f"- {rec}" for rec in story.recommendations)
                 report_lines.extend(["", "---", ""])
 
         return "\n".join(report_lines)
 
     def export_interactive_dashboard(self, output_path: str = None):
-        """Export interactive HTML dashboard"""
+        """Export interactive HTML dashboard.
+
+        Args:
+          output_path: str:  (Default value = None)
+
+        Returns:
+        """
         if not self.story_tracker:
             self.smart_logger.log_warning("Story tracking not enabled - cannot export interactive dashboard")
             return None
@@ -1016,17 +1055,24 @@ class EmployeeSimulationOrchestrator:
         # TODO: This will be fully implemented in Phase 4 of the PRP
         # For now, return a placeholder
         self.smart_logger.log_info(f"Interactive dashboard export planned for: {output_path}")
-        return str(output_path)
+        return output_path
 
     def get_tracked_employee_summary(self):
-        """Get summary statistics of tracked employees"""
+        """Get summary statistics of tracked employees."""
         if not self.story_tracker:
             return {"error": "Story tracking not enabled"}
 
         return self.story_tracker.get_tracked_employee_summary()
 
     def _generate_individual_story_charts(self, employee_stories: Dict[str, List]) -> List[str]:
-        """Generate individual story charts for each category"""
+        """Generate individual story charts for each category.
+
+        Args:
+          employee_stories: Dict[str:
+          List]:
+
+        Returns:
+        """
         story_viz_files = []
 
         if not employee_stories:
@@ -1059,107 +1105,128 @@ class EmployeeSimulationOrchestrator:
             return []
 
     def _select_sample_employees_for_analysis(self, population_data: List[Dict]) -> List[Dict]:
-        """Select representative sample of employees for individual progression analysis."""
+        """Select representative sample of employees for individual progression analysis.
+
+        Args:
+          population_data: List[Dict]:
+
+        Returns:
+        """
         df = pd.DataFrame(population_data)
         sample_employees = []
-        
+
         # Select 2-3 employees per level with different performance ratings
-        for level in sorted(df['level'].unique()):
-            level_employees = df[df['level'] == level]
-            
+        for level in sorted(df["level"].unique()):
+            level_employees = df[df["level"] == level]
+
             # Try to get diverse performance ratings
-            performance_ratings = ['Exceeding', 'High Performing', 'Achieving', 'Partially met', 'Not met']
+            performance_ratings = ["Exceeding", "High Performing", "Achieving", "Partially met", "Not met"]
             selected_for_level = []
-            
+
             for perf_rating in performance_ratings:
-                candidates = level_employees[level_employees['performance_rating'] == perf_rating]
+                candidates = level_employees[level_employees["performance_rating"] == perf_rating]
                 if len(candidates) > 0 and len(selected_for_level) < 3:
                     # Select one employee with this performance rating
                     selected_for_level.append(candidates.iloc[0].to_dict())
-            
+
             # If we don't have enough variety, just take first 3
             if len(selected_for_level) < 3:
                 remaining_needed = 3 - len(selected_for_level)
                 for _, emp in level_employees.head(remaining_needed).iterrows():
                     if emp.to_dict() not in selected_for_level:
                         selected_for_level.append(emp.to_dict())
-            
+
             sample_employees.extend(selected_for_level)
-        
+
         self.smart_logger.log_info(f"Selected {len(sample_employees)} sample employees for progression analysis")
         return sample_employees
 
     def _export_advanced_analysis_reports(self, analysis_results: Dict, population_data: List[Dict]) -> Dict[str, str]:
-        """Export advanced analysis results to various formats."""
+        """Export advanced analysis results to various formats.
+
+        Args:
+          analysis_results: Dict:
+          population_data: List[Dict]:
+
+        Returns:
+        """
         export_files = {}
-        
+
         try:
             # Create advanced analysis output directory
             advanced_dir = self.artifacts_dir / "advanced_analysis"
             advanced_dir.mkdir(exist_ok=True)
-            
+
             # Export individual progression analysis
             if "individual_progression" in analysis_results:
                 progression_file = advanced_dir / f"individual_progression_analysis_{self.timestamp}.json"
-                with open(progression_file, 'w') as f:
+                with open(progression_file, "w") as f:
                     # Use the same serialization method as elsewhere in the orchestrator
                     serializable_data = self._make_serializable(analysis_results["individual_progression"])
                     json.dump(serializable_data, f, indent=2, default=str)
                 export_files["individual_progression"] = str(progression_file)
-                
+
                 # Create summary report
                 progression_summary_file = advanced_dir / f"individual_progression_summary_{self.timestamp}.md"
                 summary_content = self._create_progression_summary_report(analysis_results["individual_progression"])
-                with open(progression_summary_file, 'w') as f:
+                with open(progression_summary_file, "w") as f:
                     f.write(summary_content)
                 export_files["individual_progression_summary"] = str(progression_summary_file)
-            
+
             # Export median convergence analysis
             if "median_convergence" in analysis_results:
                 convergence_file = advanced_dir / f"median_convergence_analysis_{self.timestamp}.json"
-                with open(convergence_file, 'w') as f:
+                with open(convergence_file, "w") as f:
                     serializable_data = self._make_serializable(analysis_results["median_convergence"])
                     json.dump(serializable_data, f, indent=2, default=str)
                 export_files["median_convergence"] = str(convergence_file)
-                
+
                 # Create detailed convergence report
                 convergence_summary_file = advanced_dir / f"median_convergence_report_{self.timestamp}.md"
                 summary_content = self._create_convergence_summary_report(analysis_results["median_convergence"])
-                with open(convergence_summary_file, 'w') as f:
+                with open(convergence_summary_file, "w") as f:
                     f.write(summary_content)
                 export_files["median_convergence_summary"] = str(convergence_summary_file)
-            
+
             # Export intervention strategy analysis
             if "intervention_strategies" in analysis_results:
                 intervention_file = advanced_dir / f"intervention_strategies_{self.timestamp}.json"
-                with open(intervention_file, 'w') as f:
+                with open(intervention_file, "w") as f:
                     serializable_data = self._make_serializable(analysis_results["intervention_strategies"])
                     json.dump(serializable_data, f, indent=2, default=str)
                 export_files["intervention_strategies"] = str(intervention_file)
-                
+
                 # Create executive intervention report
-                intervention_summary_file = advanced_dir / f"intervention_strategies_executive_report_{self.timestamp}.md"
+                intervention_summary_file = (
+                    advanced_dir / f"intervention_strategies_executive_report_{self.timestamp}.md"
+                )
                 summary_content = self._create_intervention_summary_report(analysis_results["intervention_strategies"])
-                with open(intervention_summary_file, 'w') as f:
+                with open(intervention_summary_file, "w") as f:
                     f.write(summary_content)
                 export_files["intervention_strategies_summary"] = str(intervention_summary_file)
-            
+
             # Create comprehensive advanced analysis report
             if analysis_results:
                 comprehensive_report_file = advanced_dir / f"comprehensive_advanced_analysis_{self.timestamp}.md"
                 comprehensive_content = self._create_comprehensive_advanced_report(analysis_results, population_data)
-                with open(comprehensive_report_file, 'w') as f:
+                with open(comprehensive_report_file, "w") as f:
                     f.write(comprehensive_content)
                 export_files["comprehensive_advanced_analysis"] = str(comprehensive_report_file)
-            
+
             return export_files
-            
+
         except Exception as e:
             self.smart_logger.log_error(f"Failed to export advanced analysis reports: {e}")
             return {}
 
     def _create_progression_summary_report(self, progression_data: Dict) -> str:
-        """Create summary report for individual progression analysis."""
+        """Create summary report for individual progression analysis.
+
+        Args:
+          progression_data: Dict:
+
+        Returns:
+        """
         lines = [
             "# Individual Salary Progression Analysis Report",
             f"Generated: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}",
@@ -1172,65 +1239,75 @@ class EmployeeSimulationOrchestrator:
             "## Key Findings",
             "",
         ]
-        
-        # Analyze progression patterns
-        employee_analyses = progression_data.get('employee_analyses', {})
-        if employee_analyses:
+
+        if employee_analyses := progression_data.get("employee_analyses", {}):
             realistic_cagrs = []
             optimistic_cagrs = []
-            
+
             for emp_id, analysis in employee_analyses.items():
-                projections = analysis.get('projections', {})
-                if 'realistic' in projections:
-                    realistic_cagrs.append(projections['realistic'].get('cagr', 0) * 100)
-                if 'optimistic' in projections:
-                    optimistic_cagrs.append(projections['optimistic'].get('cagr', 0) * 100)
-            
+                projections = analysis.get("projections", {})
+                if "realistic" in projections:
+                    realistic_cagrs.append(projections["realistic"].get("cagr", 0) * 100)
+                if "optimistic" in projections:
+                    optimistic_cagrs.append(projections["optimistic"].get("cagr", 0) * 100)
+
             if realistic_cagrs:
                 avg_realistic_cagr = sum(realistic_cagrs) / len(realistic_cagrs)
                 lines.append(f"- **Average Realistic Growth Rate**: {avg_realistic_cagr:.2f}% annually")
-            
+
             if optimistic_cagrs:
                 avg_optimistic_cagr = sum(optimistic_cagrs) / len(optimistic_cagrs)
                 lines.append(f"- **Average Optimistic Growth Rate**: {avg_optimistic_cagr:.2f}% annually")
-            
-            lines.extend([
-                f"- **Employees with High Growth Potential**: {len([c for c in realistic_cagrs if c > 8.0])} employees (>8% CAGR)",
-                "",
-                "## Individual Employee Analysis",
-                "",
-            ])
-            
+
+            lines.extend(
+                [
+                    f"- **Employees with High Growth Potential**: {len([c for c in realistic_cagrs if c > 8.0])} employees (>8% CAGR)",
+                    "",
+                    "## Individual Employee Analysis",
+                    "",
+                ]
+            )
+
             # Detail top performers
             for emp_id, analysis in list(employee_analyses.items())[:5]:  # Show first 5
-                employee_info = analysis.get('employee_profile', {})
-                projections = analysis.get('projections', {}).get('realistic', {})
-                
-                lines.extend([
-                    f"### Employee {emp_id}",
-                    f"- **Level**: {employee_info.get('level', 'N/A')}",
-                    f"- **Current Salary**: £{employee_info.get('salary', 0):,.0f}",
-                    f"- **Performance Rating**: {employee_info.get('performance_rating', 'N/A')}",
-                    f"- **Projected 5-Year Salary**: £{projections.get('final_salary', 0):,.0f}",
-                    f"- **Expected Growth Rate**: {projections.get('cagr', 0)*100:.2f}% annually",
-                    "",
-                ])
-        
-        lines.extend([
-            "## Recommendations",
-            "",
-            "1. **High Performers**: Focus retention strategies on employees with >10% projected growth",
-            "2. **Development Opportunities**: Provide advancement paths for employees showing strong potential", 
-            "3. **Regular Reviews**: Monitor actual vs. projected progression quarterly",
-            "",
-            "---",
-            f"*Report generated by Advanced Employee Analysis System - {datetime.now().isoformat()}*"
-        ])
-        
-        return '\n'.join(lines)
+                employee_info = analysis.get("employee_profile", {})
+                projections = analysis.get("projections", {}).get("realistic", {})
+
+                lines.extend(
+                    [
+                        f"### Employee {emp_id}",
+                        f"- **Level**: {employee_info.get('level', 'N/A')}",
+                        f"- **Current Salary**: £{employee_info.get('salary', 0):,.0f}",
+                        f"- **Performance Rating**: {employee_info.get('performance_rating', 'N/A')}",
+                        f"- **Projected 5-Year Salary**: £{projections.get('final_salary', 0):,.0f}",
+                        f"- **Expected Growth Rate**: {projections.get('cagr', 0)*100:.2f}% annually",
+                        "",
+                    ]
+                )
+
+        lines.extend(
+            [
+                "## Recommendations",
+                "",
+                "1. **High Performers**: Focus retention strategies on employees with >10% projected growth",
+                "2. **Development Opportunities**: Provide advancement paths for employees showing strong potential",
+                "3. **Regular Reviews**: Monitor actual vs. projected progression quarterly",
+                "",
+                "---",
+                f"*Report generated by Advanced Employee Analysis System - {datetime.now().isoformat()}*",
+            ]
+        )
+
+        return "\n".join(lines)
 
     def _create_convergence_summary_report(self, convergence_data: Dict) -> str:
-        """Create summary report for median convergence analysis."""
+        """Create summary report for median convergence analysis.
+
+        Args:
+          convergence_data: Dict:
+
+        Returns:
+        """
         lines = [
             "# Median Convergence Analysis Report",
             f"Generated: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}",
@@ -1238,80 +1315,91 @@ class EmployeeSimulationOrchestrator:
             "## Executive Summary",
             "",
         ]
-        
-        below_median_summary = convergence_data.get('below_median_summary', {})
-        if below_median_summary:
-            total_employees = below_median_summary.get('total_employees', 0)
-            below_median_count = below_median_summary.get('below_median_count', 0)
-            below_median_percent = below_median_summary.get('below_median_percent', 0)
-            
-            lines.extend([
-                f"**Total Employees Analyzed**: {total_employees:,}",
-                f"**Below Median Employees**: {below_median_count:,} ({below_median_percent:.1f}%)",
-                "",
-            ])
-            
-            # Statistics
-            stats = below_median_summary.get('summary_statistics', {})
-            if stats:
-                avg_gap = stats.get('average_gap_amount', 0)
-                total_gap = stats.get('total_gap_amount', 0)
-                
-                lines.extend([
-                    "### Key Statistics",
-                    f"- **Average Gap**: £{avg_gap:,.0f} below median",
-                    f"- **Total Gap Amount**: £{total_gap:,.0f}",
-                    f"- **Maximum Individual Gap**: £{stats.get('max_gap_amount', 0):,.0f}",
+
+        if below_median_summary := convergence_data.get("below_median_summary", {}):
+            total_employees = below_median_summary.get("total_employees", 0)
+            below_median_count = below_median_summary.get("below_median_count", 0)
+            below_median_percent = below_median_summary.get("below_median_percent", 0)
+
+            lines.extend(
+                [
+                    f"**Total Employees Analyzed**: {total_employees:,}",
+                    f"**Below Median Employees**: {below_median_count:,} ({below_median_percent:.1f}%)",
                     "",
-                ])
-        
-        # Intervention recommendations
-        recommendations = convergence_data.get('intervention_recommendations', {})
-        if recommendations:
-            recommended_strategy = recommendations.get('recommended_strategy', {})
-            strategy_name = recommended_strategy.get('primary_strategy', 'N/A')
-            budget_required = recommended_strategy.get('total_budget_required', 0)
-            
-            lines.extend([
-                "## Recommended Intervention Strategy",
-                f"**Primary Strategy**: {strategy_name.replace('_', ' ').title()}",
-                f"**Budget Required**: £{budget_required:,.0f}",
-                "",
-            ])
-        
-        # Population trends
-        trends = convergence_data.get('population_trends', {})
-        if trends:
-            lines.extend([
-                "## Population Convergence Trends",
-                "",
-                "Analysis of convergence scenarios over 5-year projection:",
-                "",
-            ])
-            
-            trend_projections = trends.get('trend_projections', {})
+                ]
+            )
+
+            if stats := below_median_summary.get("summary_statistics", {}):
+                avg_gap = stats.get("average_gap_amount", 0)
+                total_gap = stats.get("total_gap_amount", 0)
+
+                lines.extend(
+                    [
+                        "### Key Statistics",
+                        f"- **Average Gap**: £{avg_gap:,.0f} below median",
+                        f"- **Total Gap Amount**: £{total_gap:,.0f}",
+                        f"- **Maximum Individual Gap**: £{stats.get('max_gap_amount', 0):,.0f}",
+                        "",
+                    ]
+                )
+
+        if recommendations := convergence_data.get("intervention_recommendations", {}):
+            recommended_strategy = recommendations.get("recommended_strategy", {})
+            strategy_name = recommended_strategy.get("primary_strategy", "N/A")
+            budget_required = recommended_strategy.get("total_budget_required", 0)
+
+            lines.extend(
+                [
+                    "## Recommended Intervention Strategy",
+                    f"**Primary Strategy**: {strategy_name.replace('_', ' ').title()}",
+                    f"**Budget Required**: £{budget_required:,.0f}",
+                    "",
+                ]
+            )
+
+        if trends := convergence_data.get("population_trends", {}):
+            lines.extend(
+                [
+                    "## Population Convergence Trends",
+                    "",
+                    "Analysis of convergence scenarios over 5-year projection:",
+                    "",
+                ]
+            )
+
+            trend_projections = trends.get("trend_projections", {})
             for scenario, projection in trend_projections.items():
-                final_count = projection.get('final_below_median_count', 0)
-                convergence_rate = projection.get('convergence_rate', 0)
-                
-                lines.append(f"- **{scenario.title()} Scenario**: {final_count} employees remain below median ({convergence_rate:.1f}% convergence rate)")
-        
-        lines.extend([
-            "",
-            "## Action Items",
-            "",
-            "1. **Immediate**: Address high-priority below-median cases (>20% gap)",
-            "2. **Short-term**: Implement performance acceleration programs", 
-            "3. **Long-term**: Monitor convergence progress and adjust strategies",
-            "",
-            "---",
-            f"*Report generated by Median Convergence Analysis System - {datetime.now().isoformat()}*"
-        ])
-        
-        return '\n'.join(lines)
+                final_count = projection.get("final_below_median_count", 0)
+                convergence_rate = projection.get("convergence_rate", 0)
+
+                lines.append(
+                    f"- **{scenario.title()} Scenario**: {final_count} employees remain below median ({convergence_rate:.1f}% convergence rate)"
+                )
+
+        lines.extend(
+            [
+                "",
+                "## Action Items",
+                "",
+                "1. **Immediate**: Address high-priority below-median cases (>20% gap)",
+                "2. **Short-term**: Implement performance acceleration programs",
+                "3. **Long-term**: Monitor convergence progress and adjust strategies",
+                "",
+                "---",
+                f"*Report generated by Median Convergence Analysis System - {datetime.now().isoformat()}*",
+            ]
+        )
+
+        return "\n".join(lines)
 
     def _create_intervention_summary_report(self, intervention_data: Dict) -> str:
-        """Create executive summary for intervention strategies."""
+        """Create executive summary for intervention strategies.
+
+        Args:
+          intervention_data: Dict:
+
+        Returns:
+        """
         lines = [
             "# Executive Intervention Strategy Report",
             f"Generated: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}",
@@ -1322,84 +1410,96 @@ class EmployeeSimulationOrchestrator:
             "focused on gender pay gap remediation and comprehensive equity improvement.",
             "",
         ]
-        
-        # Gender gap analysis
-        gender_gap_data = intervention_data.get('gender_gap_remediation', {})
-        if gender_gap_data:
-            current_gap = gender_gap_data.get('current_gender_gap_percent', 0)
-            optimal_strategy = gender_gap_data.get('optimal_strategy', {})
-            
-            lines.extend([
-                "## Gender Pay Gap Remediation",
-                f"**Current Gap**: {current_gap:.2f}%",
-                "",
-            ])
-            
+
+        if gender_gap_data := intervention_data.get("gender_gap_remediation", {}):
+            current_gap = gender_gap_data.get("current_gender_gap_percent", 0)
+            optimal_strategy = gender_gap_data.get("optimal_strategy", {})
+
+            lines.extend(
+                [
+                    "## Gender Pay Gap Remediation",
+                    f"**Current Gap**: {current_gap:.2f}%",
+                    "",
+                ]
+            )
+
             if optimal_strategy:
-                strategy_name = optimal_strategy.get('strategy_name', 'N/A')
-                total_cost = optimal_strategy.get('total_cost', 0)
-                timeline_years = optimal_strategy.get('timeline_years', 0)
-                
-                lines.extend([
-                    f"**Recommended Strategy**: {strategy_name.replace('_', ' ').title()}",
-                    f"**Total Investment**: £{total_cost:,.0f}",
-                    f"**Implementation Timeline**: {timeline_years} years",
+                strategy_name = optimal_strategy.get("strategy_name", "N/A")
+                total_cost = optimal_strategy.get("total_cost", 0)
+                timeline_years = optimal_strategy.get("timeline_years", 0)
+
+                lines.extend(
+                    [
+                        f"**Recommended Strategy**: {strategy_name.replace('_', ' ').title()}",
+                        f"**Total Investment**: £{total_cost:,.0f}",
+                        f"**Implementation Timeline**: {timeline_years} years",
+                        "",
+                    ]
+                )
+
+        if equity_data := intervention_data.get("equity_analysis", {}):
+            lines.extend(
+                [
+                    "## Comprehensive Equity Analysis",
                     "",
-                ])
-        
-        # Equity analysis
-        equity_data = intervention_data.get('equity_analysis', {})
-        if equity_data:
-            lines.extend([
-                "## Comprehensive Equity Analysis",
+                ]
+            )
+
+            if optimal_approach := equity_data.get("optimal_approach", {}):
+                approach_name = optimal_approach.get("approach_name", "N/A")
+                total_investment = optimal_approach.get("total_investment", 0)
+                affected_employees = optimal_approach.get("affected_employees", 0)
+
+                lines.extend(
+                    [
+                        f"**Optimal Approach**: {approach_name.replace('_', ' ').title()}",
+                        f"**Total Investment**: £{total_investment:,.0f}",
+                        f"**Employees Affected**: {affected_employees:,}",
+                        "",
+                    ]
+                )
+
+        lines.extend(
+            [
+                "## Executive Recommendations",
                 "",
-            ])
-            
-            optimal_approach = equity_data.get('optimal_approach', {})
-            if optimal_approach:
-                approach_name = optimal_approach.get('approach_name', 'N/A')
-                total_investment = optimal_approach.get('total_investment', 0)
-                affected_employees = optimal_approach.get('affected_employees', 0)
-                
-                lines.extend([
-                    f"**Optimal Approach**: {approach_name.replace('_', ' ').title()}",
-                    f"**Total Investment**: £{total_investment:,.0f}",  
-                    f"**Employees Affected**: {affected_employees:,}",
-                    "",
-                ])
-        
-        lines.extend([
-            "## Executive Recommendations",
-            "",
-            "### Immediate Actions (0-6 months)",
-            "1. Secure budget approval for recommended intervention strategies",
-            "2. Begin communication planning with affected employee groups",
-            "3. Establish success metrics and monitoring framework",
-            "",
-            "### Short-term Implementation (6-18 months)", 
-            "1. Execute immediate salary adjustments for highest-priority cases",
-            "2. Launch performance acceleration programs",
-            "3. Implement quarterly progress monitoring",
-            "",
-            "### Long-term Sustainability (18+ months)",
-            "1. Embed equity considerations in all promotion and compensation decisions",
-            "2. Regular market benchmarking and adjustment processes",
-            "3. Continuous monitoring of intervention effectiveness",
-            "",
-            "## Risk Mitigation",
-            "",
-            "- **Budget overruns**: Phased implementation approach with milestone reviews",
-            "- **Employee expectations**: Clear communication about timeline and criteria",
-            "- **Competitive response**: Market analysis and retention strategies",
-            "",
-            "---",
-            f"*Executive Report prepared by Intervention Strategy Analysis System - {datetime.now().isoformat()}*"
-        ])
-        
-        return '\n'.join(lines)
+                "### Immediate Actions (0-6 months)",
+                "1. Secure budget approval for recommended intervention strategies",
+                "2. Begin communication planning with affected employee groups",
+                "3. Establish success metrics and monitoring framework",
+                "",
+                "### Short-term Implementation (6-18 months)",
+                "1. Execute immediate salary adjustments for highest-priority cases",
+                "2. Launch performance acceleration programs",
+                "3. Implement quarterly progress monitoring",
+                "",
+                "### Long-term Sustainability (18+ months)",
+                "1. Embed equity considerations in all promotion and compensation decisions",
+                "2. Regular market benchmarking and adjustment processes",
+                "3. Continuous monitoring of intervention effectiveness",
+                "",
+                "## Risk Mitigation",
+                "",
+                "- **Budget overruns**: Phased implementation approach with milestone reviews",
+                "- **Employee expectations**: Clear communication about timeline and criteria",
+                "- **Competitive response**: Market analysis and retention strategies",
+                "",
+                "---",
+                f"*Executive Report prepared by Intervention Strategy Analysis System - {datetime.now().isoformat()}*",
+            ]
+        )
+
+        return "\n".join(lines)
 
     def _create_comprehensive_advanced_report(self, analysis_results: Dict, population_data: List[Dict]) -> str:
-        """Create comprehensive report combining all advanced analyses."""
+        """Create comprehensive report combining all advanced analyses.
+
+        Args:
+          analysis_results: Dict:
+          population_data: List[Dict]:
+
+        Returns:
+        """
         lines = [
             "# Comprehensive Advanced Employee Analysis Report",
             f"Generated: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}",
@@ -1414,103 +1514,113 @@ class EmployeeSimulationOrchestrator:
             "## Analysis Components",
             "",
         ]
-        
+
         # List completed analyses
         if "individual_progression" in analysis_results:
             lines.append("✅ **Individual Salary Progression Analysis** - Completed")
-        
+
         if "median_convergence" in analysis_results:
             lines.append("✅ **Median Convergence Analysis** - Completed")
-            
+
         if "intervention_strategies" in analysis_results:
             lines.append("✅ **Intervention Strategy Analysis** - Completed")
-        
-        lines.extend([
-            "",
-            "## Key Insights",
-            "",
-        ])
-        
+
+        lines.extend(
+            [
+                "",
+                "## Key Insights",
+                "",
+            ]
+        )
+
         # Extract key insights from each analysis
         if "individual_progression" in analysis_results:
             progression_data = analysis_results["individual_progression"]
-            sample_count = progression_data.get('sample_count', 0)
-            lines.extend([
-                f"### Individual Progression ({sample_count} employees analyzed)",
-                "- Detailed salary progression projections over 5-year timeline", 
-                "- Conservative, realistic, and optimistic scenario modeling",
-                "- Performance-based growth rate analysis",
-                "",
-            ])
-        
+            sample_count = progression_data.get("sample_count", 0)
+            lines.extend(
+                [
+                    f"### Individual Progression ({sample_count} employees analyzed)",
+                    "- Detailed salary progression projections over 5-year timeline",
+                    "- Conservative, realistic, and optimistic scenario modeling",
+                    "- Performance-based growth rate analysis",
+                    "",
+                ]
+            )
+
         if "median_convergence" in analysis_results:
             convergence_data = analysis_results["median_convergence"]
-            below_median_summary = convergence_data.get('below_median_summary', {})
-            below_median_count = below_median_summary.get('below_median_count', 0)
-            
-            lines.extend([
-                f"### Median Convergence ({below_median_count} employees below median)",
-                "- Identification of salary equity gaps by level and gender",
-                "- Convergence timeline projections under various scenarios",
-                "- Targeted intervention strategy recommendations",
-                "",
-            ])
-        
+            below_median_summary = convergence_data.get("below_median_summary", {})
+            below_median_count = below_median_summary.get("below_median_count", 0)
+
+            lines.extend(
+                [
+                    f"### Median Convergence ({below_median_count} employees below median)",
+                    "- Identification of salary equity gaps by level and gender",
+                    "- Convergence timeline projections under various scenarios",
+                    "- Targeted intervention strategy recommendations",
+                    "",
+                ]
+            )
+
         if "intervention_strategies" in analysis_results:
-            lines.extend([
-                "### Intervention Strategies",
-                "- Gender pay gap remediation modeling and cost analysis",
-                "- Comprehensive equity intervention planning", 
-                "- Budget optimization and ROI projections",
+            lines.extend(
+                [
+                    "### Intervention Strategies",
+                    "- Gender pay gap remediation modeling and cost analysis",
+                    "- Comprehensive equity intervention planning",
+                    "- Budget optimization and ROI projections",
+                    "",
+                ]
+            )
+
+        lines.extend(
+            [
+                "## Strategic Recommendations",
                 "",
-            ])
-        
-        lines.extend([
-            "## Strategic Recommendations",
-            "",
-            "Based on this comprehensive analysis, the following strategic actions are recommended:",
-            "",
-            "### Priority 1: Address Critical Gaps",
-            "- Focus on employees >20% below median salary for their level",
-            "- Implement immediate adjustments where feasible within budget constraints",
-            "",
-            "### Priority 2: Systematic Improvement",
-            "- Launch performance acceleration programs for high-potential employees",
-            "- Establish regular market benchmarking and adjustment processes",
-            "",
-            "### Priority 3: Long-term Equity",
-            "- Embed equity considerations in all compensation decisions",
-            "- Monitor intervention effectiveness with quarterly reviews",
-            "",
-            "## Data Sources and Methodology",
-            "",
-            f"- **Population Data**: {len(population_data):,} employee records",
-            "- **Analysis Period**: 5-year projection timeline",
-            "- **Confidence Level**: 95% statistical confidence intervals",
-            "- **Market Inflation**: 2.5% annual adjustment factor",
-            "",
-            "## Next Steps",
-            "",
-            "1. **Review** this analysis with executive leadership team",
-            "2. **Approve** recommended intervention budget and timeline",
-            "3. **Communicate** strategy to affected stakeholders",
-            "4. **Implement** priority interventions with regular monitoring",
-            "5. **Evaluate** effectiveness after 12 months and adjust approach",
-            "",
-            "---",
-            "",
-            "*This comprehensive report integrates individual progression analysis,*",
-            "*median convergence modeling, and intervention strategy optimization*", 
-            "*to provide actionable insights for compensation equity improvement.*",
-            "",
-            f"*Generated by Advanced Employee Analysis System - {datetime.now().isoformat()}*"
-        ])
-        
-        return '\n'.join(lines)
+                "Based on this comprehensive analysis, the following strategic actions are recommended:",
+                "",
+                "### Priority 1: Address Critical Gaps",
+                "- Focus on employees >20% below median salary for their level",
+                "- Implement immediate adjustments where feasible within budget constraints",
+                "",
+                "### Priority 2: Systematic Improvement",
+                "- Launch performance acceleration programs for high-potential employees",
+                "- Establish regular market benchmarking and adjustment processes",
+                "",
+                "### Priority 3: Long-term Equity",
+                "- Embed equity considerations in all compensation decisions",
+                "- Monitor intervention effectiveness with quarterly reviews",
+                "",
+                "## Data Sources and Methodology",
+                "",
+                f"- **Population Data**: {len(population_data):,} employee records",
+                "- **Analysis Period**: 5-year projection timeline",
+                "- **Confidence Level**: 95% statistical confidence intervals",
+                "- **Market Inflation**: 2.5% annual adjustment factor",
+                "",
+                "## Next Steps",
+                "",
+                "1. **Review** this analysis with executive leadership team",
+                "2. **Approve** recommended intervention budget and timeline",
+                "3. **Communicate** strategy to affected stakeholders",
+                "4. **Implement** priority interventions with regular monitoring",
+                "5. **Evaluate** effectiveness after 12 months and adjust approach",
+                "",
+                "---",
+                "",
+                "*This comprehensive report integrates individual progression analysis,*",
+                "*median convergence modeling, and intervention strategy optimization*",
+                "*to provide actionable insights for compensation equity improvement.*",
+                "",
+                f"*Generated by Advanced Employee Analysis System - {datetime.now().isoformat()}*",
+            ]
+        )
+
+        return "\n".join(lines)
 
 
 def main():
-    """Command-line interface for the simulation orchestrator"""
+    """Command-line interface for the simulation orchestrator."""
     parser = argparse.ArgumentParser(description="Employee Population Simulation Orchestrator")
     parser.add_argument(
         "--mode",
@@ -1539,7 +1649,7 @@ def main():
         help="Generate individual employee stories (implies --enable-stories)",
     )
     parser.add_argument("--interactive-viz", action="store_true", help="Generate interactive visualizations")
-    
+
     # Advanced analysis arguments
     parser.add_argument("--advanced-analysis", action="store_true", help="Enable advanced salary progression analysis")
     parser.add_argument("--individual-progression", action="store_true", help="Run individual progression analysis")
@@ -1548,7 +1658,7 @@ def main():
     parser.add_argument(
         "--analysis-years", type=int, default=5, help="Number of years for progression analysis (default: 5)"
     )
-    
+
     parser.add_argument(
         "--log-level", choices=["ERROR", "WARNING", "INFO", "DEBUG"], default="INFO", help="Logging level"
     )
@@ -1560,9 +1670,9 @@ def main():
         try:
             with open(args.config, "r") as f:
                 config = json.load(f)
-            self.smart_logger.log_info(f"Loaded configuration from {args.config}")
+            get_smart_logger().log_info(f"Loaded configuration from {args.config}")
         except Exception as e:
-            self.smart_logger.log_error(f"Failed to load configuration: {e}")
+            get_smart_logger().log_error(f"Failed to load configuration: {e}")
             sys.exit(1)
     else:
         # Use command-line arguments to build config
@@ -1580,7 +1690,10 @@ def main():
             "generate_interactive_dashboard": args.interactive_viz,
             "create_individual_story_charts": args.generate_stories,
             # Advanced analysis configuration from CLI
-            "enable_advanced_analysis": args.advanced_analysis or args.individual_progression or args.median_convergence or args.intervention_strategies,
+            "enable_advanced_analysis": args.advanced_analysis
+            or args.individual_progression
+            or args.median_convergence
+            or args.intervention_strategies,
             "run_individual_progression_analysis": args.individual_progression or args.advanced_analysis,
             "run_median_convergence_analysis": args.median_convergence or args.advanced_analysis,
             "run_intervention_strategy_analysis": args.intervention_strategies or args.advanced_analysis,
@@ -1648,21 +1761,23 @@ def main():
             # Run advanced analysis only (without full simulation)
             print("\n=== ADVANCED ANALYSIS MODE ===")
             advanced_results = orchestrator.run_advanced_analysis()
-            
-            print(f"Advanced Analysis Status: {'✓ ENABLED' if advanced_results['advanced_analysis_enabled'] else '✗ DISABLED'}")
+
+            print(
+                f"Advanced Analysis Status: {'✓ ENABLED' if advanced_results['advanced_analysis_enabled'] else '✗ DISABLED'}"
+            )
             if advanced_results["advanced_analysis_enabled"]:
                 print(f"Population Size: {advanced_results['population_size']:,}")
                 print(f"Analysis Components: {len(advanced_results['analysis_results'])}")
-                
+
                 for component, data in advanced_results["analysis_results"].items():
-                    component_name = component.replace('_', ' ').title()
+                    component_name = component.replace("_", " ").title()
                     print(f"  ✅ {component_name}")
-                
+
                 if advanced_results.get("files_generated"):
                     print(f"\nFiles Generated: {len(advanced_results['files_generated'])}")
                     for file_type, file_path in advanced_results["files_generated"].items():
                         print(f"  📄 {file_type.replace('_', ' ').title()}: {file_path}")
-            
+
             return  # Exit after advanced analysis
 
         else:
@@ -1671,14 +1786,14 @@ def main():
                 results = orchestrator.run_with_story_tracking()
             else:
                 results = orchestrator.run_complete_simulation()
-            
+
             # Run advanced analysis if enabled (in addition to regular simulation)
             if config.get("enable_advanced_analysis", False):
                 print("\n=== RUNNING ADVANCED ANALYSIS ===")
                 try:
                     population_data = results.get("population_data", [])
                     advanced_results = orchestrator.run_advanced_analysis(population_data)
-                    
+
                     # Merge advanced analysis results into main results
                     if advanced_results.get("advanced_analysis_enabled", False):
                         results["advanced_analysis"] = advanced_results
@@ -1686,11 +1801,11 @@ def main():
                             if "files_generated" not in results:
                                 results["files_generated"] = {}
                             results["files_generated"]["advanced_analysis"] = advanced_results["files_generated"]
-                        
+
                         print(f"Advanced Analysis: {len(advanced_results['analysis_results'])} components completed")
                     else:
                         print("Advanced Analysis: Disabled in configuration")
-                        
+
                 except Exception as e:
                     print(f"Advanced Analysis Failed: {e}")
                     # Continue with regular results even if advanced analysis fails
@@ -1733,6 +1848,7 @@ def main():
     except Exception as e:
         print(f"\nERROR: {e}")
         import traceback
+
         traceback.print_exc()
         sys.exit(1)
 

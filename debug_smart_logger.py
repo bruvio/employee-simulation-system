@@ -1,8 +1,6 @@
 #!/Users/brunoviola/bruvio-tools/.venv/bin/python3
 
-"""
-Debug SmartLoggingManager
-"""
+"""Debug SmartLoggingManager."""
 
 from smart_logging_manager import SmartLoggingManager
 

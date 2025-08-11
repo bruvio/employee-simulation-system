@@ -76,12 +76,10 @@ class IndividualProgressionSimulator:
     def _generate_performance_path(self, employee, years, scenario):
         """Generate realistic performance rating progression"""
         # Implementation based on research/salary-progression-modeling.md
-        pass
     
     def _calculate_salary_path(self, employee, performance_path):
         """Calculate year-by-year salary progression"""
         # Uses existing UPLIFT_MATRIX with compound growth
-        pass
 ```
 
 #### 2. MedianConvergenceAnalyzer
@@ -115,7 +113,6 @@ class MedianConvergenceAnalyzer:
     def recommend_intervention_strategy(self, below_median_employees):
         """Recommend population-level intervention strategies"""
         # Implementation based on research/gender-pay-gap-remediation.md
-        pass
 ```
 
 #### 3. InterventionStrategySimulator
@@ -155,7 +152,6 @@ class InterventionStrategySimulator:
     def _simulate_strategy(self, strategy_name, target_gap, max_years):
         """Simulate specific intervention strategy"""
         # Implementation details based on research
-        pass
 ```
 
 ### Integration Points
