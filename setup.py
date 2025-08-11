@@ -37,7 +37,7 @@ def read_requirements():
 
 setup(
     name="employee-simulation-system",
-    version="1.0.0",
+    version="1.0.1",
     description="Advanced employee salary progression modeling and simulation system",
     long_description=read_long_description(),
     long_description_content_type="text/markdown",

@@ -1,4 +1,13 @@
-# 1.0.0 (2025-08-10)
+# Changelog
+
+## [1.0.1](https://github.com/bruvio/employee-simulation-system/compare/1.0.0...v1.0.1) (2025-08-11)
+
+
+### Bug Fixes
+
+* Complete GitHub workflow and Python package structure overhaul ([5742932](https://github.com/bruvio/employee-simulation-system/commit/5742932d8e1f3a4ee4629a7a486fb6f082e660ed))
+
+## 1.0.0 (2025-08-10)
 
 
 ### Features

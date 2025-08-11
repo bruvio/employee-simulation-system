@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "employee-simulation-system"
-version = "1.0.0"
+version = "1.0.1"
 description = "Advanced employee salary progression modeling and simulation system"
 readme = "README.md"
 license = {text = "MIT"}
