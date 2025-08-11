@@ -1,0 +1,17 @@
+python employee_simulation_orchestrator.py --mode advanced-analysis-only --population-size 200
+  --advanced-analysis
+
+  🎯 Use Scenarios:
+
+  python employee_simulation_orchestrator.py --scenario quick_test
+  python employee_simulation_orchestrator.py --scenario gender_gap_analysis
+
+  🏢 Use Company Models:
+
+  python employee_simulation_orchestrator.py --scenario GEL
+
+  🔧 Manage Configurations:
+
+  python config_manager.py list                    # See all options
+  python config_manager.py show quick_test         # Show details
+  python config_manager.py create my.json --scenario quick_test --population-size 300
