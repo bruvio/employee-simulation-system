@@ -4,9 +4,7 @@
 Quick test to verify SmartLoggingManager integration works
 """
 
-import json
 import sys
-from pathlib import Path
 
 
 def test_smart_logging_integration():

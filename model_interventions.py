@@ -1,14 +1,12 @@
 #!/Users/brunoviola/bruvio-tools/.venv/bin/python3
 
 import pandas as pd
-import numpy as np
 import argparse
 import json
 import sys
 import os
-from typing import List, Dict, Optional
+from typing import List, Dict
 from datetime import datetime
-from pathlib import Path
 
 # Add current directory to path for imports
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
@@ -55,16 +53,14 @@ def create_gender_gap_report(remediation_result: Dict, output_format: str = "tex
     if output_format == "json":
         return json.dumps(remediation_result, indent=2, default=str)
 
-    # Text format report
-    report_lines = []
-
-    # Header
-    report_lines.extend(["=" * 80, "💼 GENDER PAY GAP REMEDIATION ANALYSIS", "=" * 80, ""])
-
     # Current State
     current = remediation_result["current_state"]
-    report_lines.extend(
-        [
+    report_lines = [
+        "=" * 80,
+        "💼 GENDER PAY GAP REMEDIATION ANALYSIS",
+        "=" * 80,
+        "",
+        *[
             "📊 CURRENT STATE",
             "-" * 20,
             f"Gender Pay Gap: {format_percentage(current['gender_pay_gap_percent'])}",
@@ -73,9 +69,8 @@ def create_gender_gap_report(remediation_result: Dict, output_format: str = "tex
             f"Affected Female Employees: {current['affected_female_employees']}",
             f"Total Payroll: {format_currency(current['total_payroll'])}",
             "",
-        ]
-    )
-
+        ],
+    ]
     # Target State
     target = remediation_result["target_state"]
     report_lines.extend(
@@ -116,10 +111,9 @@ def create_gender_gap_report(remediation_result: Dict, output_format: str = "tex
             "📋 STRATEGY COMPARISON",
             "-" * 25,
             f"{'Strategy':<20} {'Cost':<12} {'Timeline':<10} {'Gap Reduction':<15} {'Feasibility':<12}",
+            "-" * 80,
         ]
     )
-    report_lines.append("-" * 80)
-
     for strategy_name, strategy in strategies.items():
         if not strategy.get("applicable", True):
             continue
@@ -193,16 +187,14 @@ def create_median_convergence_report(convergence_result: Dict, output_format: st
     if output_format == "json":
         return json.dumps(convergence_result, indent=2, default=str)
 
-    # Text format report
-    report_lines = []
-
-    # Header
-    report_lines.extend(["=" * 70, "📊 MEDIAN CONVERGENCE ANALYSIS", "=" * 70, ""])
-
     # Summary Statistics
     stats = convergence_result["summary_statistics"]
-    report_lines.extend(
-        [
+    report_lines = [
+        "=" * 70,
+        "📊 MEDIAN CONVERGENCE ANALYSIS",
+        "=" * 70,
+        "",
+        *[
             "📈 SUMMARY STATISTICS",
             "-" * 22,
             f"Total Employees Below Median: {stats['count']}",
@@ -211,9 +203,8 @@ def create_median_convergence_report(convergence_result: Dict, output_format: st
             f"Total Gap Amount: {format_currency(stats['total_gap_amount'])}",
             f"Largest Individual Gap: {format_currency(stats['max_gap_amount'])}",
             "",
-        ]
-    )
-
+        ],
+    ]
     # Gender Analysis (if available)
     if "gender_analysis" in convergence_result:
         gender_analysis = convergence_result["gender_analysis"]
@@ -269,13 +260,12 @@ def run_gender_gap_analysis(population_data: List[Dict], args) -> Dict:
 
     simulator = InterventionStrategySimulator(population_data)
 
-    result = simulator.model_gender_gap_remediation(
+    return simulator.model_gender_gap_remediation(
         target_gap_percent=args.target_gap,
         max_years=args.max_years,
-        budget_constraint=args.budget_limit / 100.0,  # Convert percentage to decimal
+        budget_constraint=args.budget_limit
+        / 100.0,  # Convert percentage to decimal
     )
-
-    return result
 
 
 def run_median_convergence_analysis(population_data: List[Dict], args) -> Dict:
@@ -306,21 +296,13 @@ def run_equity_analysis(population_data: List[Dict], args) -> Dict:
     if args.include_tenure:
         dimensions.append("tenure")
 
-    equity_analysis = simulator.analyze_population_salary_equity(dimensions)
-
-    return equity_analysis
+    return simulator.analyze_population_salary_equity(dimensions)
 
 
 def create_equity_report(equity_result: Dict, output_format: str = "text") -> str:
     """Create formatted equity analysis report."""
     if output_format == "json":
         return json.dumps(equity_result, indent=2, default=str)
-
-    # Text format report
-    report_lines = []
-
-    # Header
-    report_lines.extend(["=" * 70, "⚖️  SALARY EQUITY ANALYSIS", "=" * 70, ""])
 
     # Overall Equity Score
     overall_score = equity_result["overall_equity_score"]
@@ -330,10 +312,18 @@ def create_equity_report(equity_result: Dict, output_format: str = "text") -> st
         else "Good" if overall_score > 0.6 else "Fair" if overall_score > 0.4 else "Poor"
     )
 
-    report_lines.extend(
-        ["📊 OVERALL EQUITY ASSESSMENT", "-" * 28, f"Equity Score: {overall_score:.2f}/1.00 ({score_label})", ""]
-    )
-
+    report_lines = [
+        "=" * 70,
+        "⚖️  SALARY EQUITY ANALYSIS",
+        "=" * 70,
+        "",
+        *[
+            "📊 OVERALL EQUITY ASSESSMENT",
+            "-" * 28,
+            f"Equity Score: {overall_score:.2f}/1.00 ({score_label})",
+            "",
+        ],
+    ]
     # Gender Equity
     if "gender" in equity_result:
         gender = equity_result["gender"]
@@ -382,8 +372,7 @@ def create_equity_report(equity_result: Dict, output_format: str = "text") -> st
 
     # Priority Interventions
     if "priority_interventions" in equity_result:
-        interventions = equity_result["priority_interventions"]
-        if interventions:
+        if interventions := equity_result["priority_interventions"]:
             report_lines.extend(["🚨 PRIORITY INTERVENTIONS", "-" * 23])
 
             for intervention in interventions:
@@ -406,13 +395,13 @@ def main():
 Examples:
   # Gender gap remediation analysis
   python model_interventions.py --strategy gender-gap --data-source generate --target-gap 0.0 --budget-limit 0.5
-  
+
   # Median convergence analysis
   python model_interventions.py --strategy median-convergence --data-source employees.csv --min-gap-percent 10.0
-  
+
   # Comprehensive equity analysis
   python model_interventions.py --strategy equity-analysis --data-source data.json --include-tenure
-  
+
   # Generate detailed report
   python model_interventions.py --strategy gender-gap --data-source generate --output-file reports/remediation_plan.txt --dry-run
         """,
@@ -485,7 +474,7 @@ Examples:
             LOGGER.info("Running in validation mode")
 
             df = pd.DataFrame(population_data)
-            print(f"✅ Data validation successful")
+            print("✅ Data validation successful")
             print(f"   Total employees: {len(df)}")
             print(f"   Levels: {sorted(df['level'].unique())}")
             print(f"   Gender distribution: {dict(df['gender'].value_counts())}")

@@ -92,7 +92,7 @@ class PerformanceReviewSystem:
         # Apply uplift to current salary
         new_salary = current_salary * (1 + total_uplift)
 
-        uplift_result = {
+        return {
             "old_salary": float(current_salary),
             "new_salary": float(new_salary),
             "uplift_percentage": float(total_uplift * 100),
@@ -100,8 +100,6 @@ class PerformanceReviewSystem:
             "performance_uplift": float(performance_uplift * 100),
             "career_uplift": float(career_uplift * 100),
         }
-
-        return uplift_result
 
     def apply_annual_review(self, employees, review_year):
         """Apply annual performance review and salary adjustments"""
@@ -192,6 +190,8 @@ class PerformanceReviewSystem:
         validation_results = []
         all_passed = True
 
+        # Check if calculations match
+        tolerance = 0.01  # 1 cent tolerance
         for test_case in test_cases:
             uplift_result = self.calculate_salary_uplift(test_case)
 
@@ -206,8 +206,6 @@ class PerformanceReviewSystem:
             expected_total = expected_baseline + expected_performance + expected_career
             expected_new_salary = base_salary * (1 + expected_total / 100)
 
-            # Check if calculations match
-            tolerance = 0.01  # 1 cent tolerance
             baseline_match = abs(uplift_result["baseline_uplift"] - expected_baseline) < tolerance
             performance_match = abs(uplift_result["performance_uplift"] - expected_performance) < tolerance
             career_match = abs(uplift_result["career_uplift"] - expected_career) < tolerance
@@ -241,7 +239,8 @@ class PerformanceReviewSystem:
         if all_passed:
             LOGGER.info(f"✓ All {len(test_cases)} uplift calculations validated successfully")
         else:
-            failed_count = sum(1 for r in validation_results if not r["passed"])
+            failed_count = sum(bool(not r["passed"])
+                           for r in validation_results)
             LOGGER.error(f"✗ {failed_count} of {len(test_cases)} uplift calculations failed validation")
 
         return validation_results, all_passed

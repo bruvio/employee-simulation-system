@@ -26,11 +26,8 @@ def read_requirements():
                     # Handle conditional requirements
                     if ";" not in line:
                         requirements.append(line)
-                    else:
-                        # Skip conditional requirements for now
-                        base_req = line.split(";")[0].strip()
-                        if base_req:
-                            requirements.append(base_req)
+                    elif base_req := line.split(";")[0].strip():
+                        requirements.append(base_req)
             return requirements
     return []
 

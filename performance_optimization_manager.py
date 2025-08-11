@@ -7,8 +7,6 @@ from functools import wraps
 from typing import Dict, List, Any, Optional, Callable
 import pandas as pd
 import numpy as np
-from pathlib import Path
-import json
 from datetime import datetime
 import warnings
 
@@ -469,7 +467,7 @@ class PerformanceOptimizationManager:
         # Memory usage analysis
         memory_usage = [checkpoint["memory_mb"] for checkpoint in self.memory_checkpoints.values()]
 
-        peak_memory = max(memory_usage) if memory_usage else 0
+        peak_memory = max(memory_usage, default=0)
         avg_memory = sum(memory_usage) / len(memory_usage) if memory_usage else 0
 
         return {
@@ -494,10 +492,10 @@ class PerformanceOptimizationManager:
         """Generate performance improvement recommendations"""
         recommendations = []
 
-        # Memory-based recommendations
-        memory_usage = [checkpoint["memory_mb"] for checkpoint in self.memory_checkpoints.values()]
-
-        if memory_usage:
+        if memory_usage := [
+            checkpoint["memory_mb"]
+            for checkpoint in self.memory_checkpoints.values()
+        ]:
             peak_memory = max(memory_usage)
 
             if peak_memory > 1000:
@@ -506,10 +504,11 @@ class PerformanceOptimizationManager:
             if peak_memory > 2000:
                 recommendations.append("Use distributed processing or reduce batch sizes")
 
-        # Time-based recommendations
-        slow_operations = [name for name, metrics in self.operation_times.items() if metrics["duration_seconds"] > 60]
-
-        if slow_operations:
+        if slow_operations := [
+            name
+            for name, metrics in self.operation_times.items()
+            if metrics["duration_seconds"] > 60
+        ]:
             recommendations.append(f"Optimize slow operations: {', '.join(slow_operations)}")
 
         # Optimization coverage recommendations

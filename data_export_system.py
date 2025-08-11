@@ -1,14 +1,11 @@
 #!/Users/brunoviola/bruvio-tools/.venv/bin/python3
 
 import pandas as pd
-import numpy as np
 import json
 import argparse
 from datetime import datetime
 from pathlib import Path
-import openpyxl
 from openpyxl.styles import Font, PatternFill, Alignment
-from openpyxl.utils.dataframe import dataframe_to_rows
 from logger import LOGGER
 
 
@@ -168,8 +165,7 @@ class DataExportSystem:
         with pd.ExcelWriter(filepath, engine="openpyxl") as writer:
             df.to_excel(writer, sheet_name="Population", index=False)
 
-            # Get workbook and worksheet
-            workbook = writer.book
+            # Get worksheet
             worksheet = writer.sheets["Population"]
 
             # Apply header formatting
@@ -189,7 +185,7 @@ class DataExportSystem:
                     try:
                         if len(str(cell.value)) > max_length:
                             max_length = len(str(cell.value))
-                    except:
+                    except (AttributeError, TypeError):
                         pass
                 adjusted_width = min(max_length + 2, 50)
                 worksheet.column_dimensions[column_letter].width = adjusted_width
@@ -323,7 +319,7 @@ class DataExportSystem:
                 try:
                     if len(str(cell.value)) > max_length:
                         max_length = len(str(cell.value))
-                except:
+                except (AttributeError, TypeError):
                     pass
             adjusted_width = min(max_length + 2, 50)
             worksheet.column_dimensions[column_letter].width = adjusted_width

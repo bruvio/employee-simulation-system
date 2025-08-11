@@ -83,8 +83,9 @@ class VisualizationGenerator:
             for category, employee_ids in self.tracked_employees.items():
                 category_stories = []
                 for emp_id in employee_ids:
-                    story = self.story_tracker.generate_employee_story(emp_id, category)
-                    if story:
+                    if story := self.story_tracker.generate_employee_story(
+                        emp_id, category
+                    ):
                         category_stories.append(story)
                 self.employee_stories[category] = category_stories
 
@@ -139,9 +140,7 @@ class VisualizationGenerator:
             progression_fig = self.plot_employee_progression_timelines()
             visualizations["employee_progressions"] = self.save_figure(progression_fig, "employee_progressions")
 
-            # Interactive story dashboard (HTML export)
-            interactive_dashboard = self.create_interactive_story_dashboard()
-            if interactive_dashboard:
+            if interactive_dashboard := self.create_interactive_story_dashboard():
                 visualizations["interactive_dashboard"] = interactive_dashboard
 
         LOGGER.info(f"Generated {len(visualizations)} visualizations")
@@ -160,7 +159,7 @@ class VisualizationGenerator:
         bars1 = axes[0, 0].bar(
             level_counts.index,
             level_counts.values,
-            color=[self.colors["core"] if l <= 3 else self.colors["senior"] for l in level_counts.index],
+            color=[self.colors["core"] if level <= 3 else self.colors["senior"] for level in level_counts.index],
             alpha=0.7,
         )
         axes[0, 0].set_title("Distribution by Level")
@@ -347,7 +346,7 @@ class VisualizationGenerator:
         perf_labels = [perf for perf in perf_order if perf in df["performance_rating"].values]
 
         if perf_salary_data:
-            violin_parts = axes[0, 1].violinplot(perf_salary_data, positions=range(len(perf_salary_data)))
+            axes[0, 1].violinplot(perf_salary_data, positions=range(len(perf_salary_data)))
             axes[0, 1].set_xticks(range(len(perf_labels)))
             axes[0, 1].set_xticklabels(perf_labels, rotation=45)
             axes[0, 1].set_title("Salary Distribution by Performance Rating")
@@ -808,7 +807,6 @@ class VisualizationGenerator:
 
         try:
             # Create Plotly subplots
-            from plotly.subplots import make_subplots
             import plotly.express as px
 
             # Get timeline data
@@ -986,8 +984,7 @@ def main():
 
     # Create interactive dashboard if requested
     if args.interactive:
-        dashboard_path = generator.create_interactive_dashboard()
-        if dashboard_path:
+        if dashboard_path := generator.create_interactive_dashboard():
             visualizations["interactive_dashboard"] = dashboard_path
 
     LOGGER.info("Visualization generation completed")

@@ -94,9 +94,8 @@ class EmployeePopulationGenerator:
 
         # Gender pay gap configuration (2024 UK average is 15.8%)
         self.gender_pay_gap_percent = gender_pay_gap_percent
-        if self.gender_pay_gap_percent is not None:
-            if not (0 <= self.gender_pay_gap_percent <= 50):
-                raise ValueError(f"Gender pay gap percent must be between 0 and 50, got {self.gender_pay_gap_percent}")
+        if self.gender_pay_gap_percent is not None and not (0 <= self.gender_pay_gap_percent <= 50):
+            raise ValueError(f"Gender pay gap percent must be between 0 and 50, got {self.gender_pay_gap_percent}")
 
         LOGGER.info(f"Initializing population generator for {population_size} employees with seed {random_seed}")
         LOGGER.info(f"Level distribution: {[f'L{i+1}: {p:.1%}' for i, p in enumerate(self.level_distribution)]}")
@@ -109,8 +108,6 @@ class EmployeePopulationGenerator:
     def generate_population(self):
         """Generate complete employee population with realistic distributions"""
         LOGGER.info("Generating employee population with realistic distributions")
-        employees = []
-
         # Level distribution using custom or default distribution
         levels = self.rng.choice([1, 2, 3, 4, 5, 6], size=self.population_size, p=self.level_distribution)
 
@@ -129,19 +126,18 @@ class EmployeePopulationGenerator:
         # Generate hire dates (spread over last 5 years)
         hire_dates = self._generate_hire_dates()
 
-        for i in range(self.population_size):
-            employees.append(
-                {
-                    "employee_id": i + 1,
-                    "level": int(levels[i]),
-                    "salary": float(salaries[i]),
-                    "gender": genders[i],
-                    "performance_rating": self._assign_initial_performance(levels[i]),
-                    "hire_date": hire_dates[i],
-                    "review_history": [],
-                }
-            )
-
+        employees = [
+            {
+                "employee_id": i + 1,
+                "level": int(levels[i]),
+                "salary": float(salaries[i]),
+                "gender": genders[i],
+                "performance_rating": self._assign_initial_performance(levels[i]),
+                "hire_date": hire_dates[i],
+                "review_history": [],
+            }
+            for i in range(self.population_size)
+        ]
         LOGGER.info(f"Generated {len(employees)} employees")
         self._log_population_statistics(employees)
 
@@ -310,7 +306,7 @@ class EmployeePopulationGenerator:
         # Level-based exceptions (some core outperform seniors, some seniors underperform)
         adjusted_salaries = self._add_level_exceptions(adjusted_salaries, levels)
 
-        LOGGER.debug(f"Applied inequality patterns to population")
+        LOGGER.debug("Applied inequality patterns to population")
 
         return adjusted_salaries
 
@@ -327,8 +323,6 @@ class EmployeePopulationGenerator:
             return adjusted_salaries
 
         # Calculate current gap to understand baseline
-        current_male_median = np.median(adjusted_salaries[male_indices])
-        current_female_median = np.median(adjusted_salaries[female_indices])
 
         # Target: Male median should be higher by the specified percentage
         # Formula: male_median = female_median / (1 - gap_percent/100)
@@ -392,31 +386,6 @@ class EmployeePopulationGenerator:
         return salaries
 
     def _assign_initial_performance(self, level):
-        """Assign initial performance rating based on level"""
-        # Performance weights based on level (senior engineers perform better on average)
-        if level >= 4:  # Senior engineers
-            performance_weights = {
-                "Not met": 0.02,
-                "Partially met": 0.08,
-                "Achieving": 0.40,
-                "High Performing": 0.40,
-                "Exceeding": 0.10,
-            }
-        else:  # Core engineers
-            performance_weights = {
-                "Not met": 0.05,
-                "Partially met": 0.15,
-                "Achieving": 0.55,
-                "High Performing": 0.22,
-                "Exceeding": 0.03,
-            }
-
-        ratings = list(performance_weights.keys())
-        probabilities = list(performance_weights.values())
-
-        return self.rng.choice(ratings, p=probabilities)
-
-    def _assign_initial_performance(self, level):
         """Assign realistic initial performance rating based on level"""
         category = "senior" if level >= 4 else "core"
         performance_weights = {
@@ -462,7 +431,7 @@ class EmployeePopulationGenerator:
         df = pd.DataFrame(employees)
 
         # Overall statistics
-        LOGGER.info(f"Population Statistics:")
+        LOGGER.info("Population Statistics:")
         LOGGER.info(f"Total employees: {len(employees)}")
         LOGGER.info(f"Salary range: £{df['salary'].min():.2f} - £{df['salary'].max():.2f}")
         LOGGER.info(f"Overall median salary: £{df['salary'].median():.2f}")
@@ -500,7 +469,7 @@ class EmployeePopulationGenerator:
             female_median = female_salaries.median()
             gap_percentage = (male_median - female_median) / male_median * 100
 
-            LOGGER.info(f"Gender pay gap:")
+            LOGGER.info("Gender pay gap:")
             LOGGER.info(f"  Male median: £{male_median:.2f}")
             LOGGER.info(f"  Female median: £{female_median:.2f}")
             LOGGER.info(f"  Gap: {gap_percentage:.2f}%")
@@ -585,15 +554,15 @@ def main():
 
         # Save data
         csv_path, json_path = generator.save_population_data(employees, args.output_prefix)
-        LOGGER.info(f"Population generation completed successfully")
+        LOGGER.info("Population generation completed successfully")
         LOGGER.info(f"CSV: {csv_path}")
         LOGGER.info(f"JSON: {json_path}")
 
-        return 0
     else:
         LOGGER.info("Use --generate to create employee population data")
         parser.print_help()
-        return 0
+
+    return 0
 
 
 if __name__ == "__main__":

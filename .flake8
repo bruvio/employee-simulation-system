@@ -21,4 +21,4 @@ exclude =
     images
 per-file-ignores =
     __init__.py:F401
-    tests/*:D103,D100  # Allow missing docstrings in tests
+    tests/*:D103,D100

@@ -1,7 +1,6 @@
 #!/Users/brunoviola/bruvio-tools/.venv/bin/python3
 
 import logging
-import os
 import sys
 from datetime import datetime
 from pathlib import Path
@@ -175,11 +174,12 @@ class SmartLoggingManager:
         phase_data["completed_operations"] += completed_count
         self.execution_stats["total_operations"] += completed_count
 
-        if self.enable_progress and phase_data["total_operations"] > 0:
-            progress_pct = (phase_data["completed_operations"] / phase_data["total_operations"]) * 100
-            print(f"   ✓ {operation_name} ({progress_pct:.1f}%)")
-        elif self.enable_progress:
-            print(f"   ✓ {operation_name}")
+        if self.enable_progress:
+            if phase_data["total_operations"] > 0:
+                progress_pct = (phase_data["completed_operations"] / phase_data["total_operations"]) * 100
+                print(f"   ✓ {operation_name} ({progress_pct:.1f}%)")
+            else:
+                print(f"   ✓ {operation_name}")
 
     def complete_phase(self, phase_name: str = None):
         """Complete the current phase"""

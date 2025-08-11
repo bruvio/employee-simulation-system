@@ -4,9 +4,8 @@ import pandas as pd
 import json
 from pathlib import Path
 from datetime import datetime
-from typing import Dict, List, Optional, Any, Union
+from typing import Dict, List, Optional, Any
 import csv
-from dataclasses import asdict
 import xml.etree.ElementTree as ET
 
 
@@ -200,9 +199,12 @@ class AdvancedStoryExportSystem:
         }
 
         # Add category summaries
-        for category in employee_stories.keys():
-            category_stories = [story for story in comprehensive_data if story.get("category") == category]
-            if category_stories:
+        for category in employee_stories:
+            if category_stories := [
+                story
+                for story in comprehensive_data
+                if story.get("category") == category
+            ]:
                 salaries = [story.get("current_salary", 0) for story in category_stories if story.get("current_salary")]
                 growths = [
                     story.get("total_growth_percent", 0)
@@ -270,9 +272,10 @@ class AdvancedStoryExportSystem:
         with pd.ExcelWriter(excel_file, engine="openpyxl") as writer:
             # Summary sheet
             summary_data = []
-            for category, stories in employee_stories.items():
-                category_stories = [s for s in comprehensive_data if s.get("category") == category]
-                if category_stories:
+            for category in employee_stories:
+                if category_stories := [
+                    s for s in comprehensive_data if s.get("category") == category
+                ]:
                     salaries = [s.get("current_salary", 0) for s in category_stories]
                     growths = [s.get("total_growth_percent", 0) for s in category_stories]
 
@@ -280,9 +283,13 @@ class AdvancedStoryExportSystem:
                         {
                             "Category": category.replace("_", " ").title(),
                             "Story Count": len(category_stories),
-                            "Avg Current Salary": sum(salaries) / len(salaries) if salaries else 0,
-                            "Avg Growth %": sum(growths) / len(growths) if growths else 0,
-                            "Min Salary": min(salaries) if salaries else 0,
+                            "Avg Current Salary": (
+                                sum(salaries) / len(salaries) if salaries else 0
+                            ),
+                            "Avg Growth %": (
+                                sum(growths) / len(growths) if growths else 0
+                            ),
+                            "Min Salary": min(salaries, default=0),
                             "Max Salary": max(salaries) if salaries else 0,
                         }
                     )
@@ -291,9 +298,10 @@ class AdvancedStoryExportSystem:
                 pd.DataFrame(summary_data).to_excel(writer, sheet_name="Summary", index=False)
 
             # Individual category sheets
-            for category in employee_stories.keys():
-                category_stories = [s for s in comprehensive_data if s.get("category") == category]
-                if category_stories:
+            for category in employee_stories:
+                if category_stories := [
+                    s for s in comprehensive_data if s.get("category") == category
+                ]:
                     # Create DataFrame for category
                     df = pd.DataFrame(category_stories)
 
@@ -325,7 +333,7 @@ class AdvancedStoryExportSystem:
         ET.SubElement(metadata, "total_categories").text = str(len(employee_stories))
 
         categories_elem = ET.SubElement(metadata, "categories")
-        for category in employee_stories.keys():
+        for category in employee_stories:
             cat_elem = ET.SubElement(categories_elem, "category")
             cat_elem.set("name", category)
             cat_elem.set("story_count", str(len([s for s in comprehensive_data if s.get("category") == category])))
@@ -333,7 +341,7 @@ class AdvancedStoryExportSystem:
         # Add stories by category
         stories_elem = ET.SubElement(root, "stories")
 
-        for category in employee_stories.keys():
+        for category in employee_stories:
             category_elem = ET.SubElement(stories_elem, "category")
             category_elem.set("name", category)
 
@@ -372,14 +380,13 @@ class AdvancedStoryExportSystem:
 
         markdown_file = self.output_base_dir / f"employee_stories_report_{self.export_timestamp}.md"
 
-        lines = []
-        lines.append("# Employee Story Analysis Report")
-        lines.append(f"")
-        lines.append(f"**Generated:** {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
+        lines = [
+            "# Employee Story Analysis Report",
+            "",
+            f"**Generated:** {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}",
+        ]
         lines.append(f"**Total Stories:** {len(comprehensive_data)}")
-        lines.append(f"**Categories:** {len(employee_stories)}")
-        lines.append("")
-
+        lines.extend((f"**Categories:** {len(employee_stories)}", ""))
         # Executive Summary
         lines.append("## Executive Summary")
         lines.append("")
@@ -388,7 +395,8 @@ class AdvancedStoryExportSystem:
         if total_tracked > 0:
             avg_growth = sum(s.get("total_growth_percent", 0) for s in comprehensive_data) / total_tracked
             avg_salary = sum(s.get("current_salary", 0) for s in comprehensive_data if s.get("current_salary", 0) > 0)
-            salary_count = sum(1 for s in comprehensive_data if s.get("current_salary", 0) > 0)
+            salary_count = sum(bool(s.get("current_salary", 0) > 0)
+                           for s in comprehensive_data)
             avg_salary = avg_salary / salary_count if salary_count > 0 else 0
 
             lines.append(f"- **Average Salary Growth:** {avg_growth:.1f}%")
@@ -447,10 +455,12 @@ class AdvancedStoryExportSystem:
         if comprehensive_data:
             # Growth distribution
             growths = [s.get("total_growth_percent", 0) for s in comprehensive_data]
-            positive_growth = sum(1 for g in growths if g > 0)
-            negative_growth = sum(1 for g in growths if g < 0)
+            positive_growth = sum(bool(g > 0)
+                              for g in growths)
+            negative_growth = sum(bool(g < 0)
+                              for g in growths)
 
-            lines.append(f"### Growth Analysis")
+            lines.append("### Growth Analysis")
             lines.append(
                 f"- **Positive Growth:** {positive_growth} employees ({positive_growth/len(growths)*100:.1f}%)"
             )
@@ -460,14 +470,16 @@ class AdvancedStoryExportSystem:
             lines.append(f"- **Average Growth:** {sum(growths)/len(growths):.1f}%")
             lines.append("")
 
-            # Level distribution
-            levels = [s.get("initial_level", 0) for s in comprehensive_data if s.get("initial_level", 0) > 0]
-            if levels:
+            if levels := [
+                s.get("initial_level", 0)
+                for s in comprehensive_data
+                if s.get("initial_level", 0) > 0
+            ]:
                 level_dist = {}
                 for level in levels:
                     level_dist[level] = level_dist.get(level, 0) + 1
 
-                lines.append(f"### Level Distribution")
+                lines.append("### Level Distribution")
                 for level in sorted(level_dist.keys()):
                     count = level_dist[level]
                     percentage = count / len(levels) * 100
@@ -476,7 +488,7 @@ class AdvancedStoryExportSystem:
 
         # Footer
         lines.append("---")
-        lines.append(f"*Report generated by Advanced Story Export System v1.0*")
+        lines.append("*Report generated by Advanced Story Export System v1.0*")
         lines.append(f"*Export ID: {self.export_timestamp}*")
 
         # Write markdown file
@@ -541,16 +553,16 @@ class AdvancedStoryExportSystem:
             # Collect employee data for this category
             emp_data = []
             for story in stories:
-                if hasattr(story, "__dict__"):
-                    story_dict = story.__dict__
-                else:
-                    story_dict = story
-
-                emp_id = story_dict.get("employee_id")
-                if emp_id:
-                    # Find corresponding population data
-                    pop_record = next((emp for emp in population_data if emp["employee_id"] == emp_id), None)
-                    if pop_record:
+                story_dict = story.__dict__ if hasattr(story, "__dict__") else story
+                if emp_id := story_dict.get("employee_id"):
+                    if pop_record := next(
+                        (
+                            emp
+                            for emp in population_data
+                            if emp["employee_id"] == emp_id
+                        ),
+                        None,
+                    ):
                         combined_data = {**pop_record, **story_dict}
                         emp_data.append(combined_data)
                         all_story_data.append({**combined_data, "category": category})
@@ -627,7 +639,7 @@ class AdvancedStoryExportSystem:
             flattened_rows = []
             for category, metrics in analysis_data["category_comparisons"].items():
                 row = {"category": category}
-                row.update(metrics["salary_stats"])
+                row |= metrics["salary_stats"]
                 if metrics["growth_stats"]:
                     row.update({f"growth_{k}": v for k, v in metrics["growth_stats"].items()})
                 flattened_rows.append(row)

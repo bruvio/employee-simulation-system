@@ -1,13 +1,11 @@
 #!/Users/brunoviola/bruvio-tools/.venv/bin/python3
 
 import plotly.graph_objects as go
-import plotly.express as px
 from plotly.subplots import make_subplots
 import pandas as pd
-import json
 from pathlib import Path
 from datetime import datetime
-from typing import Dict, List, Optional, Any, Tuple
+from typing import Dict, List, Optional, Any
 import numpy as np
 
 
@@ -230,7 +228,6 @@ class InteractiveDashboardGenerator:
 
         y_position = 0
         employee_positions = {}
-        hover_data = []
 
         # Process each category
         for category, employees in tracked_employees.items():
@@ -241,11 +238,7 @@ class InteractiveDashboardGenerator:
 
             for employee in employees:
                 # Extract employee data
-                if hasattr(employee, "__dict__"):
-                    emp_data = employee.__dict__
-                else:
-                    emp_data = employee
-
+                emp_data = employee.__dict__ if hasattr(employee, "__dict__") else employee
                 emp_id = emp_data.get("employee_id", "Unknown")
                 employee_positions[emp_id] = y_position
 
@@ -300,13 +293,17 @@ class InteractiveDashboardGenerator:
 
         # Update layout
         fig.update_layout(
-            title=dict(text="Employee Story Timeline Explorer", x=0.5, font_size=self.layout_config["title_font_size"]),
+            title=dict(
+                text="Employee Story Timeline Explorer",
+                x=0.5,
+                font_size=self.layout_config["title_font_size"],
+            ),
             xaxis=dict(title="Review Cycle", showgrid=True, zeroline=True),
             yaxis=dict(
                 title="Employee Stories",
                 tickmode="array",
                 tickvals=list(range(len(employee_positions))),
-                ticktext=[f"Emp {emp_id}" for emp_id in employee_positions.keys()],
+                ticktext=[f"Emp {emp_id}" for emp_id in employee_positions],
                 showgrid=True,
             ),
             template=self.layout_config["theme"],
@@ -479,7 +476,7 @@ class InteractiveDashboardGenerator:
                         level_analysis[level] = {}
                     level_analysis[level][category] = count
 
-        for category in tracked_ids_by_category.keys():
+        for category in tracked_ids_by_category:
             levels = sorted(level_analysis.keys())
             counts = [level_analysis.get(level, {}).get(category, 0) for level in levels]
             fig.add_trace(
@@ -647,8 +644,7 @@ class InteractiveDashboardGenerator:
         df = pd.DataFrame(population_data)
         total_tracked = sum(len(employees) for employees in tracked_employees.values()) if tracked_employees else 0
 
-        # HTML template
-        html_template = f"""
+        return f"""
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -738,7 +734,7 @@ class InteractiveDashboardGenerator:
         <h1>Employee Simulation Dashboard</h1>
         <div class="subtitle">Interactive Analysis & Story Exploration</div>
     </div>
-    
+
     <div class="stats-grid">
         <div class="stat-card">
             <div class="stat-value">{len(population_data):,}</div>
@@ -765,17 +761,15 @@ class InteractiveDashboardGenerator:
             <div class="stat-label">Interactive Components</div>
         </div>
     </div>
-    
+
     {''.join(plots_html)}
-    
+
     <div class="footer">
         <p>Generated on {datetime.now().strftime('%Y-%m-%d %H:%M:%S')} | Employee Simulation Dashboard v1.0</p>
         <p>🤖 Generated with Enhanced Employee Simulator</p>
     </div>
 </body>
 </html>"""
-
-        return html_template
 
     def get_dashboard_metadata(self) -> Dict[str, Any]:
         """Get metadata about generated dashboard components"""

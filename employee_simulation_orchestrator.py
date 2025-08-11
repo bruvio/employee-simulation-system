@@ -22,7 +22,6 @@ from advanced_story_export_system import AdvancedStoryExportSystem
 from performance_optimization_manager import PerformanceOptimizationManager
 
 # Import advanced analysis modules
-from salary_forecasting_engine import SalaryForecastingEngine
 from individual_progression_simulator import IndividualProgressionSimulator
 from median_convergence_analyzer import MedianConvergenceAnalyzer
 from intervention_strategy_simulator import InterventionStrategySimulator
@@ -214,9 +213,9 @@ class EmployeeSimulationOrchestrator:
 
             results["summary_metrics"].update(
                 {
-                    "cycles_completed": len(inequality_df) - 1 if not inequality_df.empty else 0,
+                    "cycles_completed": 0 if inequality_df.empty else len(inequality_df) - 1,
                     "final_gini_coefficient": (
-                        float(inequality_df.iloc[-1]["gini_coefficient"]) if not inequality_df.empty else "N/A"
+                        "N/A" if inequality_df.empty else float(inequality_df.iloc[-1]["gini_coefficient"])
                     ),
                     "convergence_achieved": convergence_achieved,
                 }
@@ -363,14 +362,14 @@ class EmployeeSimulationOrchestrator:
                 validation_results["cycle_simulator"] = {"status": "FAIL", "details": f"Error: {str(e)}"}
 
             # Test visualization generator
-            viz_generator = VisualizationGenerator()
+            VisualizationGenerator()
             validation_results["visualization_generator"] = {
                 "status": "PASS",
                 "details": "Visualization generator initialized successfully",
             }
 
             # Test data export system
-            exporter = DataExportSystem()
+            DataExportSystem()
             validation_results["data_export_system"] = {
                 "status": "PASS",
                 "details": "Data export system initialized successfully",
@@ -404,18 +403,20 @@ class EmployeeSimulationOrchestrator:
         target_median = 90108.0
         median_tolerance = 50.0
 
-        validation = {
+        return {
             "total_employees": len(population_data),
             "senior_engineers": len(senior_salaries),
             "senior_median_salary": median_salary,
             "target_median": target_median,
             "median_difference": abs(median_salary - target_median),
-            "median_constraint_met": abs(median_salary - target_median) <= median_tolerance,
+            "median_constraint_met": abs(median_salary - target_median)
+            <= median_tolerance,
             "gender_distribution": df["gender"].value_counts().to_dict(),
-            "level_distribution": df["level"].value_counts().sort_index().to_dict(),
+            "level_distribution": df["level"]
+            .value_counts()
+            .sort_index()
+            .to_dict(),
         }
-
-        return validation
 
     def _make_serializable(self, obj):
         """Convert DataFrames and other non-serializable objects for JSON export"""
@@ -442,23 +443,34 @@ class EmployeeSimulationOrchestrator:
 
     def _generate_final_summary(self, results):
         """Generate final summary of simulation results"""
-        summary = {
+        return {
             "simulation_timestamp": self.timestamp,
             "configuration": self.config,
-            "population_size": results["summary_metrics"].get("population_size", "N/A"),
-            "cycles_completed": results["summary_metrics"].get("cycles_completed", "N/A"),
-            "final_gini_coefficient": results["summary_metrics"].get("final_gini_coefficient", "N/A"),
-            "convergence_achieved": results["summary_metrics"].get("convergence_achieved", "N/A"),
+            "population_size": results["summary_metrics"].get(
+                "population_size", "N/A"
+            ),
+            "cycles_completed": results["summary_metrics"].get(
+                "cycles_completed", "N/A"
+            ),
+            "final_gini_coefficient": results["summary_metrics"].get(
+                "final_gini_coefficient", "N/A"
+            ),
+            "convergence_achieved": results["summary_metrics"].get(
+                "convergence_achieved", "N/A"
+            ),
             "validation_status": {
-                "population": results["validation_results"].get("population", {}).get("median_constraint_met", False),
-                "review_system": results["validation_results"].get("review_system", {}).get("all_tests_passed", False),
+                "population": results["validation_results"]
+                .get("population", {})
+                .get("median_constraint_met", False),
+                "review_system": results["validation_results"]
+                .get("review_system", {})
+                .get("all_tests_passed", False),
             },
             "total_files_generated": sum(
-                len(files) if isinstance(files, (list, dict)) else 1 for files in results["files_generated"].values()
+                len(files) if isinstance(files, (list, dict)) else 1
+                for files in results["files_generated"].values()
             ),
         }
-
-        return summary
 
     def _generate_comprehensive_summary(self, results):
         """Generate comprehensive summary with file organization and progress tracking"""
@@ -586,8 +598,9 @@ class EmployeeSimulationOrchestrator:
             for category, employee_ids in tracked_employees.items():
                 category_stories = []
                 for emp_id in employee_ids:
-                    story = self.story_tracker.generate_employee_story(emp_id, category)
-                    if story:
+                    if story := self.story_tracker.generate_employee_story(
+                        emp_id, category
+                    ):
                         category_stories.append(story)
                 employee_stories[category] = category_stories
 
@@ -610,7 +623,7 @@ class EmployeeSimulationOrchestrator:
                 story_exports = export_system.export_employee_stories_comprehensive(
                     employee_stories=employee_stories,
                     population_data=population_data,
-                    cycle_data=timeline_df if not timeline_df.empty else None,
+                    cycle_data=None if timeline_df.empty else timeline_df,
                     formats=story_export_formats,
                 )
 
@@ -665,9 +678,9 @@ class EmployeeSimulationOrchestrator:
 
             results["summary_metrics"].update(
                 {
-                    "cycles_completed": len(inequality_df) - 1 if not inequality_df.empty else 0,
+                    "cycles_completed": 0 if inequality_df.empty else len(inequality_df) - 1,
                     "final_gini_coefficient": (
-                        float(inequality_df.iloc[-1]["gini_coefficient"]) if not inequality_df.empty else "N/A"
+                        "N/A" if inequality_df.empty else float(inequality_df.iloc[-1]["gini_coefficient"])
                     ),
                     "convergence_achieved": convergence_achieved,
                     "total_tracked_employees": sum(len(stories) for stories in employee_stories.values()),
@@ -717,8 +730,9 @@ class EmployeeSimulationOrchestrator:
 
                 # Generate story-aware visualizations if requested
                 if self.config["create_individual_story_charts"]:
-                    story_viz_files = self._generate_individual_story_charts(employee_stories)
-                    if story_viz_files:
+                    if story_viz_files := self._generate_individual_story_charts(
+                        employee_stories
+                    ):
                         results["files_generated"]["story_visualizations"] = story_viz_files
                         self.smart_logger.update_progress("Individual story charts generated")
 
@@ -969,9 +983,7 @@ class EmployeeSimulationOrchestrator:
         ]
 
         total_tracked = sum(len(stories) for stories in employee_stories.values())
-        report_lines.append(f"Total employees tracked: **{total_tracked}**")
-        report_lines.append("")
-
+        report_lines.extend((f"Total employees tracked: **{total_tracked}**", ""))
         for category, stories in employee_stories.items():
             if not stories:
                 continue
@@ -994,15 +1006,12 @@ class EmployeeSimulationOrchestrator:
                 )
 
                 if story.key_events:
-                    for event in story.key_events:
-                        report_lines.append(f"- {event}")
+                    report_lines.extend(f"- {event}" for event in story.key_events)
                 else:
                     report_lines.append("- No significant events recorded")
 
                 report_lines.extend(["", "**Recommendations:**"])
-                for rec in story.recommendations:
-                    report_lines.append(f"- {rec}")
-
+                report_lines.extend(f"- {rec}" for rec in story.recommendations)
                 report_lines.extend(["", "---", ""])
 
         return "\n".join(report_lines)
@@ -1022,7 +1031,7 @@ class EmployeeSimulationOrchestrator:
         # TODO: This will be fully implemented in Phase 4 of the PRP
         # For now, return a placeholder
         self.smart_logger.log_info(f"Interactive dashboard export planned for: {output_path}")
-        return str(output_path)
+        return output_path
 
     def get_tracked_employee_summary(self):
         """Get summary statistics of tracked employees"""
@@ -1181,9 +1190,7 @@ class EmployeeSimulationOrchestrator:
             "",
         ]
 
-        # Analyze progression patterns
-        employee_analyses = progression_data.get("employee_analyses", {})
-        if employee_analyses:
+        if employee_analyses := progression_data.get("employee_analyses", {}):
             realistic_cagrs = []
             optimistic_cagrs = []
 
@@ -1253,8 +1260,9 @@ class EmployeeSimulationOrchestrator:
             "",
         ]
 
-        below_median_summary = convergence_data.get("below_median_summary", {})
-        if below_median_summary:
+        if below_median_summary := convergence_data.get(
+            "below_median_summary", {}
+        ):
             total_employees = below_median_summary.get("total_employees", 0)
             below_median_count = below_median_summary.get("below_median_count", 0)
             below_median_percent = below_median_summary.get("below_median_percent", 0)
@@ -1267,9 +1275,7 @@ class EmployeeSimulationOrchestrator:
                 ]
             )
 
-            # Statistics
-            stats = below_median_summary.get("summary_statistics", {})
-            if stats:
+            if stats := below_median_summary.get("summary_statistics", {}):
                 avg_gap = stats.get("average_gap_amount", 0)
                 total_gap = stats.get("total_gap_amount", 0)
 
@@ -1283,9 +1289,9 @@ class EmployeeSimulationOrchestrator:
                     ]
                 )
 
-        # Intervention recommendations
-        recommendations = convergence_data.get("intervention_recommendations", {})
-        if recommendations:
+        if recommendations := convergence_data.get(
+            "intervention_recommendations", {}
+        ):
             recommended_strategy = recommendations.get("recommended_strategy", {})
             strategy_name = recommended_strategy.get("primary_strategy", "N/A")
             budget_required = recommended_strategy.get("total_budget_required", 0)
@@ -1299,9 +1305,7 @@ class EmployeeSimulationOrchestrator:
                 ]
             )
 
-        # Population trends
-        trends = convergence_data.get("population_trends", {})
-        if trends:
+        if trends := convergence_data.get("population_trends", {}):
             lines.extend(
                 [
                     "## Population Convergence Trends",
@@ -1349,9 +1353,7 @@ class EmployeeSimulationOrchestrator:
             "",
         ]
 
-        # Gender gap analysis
-        gender_gap_data = intervention_data.get("gender_gap_remediation", {})
-        if gender_gap_data:
+        if gender_gap_data := intervention_data.get("gender_gap_remediation", {}):
             current_gap = gender_gap_data.get("current_gender_gap_percent", 0)
             optimal_strategy = gender_gap_data.get("optimal_strategy", {})
 
@@ -1377,9 +1379,7 @@ class EmployeeSimulationOrchestrator:
                     ]
                 )
 
-        # Equity analysis
-        equity_data = intervention_data.get("equity_analysis", {})
-        if equity_data:
+        if equity_data := intervention_data.get("equity_analysis", {}):
             lines.extend(
                 [
                     "## Comprehensive Equity Analysis",
@@ -1387,8 +1387,7 @@ class EmployeeSimulationOrchestrator:
                 ]
             )
 
-            optimal_approach = equity_data.get("optimal_approach", {})
-            if optimal_approach:
+            if optimal_approach := equity_data.get("optimal_approach", {}):
                 approach_name = optimal_approach.get("approach_name", "N/A")
                 total_investment = optimal_approach.get("total_investment", 0)
                 affected_employees = optimal_approach.get("affected_employees", 0)
@@ -1606,9 +1605,9 @@ def main():
         try:
             with open(args.config, "r") as f:
                 config = json.load(f)
-            self.smart_logger.log_info(f"Loaded configuration from {args.config}")
+            get_smart_logger().log_info(f"Loaded configuration from {args.config}")
         except Exception as e:
-            self.smart_logger.log_error(f"Failed to load configuration: {e}")
+            get_smart_logger().log_error(f"Failed to load configuration: {e}")
             sys.exit(1)
     else:
         # Use command-line arguments to build config

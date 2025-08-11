@@ -3,8 +3,7 @@
 import numpy as np
 import pandas as pd
 import argparse
-import json
-from typing import List, Dict, Tuple, Optional, Union
+from typing import List, Dict, Tuple, Optional
 from scipy import stats
 from logger import LOGGER
 from employee_population_simulator import UPLIFT_MATRIX, LEVEL_MAPPING
@@ -43,8 +42,7 @@ class SalaryForecastingEngine:
         if starting_value <= 0 or ending_value <= 0 or years <= 0:
             raise ValueError("All values must be positive")
 
-        cagr = (ending_value / starting_value) ** (1 / years) - 1
-        return cagr
+        return (ending_value / starting_value) ** (1 / years) - 1
 
     def project_compound_growth(self, initial_value: float, growth_rate: float, years: int) -> float:
         """
@@ -63,8 +61,7 @@ class SalaryForecastingEngine:
         if initial_value <= 0 or years < 0:
             raise ValueError("Initial value must be positive and years non-negative")
 
-        future_value = initial_value * ((1 + growth_rate) ** years)
-        return future_value
+        return initial_value * ((1 + growth_rate) ** years)
 
     def calculate_uplift_increase(self, current_salary: float, level: int, performance_rating: str) -> float:
         """
@@ -89,8 +86,7 @@ class SalaryForecastingEngine:
 
         total_increase_rate = uplift_data["baseline"] + uplift_data["performance"] + uplift_data[level_category]
 
-        new_salary = current_salary * (1 + total_increase_rate)
-        return new_salary
+        return current_salary * (1 + total_increase_rate)
 
     def calculate_confidence_interval(
         self, projected_values: List[float], confidence_level: Optional[float] = None
@@ -121,9 +117,7 @@ class SalaryForecastingEngine:
 
         # Calculate confidence interval using t-distribution
         degrees_freedom = len(values_array) - 1
-        confidence_interval = stats.t.interval(confidence, degrees_freedom, loc=mean, scale=std_error)
-
-        return confidence_interval
+        return stats.t.interval(confidence, degrees_freedom, loc=mean, scale=std_error)
 
     def generate_performance_scenarios(self, current_rating: str) -> Dict[str, List[str]]:
         """
@@ -192,8 +186,7 @@ class SalaryForecastingEngine:
         if current_salary <= 0 or target_salary <= current_salary or annual_growth_rate <= 0:
             raise ValueError("Invalid input values for time to target calculation")
 
-        years = np.log(target_salary / current_salary) / np.log(1 + annual_growth_rate)
-        return years
+        return np.log(target_salary / current_salary) / np.log(1 + annual_growth_rate)
 
     def apply_market_adjustments(
         self, salary_path: List[float], market_adjustment_years: List[int] = None
@@ -372,7 +365,7 @@ def main():
 
         # Demo performance scenarios
         scenarios = engine.generate_performance_scenarios("Achieving")
-        print(f"Performance Scenarios from 'Achieving':")
+        print("Performance Scenarios from 'Achieving':")
         for scenario, path in scenarios.items():
             print(f"  {scenario}: {' → '.join(path)}")
 

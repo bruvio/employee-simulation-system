@@ -2,7 +2,6 @@
 
 import ipywidgets as widgets
 from IPython.display import display, clear_output
-import numpy as np
 from logger import LOGGER
 
 # Import constants from employee population simulator
@@ -279,7 +278,7 @@ class InteractiveSalaryCalculator:
                 elif a_new_salary > b_new_salary:
                     print(f"\n🏆 Scenario A results in £{a_new_salary - b_new_salary:.2f} higher salary")
                 else:
-                    print(f"\n⚖️ Both scenarios result in the same salary")
+                    print("\n⚖️ Both scenarios result in the same salary")
 
         # Set up observers
         widgets_to_observe = [

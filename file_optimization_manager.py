@@ -1,6 +1,5 @@
 #!/Users/brunoviola/bruvio-tools/.venv/bin/python3
 
-import os
 import shutil
 from pathlib import Path
 from datetime import datetime
@@ -57,15 +56,14 @@ class FileOptimizationManager:
 
         # Story tracking directories (if enabled)
         if enable_story_tracking:
-            directories.update(
-                {
-                    "employee_stories": run_dir / "employee_stories",
-                    "story_analysis": run_dir / "story_analysis",
-                    "story_visualizations": run_images_dir / "story_visualizations",
-                    "employee_progressions": run_images_dir / "employee_progressions",
-                    "salary_distributions_by_level": run_images_dir / "salary_distributions_by_level",
-                }
-            )
+            directories |= {
+                "employee_stories": run_dir / "employee_stories",
+                "story_analysis": run_dir / "story_analysis",
+                "story_visualizations": run_images_dir / "story_visualizations",
+                "employee_progressions": run_images_dir / "employee_progressions",
+                "salary_distributions_by_level": run_images_dir
+                / "salary_distributions_by_level",
+            }
 
         # Create all directories
         for dir_path in directories.values():
@@ -109,15 +107,13 @@ class FileOptimizationManager:
         if not self.run_structure:
             raise ValueError("Run directory not created. Call create_run_directory first.")
 
-        files_created = {}
         pop_dir = self.run_structure["population_data"]
 
         # Save initial population
         population_path = pop_dir / "initial_population.json"
         with open(population_path, "w") as f:
             json.dump(population_data, f, indent=2, default=str)
-        files_created["initial_population"] = str(population_path)
-
+        files_created = {"initial_population": str(population_path)}
         # Save population summary
         df = pd.DataFrame(population_data)
         summary = {
@@ -168,14 +164,12 @@ class FileOptimizationManager:
         if not self.run_structure:
             raise ValueError("Run directory not created. Call create_run_directory first.")
 
-        files_created = {}
         sim_dir = self.run_structure["simulation_results"]
 
         # Save inequality metrics
         metrics_path = sim_dir / "inequality_progression.csv"
         inequality_metrics.to_csv(metrics_path, index=False)
-        files_created["inequality_metrics"] = str(metrics_path)
-
+        files_created = {"inequality_metrics": str(metrics_path)}
         # Save convergence analysis
         convergence_path = sim_dir / "convergence_analysis.json"
         with open(convergence_path, "w") as f:
@@ -186,7 +180,7 @@ class FileOptimizationManager:
         summary = {
             "total_cycles": len(inequality_metrics) - 1,  # Subtract initial state
             "final_gini_coefficient": (
-                float(inequality_metrics.iloc[-1]["gini_coefficient"]) if not inequality_metrics.empty else None
+                None if inequality_metrics.empty else float(inequality_metrics.iloc[-1]["gini_coefficient"])
             ),
             "convergence_achieved": convergence_info.get("converged", False),
             "simulation_completed_at": datetime.now().isoformat(),

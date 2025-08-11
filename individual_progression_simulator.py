@@ -1,14 +1,13 @@
 #!/Users/brunoviola/bruvio-tools/.venv/bin/python3
 
 import pandas as pd
-import numpy as np
 import argparse
 import json
-from typing import List, Dict, Tuple, Optional, Union
-from datetime import datetime, timedelta
+from typing import List, Dict
+from datetime import datetime
 from logger import LOGGER
 from salary_forecasting_engine import SalaryForecastingEngine
-from employee_population_simulator import UPLIFT_MATRIX, LEVEL_MAPPING
+from employee_population_simulator import UPLIFT_MATRIX
 
 
 class IndividualProgressionSimulator:
@@ -236,15 +235,12 @@ class IndividualProgressionSimulator:
                     adapted_path[i + 1] = "Achieving"  # Accelerate improvement
 
         # Long-tenure employees (tenure > 5 years) have more stable patterns
-        if tenure > 5.0:
-            # Reduce variability - more consistent performance
-            if len(adapted_path) >= 3:
-                # Smooth out dramatic changes
-                for i in range(1, len(adapted_path) - 1):
-                    prev_rating = adapted_path[i - 1]
-                    next_rating = adapted_path[i + 1]
-                    if prev_rating == next_rating:
-                        adapted_path[i] = prev_rating  # Smooth intermediate rating
+        if tenure > 5.0 and len(adapted_path) >= 3:
+            for i in range(1, len(adapted_path) - 1):
+                prev_rating = adapted_path[i - 1]
+                next_rating = adapted_path[i + 1]
+                if prev_rating == next_rating:
+                    adapted_path[i] = prev_rating  # Smooth intermediate rating
 
         return adapted_path
 
@@ -500,12 +496,12 @@ def main():
             print(json.dumps(result, indent=2, default=str))
         else:
             # Summary output
-            print(f"\n🧮 Individual Progression Analysis")
+            print("\n🧮 Individual Progression Analysis")
             print(f"{'='*50}")
             print(f"Employee ID: {result['employee_id']}")
             print(f"Current: Level {result['current_state']['level']}, £{result['current_state']['salary']:,.2f}")
             print(f"Performance: {result['current_state']['performance_rating']}")
-            print(f"\n📈 5-Year Projections:")
+            print("\n📈 5-Year Projections:")
 
             for scenario, projection in result["projections"].items():
                 print(f"  {scenario.capitalize()}: £{projection['final_salary']:,.2f} (CAGR: {projection['cagr']:.2%})")

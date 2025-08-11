@@ -44,12 +44,9 @@ class ReviewCycleSimulator:
         LOGGER.info(f"Starting {num_cycles}-cycle simulation with {len(self.population)} employees")
         LOGGER.info(f"Performance consistency rate: {performance_consistency:.1%}")
 
-        inequality_progression = []
-
         # Calculate initial state (cycle 0)
         initial_metrics = self._calculate_inequality_metrics(0)
-        inequality_progression.append(initial_metrics)
-
+        inequality_progression = [initial_metrics]
         for cycle in range(1, num_cycles + 1):
             LOGGER.info(f"Processing review cycle {cycle}")
 
@@ -135,7 +132,6 @@ class ReviewCycleSimulator:
     def _calculate_inequality_metrics(self, cycle):
         """Calculate comprehensive inequality metrics for current population state"""
         salaries = [emp["salary"] for emp in self.population]
-        genders = [emp["gender"] for emp in self.population]
         levels = [emp["level"] for emp in self.population]
         performance_ratings = [emp.get("performance_rating", "Achieving") for emp in self.population]
 
@@ -149,13 +145,13 @@ class ReviewCycleSimulator:
         male_salaries = [emp["salary"] for emp in self.population if emp["gender"] == "Male"]
         female_salaries = [emp["salary"] for emp in self.population if emp["gender"] == "Female"]
 
-        if len(male_salaries) > 0 and len(female_salaries) > 0:
+        # Gender gap by level
+        level_gaps = {}
+        if male_salaries and female_salaries:
             male_median = np.median(male_salaries)
             female_median = np.median(female_salaries)
             gender_gap_percent = ((male_median - female_median) / male_median * 100) if male_median > 0 else 0
 
-            # Gender gap by level
-            level_gaps = {}
             for level in range(1, 7):
                 level_males = [
                     emp["salary"] for emp in self.population if emp["gender"] == "Male" and emp["level"] == level
@@ -164,13 +160,11 @@ class ReviewCycleSimulator:
                     emp["salary"] for emp in self.population if emp["gender"] == "Female" and emp["level"] == level
                 ]
 
-                if len(level_males) > 0 and len(level_females) > 0:
+                if level_males and len(level_females) > 0:
                     level_gap = (np.median(level_males) - np.median(level_females)) / np.median(level_males) * 100
                     level_gaps[level] = level_gap
         else:
             gender_gap_percent = 0
-            level_gaps = {}
-
         # Performance-salary correlation
         perf_mapping = {"Not met": 1, "Partially met": 2, "Achieving": 3, "High Performing": 4, "Exceeding": 5}
         perf_numeric = [perf_mapping.get(rating, 3) for rating in performance_ratings]
@@ -180,20 +174,21 @@ class ReviewCycleSimulator:
             performance_correlation = (
                 float(corr_matrix[0, 1]) if corr_matrix.shape == (2, 2) and len(perf_numeric) > 1 else 0.0
             )
-        except:
+        except (ValueError, IndexError, TypeError):
             performance_correlation = 0.0
 
         try:
             corr_matrix = np.corrcoef(levels, salaries)
             level_correlation = float(corr_matrix[0, 1]) if corr_matrix.shape == (2, 2) and len(levels) > 1 else 0.0
-        except:
+        except (ValueError, IndexError, TypeError):
             level_correlation = 0.0
 
         # Salary statistics by level
         level_stats = {}
         for level in range(1, 7):
-            level_salaries = [emp["salary"] for emp in self.population if emp["level"] == level]
-            if level_salaries:
+            if level_salaries := [
+                emp["salary"] for emp in self.population if emp["level"] == level
+            ]:
                 level_stats[level] = {
                     "count": len(level_salaries),
                     "median": np.median(level_salaries),
@@ -311,11 +306,12 @@ class ReviewCycleSimulator:
 
         # Determine cycles needed for significant inequality reduction
         significant_reduction_threshold = 0.5  # 50% reduction in Gini
-        cycles_for_significant_reduction = self._find_cycles_for_threshold(
-            inequality_progression, "gini_coefficient", initial["gini_coefficient"], significant_reduction_threshold
-        )
-
-        if cycles_for_significant_reduction:
+        if cycles_for_significant_reduction := self._find_cycles_for_threshold(
+            inequality_progression,
+            "gini_coefficient",
+            initial["gini_coefficient"],
+            significant_reduction_threshold,
+        ):
             LOGGER.info(
                 f"Significant inequality reduction (50%) achieved after {cycles_for_significant_reduction} cycles"
             )
@@ -324,11 +320,9 @@ class ReviewCycleSimulator:
 
         # Determine cycles for gender pay gap elimination
         gender_gap_threshold = 1.0  # Within 1%
-        cycles_for_gender_equality = self._find_cycles_for_gender_threshold(
+        if cycles_for_gender_equality := self._find_cycles_for_gender_threshold(
             inequality_progression, gender_gap_threshold
-        )
-
-        if cycles_for_gender_equality:
+        ):
             LOGGER.info(f"Gender pay gap reduced to <{gender_gap_threshold}% after {cycles_for_gender_equality} cycles")
         else:
             LOGGER.info(f"Gender pay gap not reduced to <{gender_gap_threshold}% within simulated cycles")
@@ -337,19 +331,25 @@ class ReviewCycleSimulator:
         """Find the cycle where a metric reaches a threshold reduction"""
         target_value = initial_value * (1 - reduction_percentage)
 
-        for i, metrics in enumerate(progression):
-            if metrics[metric] <= target_value:
-                return i
-
-        return None
+        return next(
+            (
+                i
+                for i, metrics in enumerate(progression)
+                if metrics[metric] <= target_value
+            ),
+            None,
+        )
 
     def _find_cycles_for_gender_threshold(self, progression, threshold):
         """Find the cycle where gender gap falls below threshold"""
-        for i, metrics in enumerate(progression):
-            if abs(metrics["gender_gap_percent"]) <= threshold:
-                return i
-
-        return None
+        return next(
+            (
+                i
+                for i, metrics in enumerate(progression)
+                if abs(metrics["gender_gap_percent"]) <= threshold
+            ),
+            None,
+        )
 
     def save_simulation_results(self, inequality_progression, filename_prefix="simulation_results"):
         """Save complete simulation results"""
@@ -552,8 +552,8 @@ def main():
     # Save results
     file_paths = simulator.save_simulation_results(inequality_progression, args.output_prefix)
 
-    LOGGER.info(f"Multi-cycle simulation completed successfully")
-    LOGGER.info(f"Results saved:")
+    LOGGER.info("Multi-cycle simulation completed successfully")
+    LOGGER.info("Results saved:")
     for key, path in file_paths.items():
         if path:
             LOGGER.info(f"  {key}: {path}")

@@ -204,8 +204,6 @@ class EmployeeStoryTracker:
         # Sort by cycle number
         history_sorted = sorted(history, key=lambda x: x["cycle"])
         initial_salary = history_sorted[0]["salary"]
-        current_salary = history_sorted[-1]["salary"]
-
         if initial_salary <= 0:
             return None
 
@@ -213,9 +211,10 @@ class EmployeeStoryTracker:
         if num_cycles <= 0:
             return None
 
-        # Calculate annualized growth rate
-        growth_rate = (current_salary / initial_salary - 1) / num_cycles
-        return growth_rate
+        else:
+            current_salary = history_sorted[-1]["salary"]
+
+            return (current_salary / initial_salary - 1) / num_cycles
 
     def generate_employee_story(self, employee_id: int, category: str) -> Optional[EmployeeStory]:
         """Generate narrative story for a specific employee"""
@@ -247,7 +246,7 @@ class EmployeeStoryTracker:
         # Generate recommendations
         recommendations = self._generate_recommendations(employee_id, category, history, current_data)
 
-        story = EmployeeStory(
+        return EmployeeStory(
             employee_id=employee_id,
             category=category,
             initial_salary=initial_salary,
@@ -259,8 +258,6 @@ class EmployeeStoryTracker:
             story_summary=story_summary,
             recommendations=recommendations,
         )
-
-        return story
 
     def _identify_key_events(self, history: List[Dict]) -> List[str]:
         """Identify key events in employee's history"""
@@ -376,19 +373,18 @@ class EmployeeStoryTracker:
             for emp_id in employee_ids:
                 if emp_id in self.employee_histories:
                     history = self.employee_histories[emp_id]
-                    for record in history:
-                        timeline_data.append(
-                            {
-                                "employee_id": emp_id,
-                                "category": category,
-                                "cycle": record["cycle"],
-                                "salary": record["salary"],
-                                "performance_rating": record["performance_rating"],
-                                "level": record["level"],
-                                "gender": record["gender"],
-                            }
-                        )
-
+                    timeline_data.extend(
+                        {
+                            "employee_id": emp_id,
+                            "category": category,
+                            "cycle": record["cycle"],
+                            "salary": record["salary"],
+                            "performance_rating": record["performance_rating"],
+                            "level": record["level"],
+                            "gender": record["gender"],
+                        }
+                        for record in history
+                    )
         if timeline_data:
             timeline_df = pd.DataFrame(timeline_data)
             LOGGER.info(f"Created story timeline with {len(timeline_df)} records")
@@ -442,8 +438,7 @@ class EmployeeStoryTracker:
         for category, employee_ids in self.tracked_categories.items():
             category_stories = []
             for emp_id in employee_ids:
-                story = self.generate_employee_story(emp_id, category)
-                if story:
+                if story := self.generate_employee_story(emp_id, category):
                     category_stories.append(story.to_dict())
 
             stories_dict["categories"][category] = category_stories

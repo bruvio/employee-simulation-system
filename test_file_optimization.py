@@ -6,7 +6,6 @@ Test file optimization and structured directory creation
 
 import json
 import sys
-from pathlib import Path
 
 
 def test_file_optimization():
