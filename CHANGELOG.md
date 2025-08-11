@@ -1,3 +1,10 @@
+# [1.1.0](https://github.com/bruvio/employee-simulation-system/compare/1.0.1...1.1.0) (2025-08-11)
+
+
+### Features
+
+* Feature/dashboard ([#5](https://github.com/bruvio/employee-simulation-system/issues/5)) ([9a1f742](https://github.com/bruvio/employee-simulation-system/commit/9a1f742a984d44607a05482672eec6b011e36f41))
+
 ## [1.0.1](https://github.com/bruvio/employee-simulation-system/compare/1.0.0...1.0.1) (2025-08-11)
 
 
