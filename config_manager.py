@@ -6,7 +6,6 @@ Handles loading, merging, and managing configuration files and user scenarios.
 
 import argparse
 import json
-import os
 from pathlib import Path
 import sys
 from typing import Any, Dict, List, Optional
@@ -260,7 +259,7 @@ def main():
     subparsers = parser.add_subparsers(dest="command", help="Available commands")
 
     # List scenarios command
-    list_parser = subparsers.add_parser("list", help="List available scenarios")
+    _ = subparsers.add_parser("list", help="List available scenarios")
 
     # Show scenario command
     show_parser = subparsers.add_parser("show", help="Show scenario configuration")

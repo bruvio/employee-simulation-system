@@ -104,7 +104,7 @@ def create_custom_scenario_example():
     print(json.dumps(custom_scenario, indent=2))
 
     # Note: Uncomment the line below to actually save the scenario
-    # config_manager.save_scenario("my_custom_analysis", custom_scenario)
+    config_manager.save_scenario("my_custom_analysis", custom_scenario)
     print("\n(To save this scenario, uncomment the save_scenario line in the code)")
 
 
