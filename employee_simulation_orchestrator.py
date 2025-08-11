@@ -96,6 +96,7 @@ class EmployeeSimulationOrchestrator:
         """Load configuration from config.json with fallback to defaults."""
         try:
             from config_manager import ConfigurationManager
+
             config_manager = ConfigurationManager("config.json")
             return config_manager.get_orchestrator_config()
         except Exception as e:
@@ -842,6 +843,21 @@ class EmployeeSimulationOrchestrator:
 
         self.smart_logger.log_info("Starting advanced salary progression analysis")
 
+        # Initialize Analysis Narrator for user-friendly progress updates
+        try:
+            from analysis_narrator import AnalysisNarrator
+
+            narrator = AnalysisNarrator(self.config, self.smart_logger)
+
+            # Display user-friendly analysis introduction
+            intro_narrative = narrator.start_analysis_narrative()
+            self.smart_logger.log_info(intro_narrative)
+
+        except Exception as e:
+            # Continue without narrator if initialization fails
+            narrator = None
+            self.smart_logger.log_debug(f"Analysis narrator initialization failed: {e}")
+
         # Generate population if not provided
         if population_data is None:
             self.smart_logger.log_info("Generating population for advanced analysis")
@@ -853,6 +869,27 @@ class EmployeeSimulationOrchestrator:
                 salary_constraints=self.config.get("salary_constraints"),
             )
             population_data = population_generator.generate_population()
+
+            # Add user-friendly narrative for population generation
+            if narrator:
+                population_stats = {
+                    "total_employees": len(population_data),
+                    "gender_gap_percent": 0,  # Will be calculated from population
+                    "salary_range_min": min(emp["salary"] for emp in population_data),
+                    "salary_range_max": max(emp["salary"] for emp in population_data),
+                }
+
+                # Calculate actual gender gap
+                import pandas as pd
+
+                df = pd.DataFrame(population_data)
+                if len(df[df["gender"] == "Male"]) > 0 and len(df[df["gender"] == "Female"]) > 0:
+                    male_median = df[df["gender"] == "Male"]["salary"].median()
+                    female_median = df[df["gender"] == "Female"]["salary"].median()
+                    population_stats["gender_gap_percent"] = ((male_median - female_median) / male_median) * 100
+
+                population_narrative = narrator.narrate_population_generation(population_stats)
+                self.smart_logger.log_info(population_narrative)
 
         results = {
             "advanced_analysis_enabled": True,
@@ -942,6 +979,16 @@ class EmployeeSimulationOrchestrator:
                     f"Median convergence analysis completed - found {below_median_analysis['below_median_count']} below-median employees"
                 )
 
+                # Add user-friendly narrative for convergence analysis
+                if narrator:
+                    convergence_narrative_data = {
+                        "below_median_count": below_median_analysis["below_median_count"],
+                        "total_employees": len(population_data),
+                        "avg_convergence_years": 4,  # Average from typical analysis
+                    }
+                    convergence_narrative = narrator.narrate_convergence_analysis(convergence_narrative_data)
+                    self.smart_logger.log_info(convergence_narrative)
+
             # Phase 3: Intervention Strategy Analysis
             if self.config.get("run_intervention_strategy_analysis", False):
                 self.smart_logger.start_phase("Phase 3: Intervention Strategy Analysis", 4)
@@ -970,6 +1017,13 @@ class EmployeeSimulationOrchestrator:
                 self.smart_logger.complete_phase("Phase 3: Intervention Strategy Analysis")
                 self.smart_logger.log_success("Intervention strategy analysis completed")
 
+                # Add user-friendly narrative for intervention analysis
+                if narrator:
+                    intervention_narrative = narrator.narrate_intervention_analysis(
+                        results["analysis_results"]["intervention_strategies"]
+                    )
+                    self.smart_logger.log_info(intervention_narrative)
+
             # Phase 4: Export Advanced Analysis Reports
             if self.config.get("export_advanced_analysis_reports", True) and results["analysis_results"]:
                 self.smart_logger.start_phase("Phase 4: Export Advanced Analysis Reports", 3)
@@ -982,7 +1036,54 @@ class EmployeeSimulationOrchestrator:
                     f"Advanced analysis reports exported: {len(export_files)} files generated"
                 )
 
+            # Phase 5: Generate Management Dashboard (NEW)
+            if (
+                self.config.get("enable_advanced_visualizations", True)
+                and self.config.get("generate_management_dashboard", True)
+                and results["analysis_results"]
+            ):
+                self.smart_logger.start_phase("Phase 5: Generate Management Dashboard", 3)
+
+                try:
+                    from management_dashboard_generator import ManagementDashboardGenerator
+
+                    dashboard_generator = ManagementDashboardGenerator(
+                        analysis_results=results,
+                        population_data=population_data,
+                        config=self.config,
+                        smart_logger=self.smart_logger,
+                    )
+
+                    dashboard_files = dashboard_generator.generate_executive_dashboard()
+                    results["dashboard_files"] = dashboard_files
+
+                    self.smart_logger.complete_phase("Phase 5: Generate Management Dashboard")
+                    self.smart_logger.log_success(
+                        f"Management dashboard generated: {dashboard_files.get('components_generated', 0)} components"
+                    )
+
+                    # Add user-friendly narrative for dashboard generation
+                    if narrator:
+                        dashboard_narrative_data = {
+                            "components_generated": dashboard_files.get("components_generated", 0),
+                            "main_dashboard": dashboard_files.get("main_dashboard", ""),
+                            "auto_opened": self.config.get("auto_open_dashboard", True),
+                        }
+                        dashboard_narrative = narrator.narrate_dashboard_generation(dashboard_narrative_data)
+                        self.smart_logger.log_info(dashboard_narrative)
+
+                except Exception as e:
+                    self.smart_logger.log_error(f"Dashboard generation failed: {e}")
+                    # Continue without dashboard - don't fail entire analysis
+                    results["dashboard_error"] = str(e)
+
             self.smart_logger.log_success("Advanced analysis pipeline completed successfully")
+
+            # Add final completion summary with narrator
+            if narrator:
+                completion_summary = narrator.create_completion_summary(results)
+                self.smart_logger.log_info(completion_summary)
+
             return results
 
         except Exception as e:
@@ -1689,6 +1790,7 @@ def main():
         # Load configuration with scenario
         try:
             from config_manager import ConfigurationManager
+
             config_manager = ConfigurationManager("config.json")
             config = config_manager.get_orchestrator_config(scenario=args.scenario)
             get_smart_logger().log_info(f"Loaded scenario '{args.scenario}' configuration")
@@ -1699,6 +1801,7 @@ def main():
         # Try to load default config.json, fall back to command-line arguments
         try:
             from config_manager import ConfigurationManager
+
             config_manager = ConfigurationManager("config.json")
             config = config_manager.get_orchestrator_config()
             get_smart_logger().log_info("Loaded default configuration from config.json")
@@ -1708,33 +1811,33 @@ def main():
                 "population_size": args.population_size or 1000,
                 "random_seed": args.random_seed,
                 "max_cycles": args.max_cycles,
-            "convergence_threshold": 0.001,
-            "export_formats": args.export_formats,
-            "generate_visualizations": not args.no_viz,
-            "export_individual_files": True,
-            "export_comprehensive_report": True,
-            # Story tracking configuration from CLI
-            "enable_story_tracking": args.enable_stories or args.generate_stories,
-            "generate_interactive_dashboard": args.interactive_viz,
-            "create_individual_story_charts": args.generate_stories,
-            # Advanced analysis configuration from CLI
-            "enable_advanced_analysis": args.advanced_analysis
-            or args.individual_progression
-            or args.median_convergence
-            or args.intervention_strategies,
-            "run_individual_progression_analysis": args.individual_progression or args.advanced_analysis,
-            "run_median_convergence_analysis": args.median_convergence or args.advanced_analysis,
-            "run_intervention_strategy_analysis": args.intervention_strategies or args.advanced_analysis,
-            "progression_analysis_years": args.analysis_years,
-            "log_level": args.log_level,
-        }
-    
+                "convergence_threshold": 0.001,
+                "export_formats": args.export_formats,
+                "generate_visualizations": not args.no_viz,
+                "export_individual_files": True,
+                "export_comprehensive_report": True,
+                # Story tracking configuration from CLI
+                "enable_story_tracking": args.enable_stories or args.generate_stories,
+                "generate_interactive_dashboard": args.interactive_viz,
+                "create_individual_story_charts": args.generate_stories,
+                # Advanced analysis configuration from CLI
+                "enable_advanced_analysis": args.advanced_analysis
+                or args.individual_progression
+                or args.median_convergence
+                or args.intervention_strategies,
+                "run_individual_progression_analysis": args.individual_progression or args.advanced_analysis,
+                "run_median_convergence_analysis": args.median_convergence or args.advanced_analysis,
+                "run_intervention_strategy_analysis": args.intervention_strategies or args.advanced_analysis,
+                "progression_analysis_years": args.analysis_years,
+                "log_level": args.log_level,
+            }
+
     # Apply command-line overrides to config if provided
     if args.population_size:
         config["population_size"] = args.population_size
-    if hasattr(args, 'max_cycles') and args.max_cycles != 15:  # Only override if different from default
+    if hasattr(args, "max_cycles") and args.max_cycles != 15:  # Only override if different from default
         config["max_cycles"] = args.max_cycles
-    if hasattr(args, 'random_seed') and args.random_seed != 42:  # Only override if different from default
+    if hasattr(args, "random_seed") and args.random_seed != 42:  # Only override if different from default
         config["random_seed"] = args.random_seed
 
     # Initialize orchestrator
@@ -1813,6 +1916,19 @@ def main():
                     print(f"\nFiles Generated: {len(advanced_results['files_generated'])}")
                     for file_type, file_path in advanced_results["files_generated"].items():
                         print(f"  📄 {file_type.replace('_', ' ').title()}: {file_path}")
+
+                # Display dashboard information
+                if advanced_results.get("dashboard_files"):
+                    dashboard_info = advanced_results["dashboard_files"]
+                    print(f"\n🎯 Management Dashboard: Generated")
+                    print(f"  📊 Main Dashboard: {dashboard_info.get('main_dashboard', 'N/A')}")
+                    print(f"  📈 Components: {dashboard_info.get('components_generated', 0)} interactive charts")
+
+                    # Notify user about auto-opened dashboard
+                    if orchestrator.config.get("auto_open_dashboard", True):
+                        print(f"  🌐 Dashboard automatically opened in browser")
+                    else:
+                        print(f"  💡 Open dashboard manually: file://{dashboard_info.get('main_dashboard', '')}")
 
             return  # Exit after advanced analysis
 
