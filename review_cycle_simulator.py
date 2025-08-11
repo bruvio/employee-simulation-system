@@ -1,20 +1,26 @@
 #!/Users/brunoviola/bruvio-tools/.venv/bin/python3
 
-import pandas as pd
-import numpy as np
-from datetime import datetime
 import argparse
-import json
 import copy
+from datetime import datetime
+import json
+
+import numpy as np
+import pandas as pd
+
 from logger import LOGGER
 from performance_review_system import PerformanceReviewSystem
 
 
 class ReviewCycleSimulator:
-    """
-    Multi-cycle performance review simulator for analyzing inequality reduction.
-    Tracks salary inequality metrics across multiple review cycles to determine
-    how many cycles are needed to achieve salary equity.
+    """Multi-cycle performance review simulator for analyzing inequality reduction.
+
+    Tracks salary inequality metrics across multiple review cycles to determine how many cycles are needed to achieve
+    salary equity.
+
+    Args:
+
+    Returns:
     """
 
     def __init__(self, initial_population, random_seed=42):
@@ -34,12 +40,13 @@ class ReviewCycleSimulator:
         )
 
     def simulate_multiple_cycles(self, num_cycles=5, performance_consistency=0.7):
-        """
-        Simulate multiple review cycles with performance evolution
+        """Simulate multiple review cycles with performance evolution.
 
         Args:
-            num_cycles: Number of review cycles to simulate
-            performance_consistency: Probability of maintaining similar performance (0.0-1.0)
+          num_cycles: Number of review cycles to simulate (Default value = 5)
+          performance_consistency: Probability of maintaining similar performance (0.0-1.0) (Default value = 0.7)
+
+        Returns:
         """
         LOGGER.info(f"Starting {num_cycles}-cycle simulation with {len(self.population)} employees")
         LOGGER.info(f"Performance consistency rate: {performance_consistency:.1%}")
@@ -79,7 +86,14 @@ class ReviewCycleSimulator:
         return inequality_progression
 
     def _evolve_performance_ratings(self, cycle, consistency_rate):
-        """Evolve performance ratings with some consistency between cycles"""
+        """Evolve performance ratings with some consistency between cycles.
+
+        Args:
+          cycle:
+          consistency_rate:
+
+        Returns:
+        """
         LOGGER.debug(f"Evolving performance ratings for cycle {cycle}")
 
         consistency_count = 0
@@ -109,7 +123,14 @@ class ReviewCycleSimulator:
         LOGGER.debug(f"Performance evolution: {consistency_count} consistent, {change_count} changed")
 
     def _get_similar_performance(self, current_rating, level):
-        """Get a performance rating similar to current with small chance of change"""
+        """Get a performance rating similar to current with small chance of change.
+
+        Args:
+          current_rating:
+          level:
+
+        Returns:
+        """
         performance_order = ["Not met", "Partially met", "Achieving", "High Performing", "Exceeding"]
         current_index = performance_order.index(current_rating)
 
@@ -130,7 +151,13 @@ class ReviewCycleSimulator:
             return current_rating
 
     def _calculate_inequality_metrics(self, cycle):
-        """Calculate comprehensive inequality metrics for current population state"""
+        """Calculate comprehensive inequality metrics for current population state.
+
+        Args:
+          cycle:
+
+        Returns:
+        """
         salaries = [emp["salary"] for emp in self.population]
         levels = [emp["level"] for emp in self.population]
         performance_ratings = [emp.get("performance_rating", "Achieving") for emp in self.population]
@@ -186,9 +213,7 @@ class ReviewCycleSimulator:
         # Salary statistics by level
         level_stats = {}
         for level in range(1, 7):
-            if level_salaries := [
-                emp["salary"] for emp in self.population if emp["level"] == level
-            ]:
+            if level_salaries := [emp["salary"] for emp in self.population if emp["level"] == level]:
                 level_stats[level] = {
                     "count": len(level_salaries),
                     "median": np.median(level_salaries),
@@ -216,7 +241,13 @@ class ReviewCycleSimulator:
         return metrics
 
     def _calculate_gini(self, salaries):
-        """Calculate Gini coefficient for salary inequality measurement"""
+        """Calculate Gini coefficient for salary inequality measurement.
+
+        Args:
+          salaries:
+
+        Returns:
+        """
         if len(salaries) == 0:
             return 0.0
 
@@ -229,7 +260,15 @@ class ReviewCycleSimulator:
         return max(0.0, min(1.0, gini))  # Ensure Gini is between 0 and 1
 
     def _check_inequality_convergence(self, inequality_progression, current_cycle, lookback=3):
-        """Check if inequality metrics have converged (stopped improving significantly)"""
+        """Check if inequality metrics have converged (stopped improving significantly)
+
+        Args:
+          inequality_progression:
+          current_cycle:
+          lookback:  (Default value = 3)
+
+        Returns:
+        """
         if current_cycle < lookback + 1:
             return False
 
@@ -258,7 +297,13 @@ class ReviewCycleSimulator:
         return False
 
     def _analyze_inequality_reduction(self, inequality_progression):
-        """Analyze the inequality reduction across all cycles"""
+        """Analyze the inequality reduction across all cycles.
+
+        Args:
+          inequality_progression:
+
+        Returns:
+        """
         LOGGER.info("Analyzing inequality reduction across cycles:")
 
         if len(inequality_progression) < 2:
@@ -328,31 +373,46 @@ class ReviewCycleSimulator:
             LOGGER.info(f"Gender pay gap not reduced to <{gender_gap_threshold}% within simulated cycles")
 
     def _find_cycles_for_threshold(self, progression, metric, initial_value, reduction_percentage):
-        """Find the cycle where a metric reaches a threshold reduction"""
+        """Find the cycle where a metric reaches a threshold reduction.
+
+        Args:
+          progression:
+          metric:
+          initial_value:
+          reduction_percentage:
+
+        Returns:
+        """
         target_value = initial_value * (1 - reduction_percentage)
 
         return next(
-            (
-                i
-                for i, metrics in enumerate(progression)
-                if metrics[metric] <= target_value
-            ),
+            (i for i, metrics in enumerate(progression) if metrics[metric] <= target_value),
             None,
         )
 
     def _find_cycles_for_gender_threshold(self, progression, threshold):
-        """Find the cycle where gender gap falls below threshold"""
+        """Find the cycle where gender gap falls below threshold.
+
+        Args:
+          progression:
+          threshold:
+
+        Returns:
+        """
         return next(
-            (
-                i
-                for i, metrics in enumerate(progression)
-                if abs(metrics["gender_gap_percent"]) <= threshold
-            ),
+            (i for i, metrics in enumerate(progression) if abs(metrics["gender_gap_percent"]) <= threshold),
             None,
         )
 
     def save_simulation_results(self, inequality_progression, filename_prefix="simulation_results"):
-        """Save complete simulation results"""
+        """Save complete simulation results.
+
+        Args:
+          inequality_progression:
+          filename_prefix:  (Default value = "simulation_results")
+
+        Returns:
+        """
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
 
         # Save inequality progression
@@ -405,7 +465,13 @@ class ReviewCycleSimulator:
         }
 
     def _get_final_analysis_summary(self, inequality_progression):
-        """Get final analysis summary for JSON export"""
+        """Get final analysis summary for JSON export.
+
+        Args:
+          inequality_progression:
+
+        Returns:
+        """
         if len(inequality_progression) < 2:
             return {"error": "Insufficient data for analysis"}
 
@@ -431,12 +497,22 @@ class ReviewCycleSimulator:
 
 
 def validate_inequality_calculations():
-    """Validate inequality calculation methods"""
+    """Validate inequality calculation methods."""
     LOGGER.info("Validating inequality calculation methods")
 
     # Create a simple class to test the Gini calculation
     class GiniTester:
+        """"""
+
         def _calculate_gini(self, salaries):
+            """
+
+            Args:
+              salaries:
+
+            Returns:
+
+            """
             if len(salaries) == 0:
                 return 0.0
 
@@ -502,7 +578,7 @@ def validate_inequality_calculations():
 
 
 def create_parser():
-    """Create command line argument parser"""
+    """Create command line argument parser."""
     parser = argparse.ArgumentParser(description="Multi-cycle review simulation for inequality analysis")
     parser.add_argument("--cycles", type=int, default=5, help="Number of review cycles (default: 5)")
     parser.add_argument("--population-file", help="JSON file with initial population data (required for simulation)")
@@ -519,7 +595,7 @@ def create_parser():
 
 
 def main():
-    """Main function for review cycle simulation"""
+    """Main function for review cycle simulation."""
     parser = create_parser()
     args = parser.parse_args()
 

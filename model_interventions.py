@@ -1,24 +1,31 @@
 #!/Users/brunoviola/bruvio-tools/.venv/bin/python3
 
-import pandas as pd
 import argparse
-import json
-import sys
-import os
-from typing import List, Dict
 from datetime import datetime
+import json
+import os
+import sys
+from typing import Dict, List
+
+import pandas as pd
 
 # Add current directory to path for imports
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
-from logger import LOGGER
-from intervention_strategy_simulator import InterventionStrategySimulator
-from median_convergence_analyzer import MedianConvergenceAnalyzer
 from employee_population_simulator import EmployeePopulationGenerator
+from intervention_strategy_simulator import InterventionStrategySimulator
+from logger import LOGGER
+from median_convergence_analyzer import MedianConvergenceAnalyzer
 
 
 def load_population_data(data_source: str) -> List[Dict]:
-    """Load population data from various sources."""
+    """Load population data from various sources.
+
+    Args:
+      data_source: str:
+
+    Returns:
+    """
     if data_source == "generate":
         LOGGER.info("Generating test population data")
         generator = EmployeePopulationGenerator(population_size=1000, random_seed=42)
@@ -39,17 +46,36 @@ def load_population_data(data_source: str) -> List[Dict]:
 
 
 def format_currency(amount: float) -> str:
-    """Format currency amount for display."""
+    """Format currency amount for display.
+
+    Args:
+      amount: float:
+
+    Returns:
+    """
     return f"£{amount:,.2f}"
 
 
 def format_percentage(percent: float) -> str:
-    """Format percentage for display."""
+    """Format percentage for display.
+
+    Args:
+      percent: float:
+
+    Returns:
+    """
     return f"{percent:.1f}%"
 
 
 def create_gender_gap_report(remediation_result: Dict, output_format: str = "text") -> str:
-    """Create formatted gender gap remediation report."""
+    """Create formatted gender gap remediation report.
+
+    Args:
+      remediation_result: Dict:
+      output_format: str:  (Default value = "text")
+
+    Returns:
+    """
     if output_format == "json":
         return json.dumps(remediation_result, indent=2, default=str)
 
@@ -183,7 +209,14 @@ def create_gender_gap_report(remediation_result: Dict, output_format: str = "tex
 
 
 def create_median_convergence_report(convergence_result: Dict, output_format: str = "text") -> str:
-    """Create formatted median convergence analysis report."""
+    """Create formatted median convergence analysis report.
+
+    Args:
+      convergence_result: Dict:
+      output_format: str:  (Default value = "text")
+
+    Returns:
+    """
     if output_format == "json":
         return json.dumps(convergence_result, indent=2, default=str)
 
@@ -245,7 +278,15 @@ def create_median_convergence_report(convergence_result: Dict, output_format: st
 
 
 def save_report(report_content: str, output_file: str, format_type: str):
-    """Save report to file."""
+    """Save report to file.
+
+    Args:
+      report_content: str:
+      output_file: str:
+      format_type: str:
+
+    Returns:
+    """
     os.makedirs(os.path.dirname(output_file), exist_ok=True)
 
     with open(output_file, "w") as f:
@@ -255,7 +296,14 @@ def save_report(report_content: str, output_file: str, format_type: str):
 
 
 def run_gender_gap_analysis(population_data: List[Dict], args) -> Dict:
-    """Run gender gap remediation analysis."""
+    """Run gender gap remediation analysis.
+
+    Args:
+      population_data: List[Dict]:
+      args:
+
+    Returns:
+    """
     LOGGER.info("Running gender pay gap remediation analysis")
 
     simulator = InterventionStrategySimulator(population_data)
@@ -263,13 +311,19 @@ def run_gender_gap_analysis(population_data: List[Dict], args) -> Dict:
     return simulator.model_gender_gap_remediation(
         target_gap_percent=args.target_gap,
         max_years=args.max_years,
-        budget_constraint=args.budget_limit
-        / 100.0,  # Convert percentage to decimal
+        budget_constraint=args.budget_limit / 100.0,  # Convert percentage to decimal
     )
 
 
 def run_median_convergence_analysis(population_data: List[Dict], args) -> Dict:
-    """Run median convergence analysis."""
+    """Run median convergence analysis.
+
+    Args:
+      population_data: List[Dict]:
+      args:
+
+    Returns:
+    """
     LOGGER.info("Running median convergence analysis")
 
     analyzer = MedianConvergenceAnalyzer(population_data)
@@ -286,7 +340,14 @@ def run_median_convergence_analysis(population_data: List[Dict], args) -> Dict:
 
 
 def run_equity_analysis(population_data: List[Dict], args) -> Dict:
-    """Run comprehensive salary equity analysis."""
+    """Run comprehensive salary equity analysis.
+
+    Args:
+      population_data: List[Dict]:
+      args:
+
+    Returns:
+    """
     LOGGER.info("Running comprehensive salary equity analysis")
 
     simulator = InterventionStrategySimulator(population_data)
@@ -300,7 +361,14 @@ def run_equity_analysis(population_data: List[Dict], args) -> Dict:
 
 
 def create_equity_report(equity_result: Dict, output_format: str = "text") -> str:
-    """Create formatted equity analysis report."""
+    """Create formatted equity analysis report.
+
+    Args:
+      equity_result: Dict:
+      output_format: str:  (Default value = "text")
+
+    Returns:
+    """
     if output_format == "json":
         return json.dumps(equity_result, indent=2, default=str)
 
@@ -309,7 +377,11 @@ def create_equity_report(equity_result: Dict, output_format: str = "text") -> st
     score_label = (
         "Excellent"
         if overall_score > 0.8
-        else "Good" if overall_score > 0.6 else "Fair" if overall_score > 0.4 else "Poor"
+        else "Good"
+        if overall_score > 0.6
+        else "Fair"
+        if overall_score > 0.4
+        else "Poor"
     )
 
     report_lines = [
@@ -388,6 +460,7 @@ def create_equity_report(equity_result: Dict, output_format: str = "text") -> st
 
 
 def main():
+    """"""
     parser = argparse.ArgumentParser(
         description="Model management intervention strategies for salary equity",
         formatter_class=argparse.RawDescriptionHelpFormatter,

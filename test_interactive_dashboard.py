@@ -1,16 +1,15 @@
 #!/Users/brunoviola/bruvio-tools/.venv/bin/python3
 
-"""
-Test Interactive Dashboard Generation
-"""
+"""Test Interactive Dashboard Generation."""
 
-import sys
-import pandas as pd
 from pathlib import Path
+import sys
+
+import pandas as pd
 
 
 def test_interactive_dashboard():
-    """Test interactive dashboard generation functionality"""
+    """Test interactive dashboard generation functionality."""
 
     print("🚀 Testing Interactive Dashboard Generation")
     print("=" * 50)

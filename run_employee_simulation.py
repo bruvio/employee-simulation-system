@@ -19,13 +19,14 @@ Run this script to:
 7. Generate gender pay gap remediation plans (NEW)
 """
 
-import sys
 import argparse
+import json
+from pathlib import Path
+import sys
+from typing import Dict, List, Optional
+
 import matplotlib.pyplot as plt
 import pandas as pd
-from pathlib import Path
-import json
-from typing import List, Dict, Optional
 
 # Optional seaborn import
 try:
@@ -39,9 +40,9 @@ except ImportError:
 try:
     from employee_simulation_orchestrator import EmployeeSimulationOrchestrator
     from individual_progression_simulator import IndividualProgressionSimulator
-    from median_convergence_analyzer import MedianConvergenceAnalyzer
     from intervention_strategy_simulator import InterventionStrategySimulator
     from logger import LOGGER
+    from median_convergence_analyzer import MedianConvergenceAnalyzer
 except ImportError as e:
     print(f"❌ Could not import required modules: {e}")
     print("Make sure you're running from the correct directory")
@@ -49,7 +50,7 @@ except ImportError as e:
 
 
 class EmployeeStoryExplorer:
-    """Interactive employee story explorer with human-readable output"""
+    """Interactive employee story explorer with human-readable output."""
 
     def __init__(self):
         self.population_data = []
@@ -70,7 +71,19 @@ class EmployeeStoryExplorer:
         gender_pay_gap_percent=None,
         salary_constraints=None,
     ):
-        """Run employee simulation and return human-readable analysis"""
+        """Run employee simulation and return human-readable analysis.
+
+        Args:
+          population_size:  (Default value = 1000)
+          random_seed:  (Default value = 42)
+          target_salary:  (Default value = 80692.50)
+          target_level:  (Default value = 5)
+          level_distribution:  (Default value = None)
+          gender_pay_gap_percent:  (Default value = None)
+          salary_constraints:  (Default value = None)
+
+        Returns:
+        """
 
         print("🏢 EMPLOYEE SIMULATION & STORY EXPLORER")
         print("=" * 60)
@@ -157,7 +170,14 @@ class EmployeeStoryExplorer:
             return False
 
     def _analyze_population(self, target_salary, target_level):
-        """Analyze the generated population with human narrative"""
+        """Analyze the generated population with human narrative.
+
+        Args:
+          target_salary:
+          target_level:
+
+        Returns:
+        """
 
         if not self.population_data:
             print("❌ No population data available for analysis")
@@ -235,7 +255,13 @@ class EmployeeStoryExplorer:
         print()
 
     def _is_employee_tracked(self, employee_id):
-        """Check if an employee is being tracked and return category"""
+        """Check if an employee is being tracked and return category.
+
+        Args:
+          employee_id:
+
+        Returns:
+        """
         for category, stories in self.tracked_stories.items():
             for story in stories:
                 story_emp_id = getattr(story, "employee_id", None) or story.get("employee_id")
@@ -244,7 +270,7 @@ class EmployeeStoryExplorer:
         return None
 
     def _analyze_tracked_stories(self):
-        """Analyze tracked employee stories with narrative"""
+        """Analyze tracked employee stories with narrative."""
 
         if not self.tracked_stories:
             print("📚 No employee stories tracked")
@@ -293,7 +319,7 @@ class EmployeeStoryExplorer:
             print()
 
     def _create_visualizations(self):
-        """Create population distribution visualizations"""
+        """Create population distribution visualizations."""
 
         if not self.population_data:
             print("📊 No data available for visualizations")
@@ -406,7 +432,15 @@ class EmployeeStoryExplorer:
     def analyze_individual_progression(
         self, employee_id: int, years: int = 5, scenarios: List[str] = None
     ) -> Optional[Dict]:
-        """Analyze individual employee salary progression."""
+        """Analyze individual employee salary progression.
+
+        Args:
+          employee_id: int:
+          years: int:  (Default value = 5)
+          scenarios: List[str]:  (Default value = None)
+
+        Returns:
+        """
         if not self.progression_simulator:
             print("❌ Individual progression analysis not available. Run simulation first.")
             return None
@@ -454,7 +488,13 @@ class EmployeeStoryExplorer:
             return None
 
     def analyze_median_convergence(self, min_gap_percent: float = 5.0) -> Optional[Dict]:
-        """Analyze median salary convergence for below-median employees."""
+        """Analyze median salary convergence for below-median employees.
+
+        Args:
+          min_gap_percent: float:  (Default value = 5.0)
+
+        Returns:
+        """
         if not self.convergence_analyzer:
             print("❌ Median convergence analysis not available. Run simulation first.")
             return None
@@ -500,7 +540,15 @@ class EmployeeStoryExplorer:
     def model_gender_gap_remediation(
         self, target_gap: float = 0.0, max_years: int = 3, budget_limit: float = 0.5
     ) -> Optional[Dict]:
-        """Model gender pay gap remediation strategies."""
+        """Model gender pay gap remediation strategies.
+
+        Args:
+          target_gap: float:  (Default value = 0.0)
+          max_years: int:  (Default value = 3)
+          budget_limit: float:  (Default value = 0.5)
+
+        Returns:
+        """
         if not self.intervention_simulator:
             print("❌ Gender gap remediation modeling not available. Run simulation first.")
             return None
@@ -669,9 +717,7 @@ Examples:
     if args.analyze_convergence:
         if not args.quiet:
             print("\n🔍 Running median convergence analysis...")
-        if result := explorer.analyze_median_convergence(
-            min_gap_percent=args.min_gap
-        ):
+        if result := explorer.analyze_median_convergence(min_gap_percent=args.min_gap):
             analysis_results["median_convergence"] = result
 
     # Gender gap remediation modeling
@@ -756,7 +802,15 @@ def run_example_scenarios():
 
 
 def create_comprehensive_report(explorer, scenario, analysis_results):
-    """Create a comprehensive markdown report with all analysis results."""
+    """Create a comprehensive markdown report with all analysis results.
+
+    Args:
+      explorer:
+      scenario:
+      analysis_results:
+
+    Returns:
+    """
 
     report_path = Path("comprehensive_employee_analysis.md")
 
@@ -828,7 +882,14 @@ def create_comprehensive_report(explorer, scenario, analysis_results):
 
 
 def create_markdown_report(explorer, scenario):
-    """Create a markdown report with narrative analysis"""
+    """Create a markdown report with narrative analysis.
+
+    Args:
+      explorer:
+      scenario:
+
+    Returns:
+    """
 
     report_path = Path("employee_analysis_report.md")
 

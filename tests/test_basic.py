@@ -1,8 +1,9 @@
 """Basic tests to ensure the package is properly configured."""
 
-import pytest
-import sys
 from pathlib import Path
+import sys
+
+import pytest
 
 
 def test_python_version():

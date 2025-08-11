@@ -1,36 +1,42 @@
 #!/Users/brunoviola/bruvio-tools/.venv/bin/python3
 
 import argparse
-import json
-import pandas as pd
 from datetime import datetime
+import json
 from pathlib import Path
-from typing import Dict, List
 import sys
+from typing import Dict, List
+
+import pandas as pd
+
+from advanced_story_export_system import AdvancedStoryExportSystem
+from data_export_system import DataExportSystem
 
 # Import our simulation modules
 from employee_population_simulator import EmployeePopulationGenerator
-from performance_review_system import PerformanceReviewSystem
-from review_cycle_simulator import ReviewCycleSimulator
-from visualization_generator import VisualizationGenerator
-from data_export_system import DataExportSystem
 from employee_story_tracker import EmployeeStoryTracker
-from smart_logging_manager import SmartLoggingManager, get_smart_logger
 from file_optimization_manager import FileOptimizationManager
-from interactive_dashboard_generator import InteractiveDashboardGenerator
-from advanced_story_export_system import AdvancedStoryExportSystem
-from performance_optimization_manager import PerformanceOptimizationManager
 
 # Import advanced analysis modules
 from individual_progression_simulator import IndividualProgressionSimulator
-from median_convergence_analyzer import MedianConvergenceAnalyzer
+from interactive_dashboard_generator import InteractiveDashboardGenerator
 from intervention_strategy_simulator import InterventionStrategySimulator
+from median_convergence_analyzer import MedianConvergenceAnalyzer
+from performance_optimization_manager import PerformanceOptimizationManager
+from performance_review_system import PerformanceReviewSystem
+from review_cycle_simulator import ReviewCycleSimulator
+from smart_logging_manager import SmartLoggingManager, get_smart_logger
+from visualization_generator import VisualizationGenerator
 
 
 class EmployeeSimulationOrchestrator:
-    """
-    Main orchestrator for the complete employee population simulation system.
+    """Main orchestrator for the complete employee population simulation system.
+
     Coordinates all phases of the simulation pipeline.
+
+    Args:
+
+    Returns:
     """
 
     def __init__(self, config=None):
@@ -87,7 +93,7 @@ class EmployeeSimulationOrchestrator:
         self.smart_logger.log_success(f"Initialized employee simulation orchestrator with timestamp: {self.timestamp}")
 
     def _get_default_config(self):
-        """Get default simulation configuration"""
+        """Get default simulation configuration."""
         return {
             "population_size": 1000,
             "random_seed": 42,
@@ -126,11 +132,12 @@ class EmployeeSimulationOrchestrator:
         }
 
     def run_complete_simulation(self):
-        """
-        Run the complete end-to-end employee simulation pipeline
+        """Run the complete end-to-end employee simulation pipeline.
+
+        Args:
 
         Returns:
-            dict: Results and file paths from the simulation
+          dict: Results and file paths from the simulation
         """
         self.smart_logger.log_info("Starting complete employee simulation pipeline")
 
@@ -322,11 +329,12 @@ class EmployeeSimulationOrchestrator:
             raise
 
     def run_quick_validation(self):
-        """
-        Run a quick validation of all system components without full simulation
+        """Run a quick validation of all system components without full simulation.
+
+        Args:
 
         Returns:
-            dict: Validation results
+          dict: Validation results
         """
         self.smart_logger.log_info("Running quick validation of all system components")
 
@@ -394,7 +402,13 @@ class EmployeeSimulationOrchestrator:
             return validation_results
 
     def _validate_population(self, population_data):
-        """Validate population meets all constraints"""
+        """Validate population meets all constraints.
+
+        Args:
+          population_data:
+
+        Returns:
+        """
         df = pd.DataFrame(population_data)
 
         # Check senior engineer median constraint
@@ -409,17 +423,19 @@ class EmployeeSimulationOrchestrator:
             "senior_median_salary": median_salary,
             "target_median": target_median,
             "median_difference": abs(median_salary - target_median),
-            "median_constraint_met": abs(median_salary - target_median)
-            <= median_tolerance,
+            "median_constraint_met": abs(median_salary - target_median) <= median_tolerance,
             "gender_distribution": df["gender"].value_counts().to_dict(),
-            "level_distribution": df["level"]
-            .value_counts()
-            .sort_index()
-            .to_dict(),
+            "level_distribution": df["level"].value_counts().sort_index().to_dict(),
         }
 
     def _make_serializable(self, obj):
-        """Convert DataFrames and other non-serializable objects for JSON export"""
+        """Convert DataFrames and other non-serializable objects for JSON export.
+
+        Args:
+          obj:
+
+        Returns:
+        """
         import numpy as np
 
         if isinstance(obj, dict):
@@ -442,38 +458,37 @@ class EmployeeSimulationOrchestrator:
             return obj
 
     def _generate_final_summary(self, results):
-        """Generate final summary of simulation results"""
+        """Generate final summary of simulation results.
+
+        Args:
+          results:
+
+        Returns:
+        """
         return {
             "simulation_timestamp": self.timestamp,
             "configuration": self.config,
-            "population_size": results["summary_metrics"].get(
-                "population_size", "N/A"
-            ),
-            "cycles_completed": results["summary_metrics"].get(
-                "cycles_completed", "N/A"
-            ),
-            "final_gini_coefficient": results["summary_metrics"].get(
-                "final_gini_coefficient", "N/A"
-            ),
-            "convergence_achieved": results["summary_metrics"].get(
-                "convergence_achieved", "N/A"
-            ),
+            "population_size": results["summary_metrics"].get("population_size", "N/A"),
+            "cycles_completed": results["summary_metrics"].get("cycles_completed", "N/A"),
+            "final_gini_coefficient": results["summary_metrics"].get("final_gini_coefficient", "N/A"),
+            "convergence_achieved": results["summary_metrics"].get("convergence_achieved", "N/A"),
             "validation_status": {
-                "population": results["validation_results"]
-                .get("population", {})
-                .get("median_constraint_met", False),
-                "review_system": results["validation_results"]
-                .get("review_system", {})
-                .get("all_tests_passed", False),
+                "population": results["validation_results"].get("population", {}).get("median_constraint_met", False),
+                "review_system": results["validation_results"].get("review_system", {}).get("all_tests_passed", False),
             },
             "total_files_generated": sum(
-                len(files) if isinstance(files, (list, dict)) else 1
-                for files in results["files_generated"].values()
+                len(files) if isinstance(files, (list, dict)) else 1 for files in results["files_generated"].values()
             ),
         }
 
     def _generate_comprehensive_summary(self, results):
-        """Generate comprehensive summary with file organization and progress tracking"""
+        """Generate comprehensive summary with file organization and progress tracking.
+
+        Args:
+          results:
+
+        Returns:
+        """
         try:
             # Organize population files
             if "population_size" in results.get("summary_metrics", {}):
@@ -500,11 +515,12 @@ class EmployeeSimulationOrchestrator:
             self.smart_logger.log_error("Failed to generate comprehensive summary", e)
 
     def run_with_story_tracking(self):
-        """
-        Run simulation with employee story tracking enabled
+        """Run simulation with employee story tracking enabled.
+
+        Args:
 
         Returns:
-            dict: Results including employee stories and enhanced metrics
+          dict: Results including employee stories and enhanced metrics
         """
         if not self.story_tracker:
             self.smart_logger.log_warning("Story tracking not enabled - falling back to standard simulation")
@@ -598,9 +614,7 @@ class EmployeeSimulationOrchestrator:
             for category, employee_ids in tracked_employees.items():
                 category_stories = []
                 for emp_id in employee_ids:
-                    if story := self.story_tracker.generate_employee_story(
-                        emp_id, category
-                    ):
+                    if story := self.story_tracker.generate_employee_story(emp_id, category):
                         category_stories.append(story)
                 employee_stories[category] = category_stories
 
@@ -730,9 +744,7 @@ class EmployeeSimulationOrchestrator:
 
                 # Generate story-aware visualizations if requested
                 if self.config["create_individual_story_charts"]:
-                    if story_viz_files := self._generate_individual_story_charts(
-                        employee_stories
-                    ):
+                    if story_viz_files := self._generate_individual_story_charts(employee_stories):
                         results["files_generated"]["story_visualizations"] = story_viz_files
                         self.smart_logger.update_progress("Individual story charts generated")
 
@@ -805,14 +817,14 @@ class EmployeeSimulationOrchestrator:
             raise
 
     def run_advanced_analysis(self, population_data: List[Dict] = None):
-        """
-        Run advanced salary progression and intervention analysis.
+        """Run advanced salary progression and intervention analysis.
 
         Args:
-            population_data: Employee population data. If None, generates new population.
+          population_data: Employee population data. If None, generates new population.
+          population_data: List[Dict]:  (Default value = None)
 
         Returns:
-            Dict with advanced analysis results
+          : Dict with advanced analysis results
         """
         if not self.config.get("enable_advanced_analysis", False):
             self.smart_logger.log_warning("Advanced analysis not enabled - skipping")
@@ -969,7 +981,13 @@ class EmployeeSimulationOrchestrator:
             raise
 
     def generate_story_report(self, employee_stories):
-        """Generate markdown report of employee stories"""
+        """Generate markdown report of employee stories.
+
+        Args:
+          employee_stories:
+
+        Returns:
+        """
         if not employee_stories:
             return "# Employee Story Report\n\nNo employee stories available."
 
@@ -1017,7 +1035,13 @@ class EmployeeSimulationOrchestrator:
         return "\n".join(report_lines)
 
     def export_interactive_dashboard(self, output_path: str = None):
-        """Export interactive HTML dashboard"""
+        """Export interactive HTML dashboard.
+
+        Args:
+          output_path: str:  (Default value = None)
+
+        Returns:
+        """
         if not self.story_tracker:
             self.smart_logger.log_warning("Story tracking not enabled - cannot export interactive dashboard")
             return None
@@ -1034,14 +1058,21 @@ class EmployeeSimulationOrchestrator:
         return output_path
 
     def get_tracked_employee_summary(self):
-        """Get summary statistics of tracked employees"""
+        """Get summary statistics of tracked employees."""
         if not self.story_tracker:
             return {"error": "Story tracking not enabled"}
 
         return self.story_tracker.get_tracked_employee_summary()
 
     def _generate_individual_story_charts(self, employee_stories: Dict[str, List]) -> List[str]:
-        """Generate individual story charts for each category"""
+        """Generate individual story charts for each category.
+
+        Args:
+          employee_stories: Dict[str:
+          List]:
+
+        Returns:
+        """
         story_viz_files = []
 
         if not employee_stories:
@@ -1074,7 +1105,13 @@ class EmployeeSimulationOrchestrator:
             return []
 
     def _select_sample_employees_for_analysis(self, population_data: List[Dict]) -> List[Dict]:
-        """Select representative sample of employees for individual progression analysis."""
+        """Select representative sample of employees for individual progression analysis.
+
+        Args:
+          population_data: List[Dict]:
+
+        Returns:
+        """
         df = pd.DataFrame(population_data)
         sample_employees = []
 
@@ -1105,7 +1142,14 @@ class EmployeeSimulationOrchestrator:
         return sample_employees
 
     def _export_advanced_analysis_reports(self, analysis_results: Dict, population_data: List[Dict]) -> Dict[str, str]:
-        """Export advanced analysis results to various formats."""
+        """Export advanced analysis results to various formats.
+
+        Args:
+          analysis_results: Dict:
+          population_data: List[Dict]:
+
+        Returns:
+        """
         export_files = {}
 
         try:
@@ -1176,7 +1220,13 @@ class EmployeeSimulationOrchestrator:
             return {}
 
     def _create_progression_summary_report(self, progression_data: Dict) -> str:
-        """Create summary report for individual progression analysis."""
+        """Create summary report for individual progression analysis.
+
+        Args:
+          progression_data: Dict:
+
+        Returns:
+        """
         lines = [
             "# Individual Salary Progression Analysis Report",
             f"Generated: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}",
@@ -1251,7 +1301,13 @@ class EmployeeSimulationOrchestrator:
         return "\n".join(lines)
 
     def _create_convergence_summary_report(self, convergence_data: Dict) -> str:
-        """Create summary report for median convergence analysis."""
+        """Create summary report for median convergence analysis.
+
+        Args:
+          convergence_data: Dict:
+
+        Returns:
+        """
         lines = [
             "# Median Convergence Analysis Report",
             f"Generated: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}",
@@ -1260,9 +1316,7 @@ class EmployeeSimulationOrchestrator:
             "",
         ]
 
-        if below_median_summary := convergence_data.get(
-            "below_median_summary", {}
-        ):
+        if below_median_summary := convergence_data.get("below_median_summary", {}):
             total_employees = below_median_summary.get("total_employees", 0)
             below_median_count = below_median_summary.get("below_median_count", 0)
             below_median_percent = below_median_summary.get("below_median_percent", 0)
@@ -1289,9 +1343,7 @@ class EmployeeSimulationOrchestrator:
                     ]
                 )
 
-        if recommendations := convergence_data.get(
-            "intervention_recommendations", {}
-        ):
+        if recommendations := convergence_data.get("intervention_recommendations", {}):
             recommended_strategy = recommendations.get("recommended_strategy", {})
             strategy_name = recommended_strategy.get("primary_strategy", "N/A")
             budget_required = recommended_strategy.get("total_budget_required", 0)
@@ -1341,7 +1393,13 @@ class EmployeeSimulationOrchestrator:
         return "\n".join(lines)
 
     def _create_intervention_summary_report(self, intervention_data: Dict) -> str:
-        """Create executive summary for intervention strategies."""
+        """Create executive summary for intervention strategies.
+
+        Args:
+          intervention_data: Dict:
+
+        Returns:
+        """
         lines = [
             "# Executive Intervention Strategy Report",
             f"Generated: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}",
@@ -1434,7 +1492,14 @@ class EmployeeSimulationOrchestrator:
         return "\n".join(lines)
 
     def _create_comprehensive_advanced_report(self, analysis_results: Dict, population_data: List[Dict]) -> str:
-        """Create comprehensive report combining all advanced analyses."""
+        """Create comprehensive report combining all advanced analyses.
+
+        Args:
+          analysis_results: Dict:
+          population_data: List[Dict]:
+
+        Returns:
+        """
         lines = [
             "# Comprehensive Advanced Employee Analysis Report",
             f"Generated: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}",
@@ -1555,7 +1620,7 @@ class EmployeeSimulationOrchestrator:
 
 
 def main():
-    """Command-line interface for the simulation orchestrator"""
+    """Command-line interface for the simulation orchestrator."""
     parser = argparse.ArgumentParser(description="Employee Population Simulation Orchestrator")
     parser.add_argument(
         "--mode",

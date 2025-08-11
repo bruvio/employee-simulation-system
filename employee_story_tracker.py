@@ -1,16 +1,18 @@
 #!/Users/brunoviola/bruvio-tools/.venv/bin/python3
 
-import pandas as pd
-import numpy as np
-from datetime import datetime
 from dataclasses import dataclass
-from typing import Dict, List, Tuple, Optional, Any
+from datetime import datetime
+from typing import Any, Dict, List, Optional, Tuple
+
+import numpy as np
+import pandas as pd
+
 from logger import LOGGER
 
 
 @dataclass
 class EmployeeStory:
-    """Data structure representing an individual employee's story across review cycles"""
+    """Data structure representing an individual employee's story across review cycles."""
 
     employee_id: int
     category: str
@@ -24,7 +26,7 @@ class EmployeeStory:
     recommendations: List[str]
 
     def to_dict(self) -> Dict[str, Any]:
-        """Convert EmployeeStory to dictionary for serialization"""
+        """Convert EmployeeStory to dictionary for serialization."""
         return {
             "employee_id": self.employee_id,
             "category": self.category,
@@ -40,8 +42,8 @@ class EmployeeStory:
 
 
 class EmployeeStoryTracker:
-    """
-    Efficient employee story tracking using pandas operations.
+    """Efficient employee story tracking using pandas operations.
+
     Track individual employee journeys across multiple review cycles.
     """
 
@@ -54,7 +56,7 @@ class EmployeeStoryTracker:
         LOGGER.info("Initialized EmployeeStoryTracker")
 
     def add_cycle_data(self, cycle_num: int, employee_data: List[Dict]):
-        """Add employee data for a specific cycle using vectorized operations"""
+        """Add employee data for a specific cycle using vectorized operations."""
         LOGGER.debug(f"Adding cycle {cycle_num} data with {len(employee_data)} employees")
 
         cycle_df = pd.DataFrame(employee_data)
@@ -88,7 +90,7 @@ class EmployeeStoryTracker:
         LOGGER.debug(f"Population stats updated for cycle {cycle_num}")
 
     def _calculate_level_ranges(self, df: pd.DataFrame) -> Dict[int, Dict[str, float]]:
-        """Calculate salary ranges for each level"""
+        """Calculate salary ranges for each level."""
         level_ranges = {}
         for level in df["level"].unique():
             level_data = df[df["level"] == level]["salary"]
@@ -102,7 +104,7 @@ class EmployeeStoryTracker:
         return level_ranges
 
     def identify_tracked_employees(self, max_per_category: int = 10) -> Dict[str, List[int]]:
-        """Identify employees for tracking using efficient pandas operations"""
+        """Identify employees for tracking using efficient pandas operations."""
         if not self.cycle_data:
             LOGGER.warning("No cycle data available for employee identification")
             return {}
@@ -193,7 +195,7 @@ class EmployeeStoryTracker:
         return tracked
 
     def _calculate_employee_growth_rate(self, employee_id: int) -> Optional[float]:
-        """Calculate employee's salary growth rate across all cycles"""
+        """Calculate employee's salary growth rate across all cycles."""
         if employee_id not in self.employee_histories:
             return None
 
@@ -217,7 +219,7 @@ class EmployeeStoryTracker:
             return (current_salary / initial_salary - 1) / num_cycles
 
     def generate_employee_story(self, employee_id: int, category: str) -> Optional[EmployeeStory]:
-        """Generate narrative story for a specific employee"""
+        """Generate narrative story for a specific employee."""
         if employee_id not in self.employee_histories:
             LOGGER.warning(f"No history found for employee {employee_id}")
             return None
@@ -260,7 +262,7 @@ class EmployeeStoryTracker:
         )
 
     def _identify_key_events(self, history: List[Dict]) -> List[str]:
-        """Identify key events in employee's history"""
+        """Identify key events in employee's history."""
         events = []
 
         for i in range(1, len(history)):
@@ -287,7 +289,7 @@ class EmployeeStoryTracker:
     def _generate_story_summary(
         self, employee_id: int, category: str, history: List[Dict], total_growth_percent: float
     ) -> str:
-        """Generate narrative story summary based on category and history"""
+        """Generate narrative story summary based on category and history."""
         current_data = history[-1]
         initial_data = history[0]
 
@@ -325,7 +327,7 @@ class EmployeeStoryTracker:
     def _generate_recommendations(
         self, employee_id: int, category: str, history: List[Dict], current_data: Dict
     ) -> List[str]:
-        """Generate actionable recommendations based on employee category and performance"""
+        """Generate actionable recommendations based on employee category and performance."""
         recommendations = []
 
         if category == "gender_gap_affected":
@@ -366,7 +368,7 @@ class EmployeeStoryTracker:
         return recommendations
 
     def create_story_timeline(self) -> pd.DataFrame:
-        """Create comprehensive timeline of all tracked employee stories"""
+        """Create comprehensive timeline of all tracked employee stories."""
         timeline_data = []
 
         for category, employee_ids in self.tracked_categories.items():
@@ -394,7 +396,7 @@ class EmployeeStoryTracker:
             return pd.DataFrame()
 
     def get_tracked_employee_summary(self) -> Dict[str, Any]:
-        """Get summary statistics of tracked employees"""
+        """Get summary statistics of tracked employees."""
         summary = {
             "total_tracked": sum(len(employees) for employees in self.tracked_categories.values()),
             "categories": {},
@@ -425,7 +427,7 @@ class EmployeeStoryTracker:
         return summary
 
     def export_stories_to_dict(self) -> Dict[str, Any]:
-        """Export all employee stories to dictionary format for serialization"""
+        """Export all employee stories to dictionary format for serialization."""
         stories_dict = {
             "metadata": {
                 "generation_timestamp": datetime.now().isoformat(),

@@ -1,17 +1,18 @@
 #!/Users/brunoviola/bruvio-tools/.venv/bin/python3
 
+from datetime import datetime
+from pathlib import Path
+from typing import Any, Dict, List, Optional
+
+import numpy as np
+import pandas as pd
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
-import pandas as pd
-from pathlib import Path
-from datetime import datetime
-from typing import Dict, List, Optional, Any
-import numpy as np
 
 
 class InteractiveDashboardGenerator:
-    """
-    Advanced interactive dashboard generator for comprehensive employee story exploration.
+    """Advanced interactive dashboard generator for comprehensive employee story exploration.
+
     Implements Phase 4 PRP requirements for interactive data exploration.
     """
 
@@ -29,15 +30,14 @@ class InteractiveDashboardGenerator:
         }
 
     def _log(self, message: str, level: str = "info"):
-        """Helper method for logging"""
+        """Helper method for logging."""
         if self.smart_logger:
             getattr(self.smart_logger, f"log_{level}")(message)
         else:
             print(f"[{level.upper()}] {message}")
 
     def create_salary_distribution_explorer(self, population_data: List[Dict]) -> Dict[str, Any]:
-        """
-        Create interactive salary distribution explorer with filtering capabilities
+        """Create interactive salary distribution explorer with filtering capabilities.
 
         Args:
             population_data: Employee population data
@@ -208,8 +208,7 @@ class InteractiveDashboardGenerator:
     def create_employee_story_timeline(
         self, tracked_employees: Dict[str, List], cycle_data: Optional[pd.DataFrame] = None
     ) -> Dict[str, Any]:
-        """
-        Create interactive timeline showing employee progression stories
+        """Create interactive timeline showing employee progression stories.
 
         Args:
             tracked_employees: Tracked employees by category
@@ -324,8 +323,7 @@ class InteractiveDashboardGenerator:
     def create_comparative_analysis_dashboard(
         self, population_data: List[Dict], tracked_employees: Dict[str, List]
     ) -> Dict[str, Any]:
-        """
-        Create comparative analysis dashboard across different employee categories
+        """Create comparative analysis dashboard across different employee categories.
 
         Args:
             population_data: Full employee population data
@@ -558,7 +556,7 @@ class InteractiveDashboardGenerator:
         }
 
     def _create_empty_component(self, message: str) -> Dict[str, Any]:
-        """Create empty component with message"""
+        """Create empty component with message."""
         fig = go.Figure()
         fig.add_annotation(text=message, xref="paper", yref="paper", x=0.5, y=0.5, showarrow=False, font=dict(size=16))
         fig.update_layout(template=self.layout_config["theme"], height=self.layout_config["height"])
@@ -572,8 +570,7 @@ class InteractiveDashboardGenerator:
         cycle_data: Optional[pd.DataFrame] = None,
         output_path: Optional[str] = None,
     ) -> str:
-        """
-        Generate comprehensive interactive dashboard combining all components
+        """Generate comprehensive interactive dashboard combining all components.
 
         Args:
             population_data: Full employee population data
@@ -630,7 +627,7 @@ class InteractiveDashboardGenerator:
     def _generate_dashboard_html(
         self, components: Dict[str, Dict], population_data: List[Dict], tracked_employees: Dict[str, List]
     ) -> str:
-        """Generate HTML dashboard with all components"""
+        """Generate HTML dashboard with all components."""
 
         # Convert Plotly figures to HTML
         plots_html = []
@@ -772,7 +769,7 @@ class InteractiveDashboardGenerator:
 </html>"""
 
     def get_dashboard_metadata(self) -> Dict[str, Any]:
-        """Get metadata about generated dashboard components"""
+        """Get metadata about generated dashboard components."""
         return {
             "components_available": list(self.dashboard_components.keys()),
             "layout_config": self.layout_config,

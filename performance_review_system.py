@@ -1,20 +1,24 @@
 #!/Users/brunoviola/bruvio-tools/.venv/bin/python3
 
-import pandas as pd
-import numpy as np
-from datetime import datetime
 import argparse
+from datetime import datetime
 import json
-from logger import LOGGER
+
+import numpy as np
+import pandas as pd
 
 # Import constants from population simulator
-from employee_population_simulator import UPLIFT_MATRIX, LEVEL_MAPPING
+from employee_population_simulator import LEVEL_MAPPING, UPLIFT_MATRIX
+from logger import LOGGER
 
 
 class PerformanceReviewSystem:
-    """
-    Performance review system implementing industry-standard 5-point rating scale
-    with level-based distributions and salary uplift calculations.
+    """Performance review system implementing industry-standard 5-point rating scale with level-based distributions and
+    salary uplift calculations.
+
+    Args:
+
+    Returns:
     """
 
     def __init__(self, random_seed=42):
@@ -38,7 +42,13 @@ class PerformanceReviewSystem:
         LOGGER.info("Initialized PerformanceReviewSystem with level-based rating distributions")
 
     def assign_performance_ratings(self, employees):
-        """Assign performance ratings based on level-dependent distributions"""
+        """Assign performance ratings based on level-dependent distributions.
+
+        Args:
+          employees:
+
+        Returns:
+        """
         LOGGER.info(f"Assigning performance ratings for {len(employees)} employees")
 
         performance_counts = {"Not met": 0, "Partially met": 0, "Achieving": 0, "High Performing": 0, "Exceeding": 0}
@@ -72,7 +82,13 @@ class PerformanceReviewSystem:
         return employees
 
     def calculate_salary_uplift(self, employee):
-        """Calculate salary uplift using provided matrix"""
+        """Calculate salary uplift using provided matrix.
+
+        Args:
+          employee:
+
+        Returns:
+        """
         performance = employee["performance_rating"]
         level = employee["level"]
         current_salary = employee["salary"]
@@ -102,7 +118,14 @@ class PerformanceReviewSystem:
         }
 
     def apply_annual_review(self, employees, review_year):
-        """Apply annual performance review and salary adjustments"""
+        """Apply annual performance review and salary adjustments.
+
+        Args:
+          employees:
+          review_year:
+
+        Returns:
+        """
         LOGGER.info(f"Applying annual performance review for year {review_year}")
 
         # First, assign new performance ratings
@@ -151,7 +174,15 @@ class PerformanceReviewSystem:
         return review_results
 
     def _log_performance_distribution(self, performance_counts, level_breakdown, total_employees):
-        """Log performance rating distribution statistics"""
+        """Log performance rating distribution statistics.
+
+        Args:
+          performance_counts:
+          level_breakdown:
+          total_employees:
+
+        Returns:
+        """
         LOGGER.info("Performance rating distribution:")
 
         for rating, count in performance_counts.items():
@@ -169,7 +200,13 @@ class PerformanceReviewSystem:
                     LOGGER.info(f"  {rating}: {count} ({percentage:.1f}%)")
 
     def validate_uplift_calculations(self, test_cases=None):
-        """Validate uplift calculations match the matrix exactly"""
+        """Validate uplift calculations match the matrix exactly.
+
+        Args:
+          test_cases:  (Default value = None)
+
+        Returns:
+        """
         LOGGER.info("Validating uplift calculations")
 
         if test_cases is None:
@@ -239,14 +276,20 @@ class PerformanceReviewSystem:
         if all_passed:
             LOGGER.info(f"✓ All {len(test_cases)} uplift calculations validated successfully")
         else:
-            failed_count = sum(bool(not r["passed"])
-                           for r in validation_results)
+            failed_count = sum(bool(not r["passed"]) for r in validation_results)
             LOGGER.error(f"✗ {failed_count} of {len(test_cases)} uplift calculations failed validation")
 
         return validation_results, all_passed
 
     def save_review_results(self, review_results, filename_prefix="review_results"):
-        """Save review results following existing codebase patterns"""
+        """Save review results following existing codebase patterns.
+
+        Args:
+          review_results:
+          filename_prefix:  (Default value = "review_results")
+
+        Returns:
+        """
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
 
         # Create DataFrame
@@ -267,7 +310,7 @@ class PerformanceReviewSystem:
 
 
 def test_uplift_matrix_accuracy():
-    """Test function to validate uplift matrix calculations"""
+    """Test function to validate uplift matrix calculations."""
     LOGGER.info("Testing uplift matrix accuracy")
 
     # Create test system
@@ -285,7 +328,7 @@ def test_uplift_matrix_accuracy():
 
 
 def create_parser():
-    """Create command line argument parser"""
+    """Create command line argument parser."""
     parser = argparse.ArgumentParser(description="Performance review system for employee simulation")
     parser.add_argument("--test-uplift-calculation", action="store_true", help="Test uplift calculation accuracy")
     parser.add_argument("--apply-review", help="Apply review to population file (JSON format)")
@@ -296,7 +339,7 @@ def create_parser():
 
 
 def main():
-    """Main function for performance review system"""
+    """Main function for performance review system."""
     parser = create_parser()
     args = parser.parse_args()
 

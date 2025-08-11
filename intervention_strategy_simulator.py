@@ -1,23 +1,24 @@
 #!/Users/brunoviola/bruvio-tools/.venv/bin/python3
 
-import pandas as pd
-import numpy as np
 import argparse
-import json
-from typing import List, Dict
 from datetime import datetime
-from logger import LOGGER
-from salary_forecasting_engine import SalaryForecastingEngine
+import json
+from typing import Dict, List
+
+import numpy as np
+import pandas as pd
+
 from individual_progression_simulator import IndividualProgressionSimulator
+from logger import LOGGER
 from median_convergence_analyzer import MedianConvergenceAnalyzer
+from salary_forecasting_engine import SalaryForecastingEngine
 
 
 class InterventionStrategySimulator:
-    """
-    Simulate and analyze management intervention strategies for salary equity.
+    """Simulate and analyze management intervention strategies for salary equity.
 
-    Focuses on gender pay gap remediation, strategic salary adjustments, and
-    cost-benefit analysis for various intervention approaches with budget optimization.
+    Focuses on gender pay gap remediation, strategic salary adjustments, and cost-benefit analysis for various
+    intervention approaches with budget optimization.
     """
 
     def __init__(self, population_data: List[Dict], config: Dict = None):
@@ -52,8 +53,7 @@ class InterventionStrategySimulator:
     def model_gender_gap_remediation(
         self, target_gap_percent: float = 0.0, max_years: int = 5, budget_constraint: float = 0.005
     ) -> Dict:
-        """
-        Model comprehensive gender pay gap remediation strategies.
+        """Model comprehensive gender pay gap remediation strategies.
 
         Args:
             target_gap_percent: Target gap percentage (0.0 = complete equality)
@@ -119,8 +119,7 @@ class InterventionStrategySimulator:
         return result
 
     def analyze_population_salary_equity(self, dimensions: List[str] = None) -> Dict:
-        """
-        Analyze salary equity across multiple demographic dimensions.
+        """Analyze salary equity across multiple demographic dimensions.
 
         Args:
             dimensions: List of dimensions to analyze (gender, level, tenure, etc.)
@@ -155,8 +154,7 @@ class InterventionStrategySimulator:
         return equity_analysis
 
     def simulate_intervention_impact(self, strategy: Dict, projection_years: int = 5) -> Dict:
-        """
-        Simulate the multi-year impact of an intervention strategy.
+        """Simulate the multi-year impact of an intervention strategy.
 
         Args:
             strategy: Intervention strategy details
@@ -211,8 +209,7 @@ class InterventionStrategySimulator:
         }
 
     def optimize_budget_allocation(self, total_budget: float, intervention_types: List[str] = None) -> Dict:
-        """
-        Optimize budget allocation across different intervention types.
+        """Optimize budget allocation across different intervention types.
 
         Args:
             total_budget: Total available budget for interventions
@@ -231,9 +228,7 @@ class InterventionStrategySimulator:
         LOGGER.info(f"Optimizing £{total_budget:,.0f} budget across {len(intervention_types)} intervention types")
 
         intervention_options = {
-            intervention_type: self._calculate_intervention_options(
-                intervention_type, total_budget
-            )
+            intervention_type: self._calculate_intervention_options(intervention_type, total_budget)
             for intervention_type in intervention_types
         }
         # Optimize allocation using utility/impact scoring
@@ -556,7 +551,9 @@ class InterventionStrategySimulator:
             "confidence_level": (
                 "high"
                 if top_strategy_eval["overall_score"] > 0.8
-                else "medium" if top_strategy_eval["overall_score"] > 0.6 else "low"
+                else "medium"
+                if top_strategy_eval["overall_score"] > 0.6
+                else "low"
             ),
             **top_strategy_eval["strategy_details"],
         }
@@ -618,9 +615,7 @@ class InterventionStrategySimulator:
         # Cost per percentage point of gap reduction
         cost_per_gap_point = cost / gap_reduction
 
-        return max(
-            0, 1 - (cost_per_gap_point / self.baseline_metrics["total_payroll"])
-        )
+        return max(0, 1 - (cost_per_gap_point / self.baseline_metrics["total_payroll"]))
 
     # Additional helper methods for analysis components
     def _analyze_gender_equity(self) -> Dict:
@@ -862,9 +857,7 @@ class InterventionStrategySimulator:
 
         return {
             "risk_factors": risks,
-            "overall_risk_level": (
-                "high" if len(risks) >= 3 else "medium" if risks else "low"
-            ),
+            "overall_risk_level": ("high" if len(risks) >= 3 else "medium" if risks else "low"),
             "mitigation_strategies": self._suggest_risk_mitigation(risks),
         }
 
@@ -943,8 +936,7 @@ class InterventionStrategySimulator:
         budget_constraint: float = 0.005,
         years_to_achieve: int = 5,
     ) -> Dict:
-        """
-        Model comprehensive equity intervention strategies.
+        """Model comprehensive equity intervention strategies.
 
         Args:
             intervention_type: Type of equity intervention to model

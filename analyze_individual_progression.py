@@ -1,30 +1,31 @@
 #!/Users/brunoviola/bruvio-tools/.venv/bin/python3
 
-import pandas as pd
 import argparse
-import json
-import sys
-import os
-from typing import List, Dict, Optional
 from datetime import datetime
+import json
+import os
+import sys
+from typing import Dict, List, Optional
+
+import pandas as pd
 
 # Add current directory to path for imports
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
-from logger import LOGGER
-from individual_progression_simulator import IndividualProgressionSimulator
 from employee_population_simulator import EmployeePopulationGenerator
+from individual_progression_simulator import IndividualProgressionSimulator
+from logger import LOGGER
 
 
 def load_population_data(data_source: str) -> List[Dict]:
-    """
-    Load population data from various sources.
+    """Load population data from various sources.
 
     Args:
-        data_source: Path to JSON/CSV file or 'generate' to create test data
+      data_source: Path to JSON/CSV file or 'generate' to create test data
+      data_source: str:
 
     Returns:
-        List of employee dictionaries
+      : List of employee dictionaries
     """
     if data_source == "generate":
         LOGGER.info("Generating test population data")
@@ -46,29 +47,51 @@ def load_population_data(data_source: str) -> List[Dict]:
 
 
 def find_employee_by_id(population_data: List[Dict], employee_id: int) -> Optional[Dict]:
-    """Find employee by ID in population data."""
+    """Find employee by ID in population data.
+
+    Args:
+      population_data: List[Dict]:
+      employee_id: int:
+
+    Returns:
+    """
     return next(
-        (
-            employee
-            for employee in population_data
-            if employee.get("employee_id") == employee_id
-        ),
+        (employee for employee in population_data if employee.get("employee_id") == employee_id),
         None,
     )
 
 
 def format_currency(amount: float) -> str:
-    """Format currency amount for display."""
+    """Format currency amount for display.
+
+    Args:
+      amount: float:
+
+    Returns:
+    """
     return f"£{amount:,.2f}"
 
 
 def format_percentage(percent: float) -> str:
-    """Format percentage for display."""
+    """Format percentage for display.
+
+    Args:
+      percent: float:
+
+    Returns:
+    """
     return f"{percent:.1f}%"
 
 
 def create_progression_report(progression_result: Dict, output_format: str = "text") -> str:
-    """Create formatted progression analysis report."""
+    """Create formatted progression analysis report.
+
+    Args:
+      progression_result: Dict:
+      output_format: str:  (Default value = "text")
+
+    Returns:
+    """
     if output_format == "json":
         return json.dumps(progression_result, indent=2, default=str)
 
@@ -150,10 +173,7 @@ def create_progression_report(progression_result: Dict, output_format: str = "te
         report_lines.extend(
             [
                 "⚠️  Risk Factors:",
-                *[
-                    f"  • {risk.replace('_', ' ').title()}"
-                    for risk in analysis["risk_factors"]
-                ],
+                *[f"  • {risk.replace('_', ' ').title()}" for risk in analysis["risk_factors"]],
                 "",
             ]
         )
@@ -186,7 +206,15 @@ def create_progression_report(progression_result: Dict, output_format: str = "te
 
 
 def save_report(report_content: str, output_file: str, format_type: str):
-    """Save report to file."""
+    """Save report to file.
+
+    Args:
+      report_content: str:
+      output_file: str:
+      format_type: str:
+
+    Returns:
+    """
     os.makedirs(os.path.dirname(output_file), exist_ok=True)
 
     with open(output_file, "w") as f:
@@ -198,7 +226,17 @@ def save_report(report_content: str, output_file: str, format_type: str):
 def analyze_multiple_employees(
     population_data: List[Dict], employee_ids: List[int], years: int, scenarios: List[str], output_format: str
 ) -> Dict:
-    """Analyze multiple employees and create summary report."""
+    """Analyze multiple employees and create summary report.
+
+    Args:
+      population_data: List[Dict]:
+      employee_ids: List[int]:
+      years: int:
+      scenarios: List[str]:
+      output_format: str:
+
+    Returns:
+    """
     simulator = IndividualProgressionSimulator(population_data)
 
     all_results = {}
@@ -241,7 +279,13 @@ def analyze_multiple_employees(
 
 
 def create_multi_employee_summary(summary_data: List[Dict]) -> Dict:
-    """Create summary statistics for multiple employee analysis."""
+    """Create summary statistics for multiple employee analysis.
+
+    Args:
+      summary_data: List[Dict]:
+
+    Returns:
+    """
     if not summary_data:
         return {}
 
@@ -262,7 +306,14 @@ def create_multi_employee_summary(summary_data: List[Dict]) -> Dict:
 
 
 def create_batch_report(multi_results: Dict, output_format: str = "text") -> str:
-    """Create batch analysis report."""
+    """Create batch analysis report.
+
+    Args:
+      multi_results: Dict:
+      output_format: str:  (Default value = "text")
+
+    Returns:
+    """
     if output_format == "json":
         return json.dumps(multi_results, indent=2, default=str)
 
@@ -325,6 +376,7 @@ def create_batch_report(multi_results: Dict, output_format: str = "text") -> str
 
 
 def main():
+    """"""
     parser = argparse.ArgumentParser(
         description="Analyze individual employee salary progression",
         formatter_class=argparse.RawDescriptionHelpFormatter,
