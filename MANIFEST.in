@@ -1,0 +1,43 @@
+# Include the license
+include LICENSE
+
+# Include README and documentation
+include README.md
+include *.rst
+include *.txt
+
+# Include configuration files
+include pyproject.toml
+include setup.py
+include .flake8
+include requirements*.txt
+
+# Include test data and configuration
+recursive-include tests *.py
+recursive-include tests *.json
+recursive-include tests *.csv
+
+# Include any data directories that might exist
+graft artifacts
+graft images
+
+# Exclude development and build artifacts
+global-exclude *.pyc
+global-exclude *.pyo
+global-exclude *~
+global-exclude *.so
+global-exclude .git*
+global-exclude __pycache__
+global-exclude *.egg-info
+
+# Exclude virtual environments
+prune .venv
+prune venv
+prune env
+
+# Exclude IDE files
+global-exclude .DS_Store
+global-exclude *.swp
+global-exclude *.swo
+prune .vscode
+prune .idea
