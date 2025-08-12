@@ -1,164 +1,337 @@
 # Employee Simulation System
 
-A comprehensive Python-based employee simulation and story tracking system for analyzing organizational dynamics, salary distributions, and career progression patterns.
+A comprehensive Python-based system for simulating employee populations, analyzing salary equity, and generating actionable insights for HR decision-making. This system provides sophisticated modeling of employee career progression, salary forecasting, and pay gap analysis with executive-ready visualizations and recommendations.
 
-## Features
+## 🎯 Overview
 
-### 🏢 Core Simulation Engine
-- **Realistic Population Generation**: Generate employee populations with configurable level distributions
-- **Salary Constraint Engine**: Realistic salary constraints by level:
-  - Level 1 (Graduates): £28,000 - £35,000
-  - Level 2 (Junior): £45,000 - £72,000  
-  - Level 3 (Standard Hire): £72,000 - £95,000+
-  - Level 4-6 (Senior): £76,592 - £103,624
+The Employee Simulation System is designed for organizations to:
+- **Simulate realistic employee populations** with diverse levels, salaries, and performance ratings
+- **Analyze salary equity and pay gaps** across gender, level, and department dimensions  
+- **Project individual career progression** with scenario-based salary forecasting
+- **Generate intervention strategies** for closing pay gaps and improving retention
+- **Create executive dashboards** with actionable insights and recommendations
 
-### 💰 Advanced Salary Dynamics
-- **Negotiation Simulation**: Statistical modeling of salary negotiations
-  - 30% of Level 3 employees negotiate hard (can reach ~£90k)
-  - Graduated negotiation rates across all levels
-- **Gender Pay Gap Modeling**: Configurable gender pay gap simulation (2024 UK average: 15.8%)
-- **Level Distribution Skewing**: Custom level distributions (e.g., 50% Level 3 employees)
+## ✨ Key Features
 
-### 📚 Employee Story Tracking
-- **Automatic Pattern Detection**: Identifies interesting employee patterns:
-  - Gender gap affected employees
-  - Above-range salary performers
-  - High-performing outliers
-- **Multi-cycle Career Progression**: Track employees through multiple review cycles
-- **Interactive Story Analysis**: Detailed narratives and progression tracking
+### 🧑‍💼 Individual Employee Analysis
+- Parse employee data from command-line or file inputs
+- 5-year salary progression forecasting with confidence intervals
+- Performance-based career trajectory modeling
+- Interactive salary projection visualizations
+- Median convergence analysis for below-median employees
 
-### 📊 Visualization & Analysis
-- **Population Dashboards**: Comprehensive salary and performance visualizations
-- **Interactive Jupyter Notebooks**: Widget-based exploration with real-time filtering
-- **Export Capabilities**: Multiple format support (CSV, JSON, Excel, Markdown)
+### 👥 Population-Level Analysis
+- Generate realistic employee populations (100-10,000+ employees)
+- Advanced pay gap analysis with statistical significance testing
+- Intervention cost modeling and ROI analysis
+- Executive summary dashboards with key metrics
 
-### 🎯 Smart Search & Filtering
-- **Employee Matching**: Find employees matching specific criteria (salary, level, performance)
-- **Tolerance-based Search**: Flexible salary ranges and performance filters
-- **Story Integration**: See which employees are tracked for interesting patterns
+### 📊 Comprehensive Reporting
+- Interactive HTML dashboards for executives
+- Detailed JSON exports for technical analysis
+- Publication-ready visualizations
+- Automated story tracking for individual employee journeys
 
-## Quick Start
+### 🔧 Advanced Modeling
+- Monte Carlo simulations for salary projections
+- Performance review cycle modeling
+- Market inflation and competitive adjustment factors
+- Configurable confidence intervals and risk assessments
+
+## 🚀 Quick Start
+
+### Prerequisites
+- Python 3.8+
+- pip package manager
+- 2GB+ available disk space (for large population simulations)
+
+### Installation
+
+```bash
+# Clone the repository
+git clone https://github.com/bruvio/employee-simulation-system.git
+cd employee-simulation-system
+
+# Install dependencies
+pip install -r requirements.txt
+
+# Verify installation
+python employee_simulation_orchestrator.py --help
+```
 
 ### Basic Usage
 
-```python
-from run_employee_simulation import EmployeeStoryExplorer
+#### Analyze Individual Employee
+```bash
+# Basic individual analysis
+python employee_simulation_orchestrator.py \
+  --scenario individual \
+  --employee-data "level:5,salary:80692.5,performance:Exceeding"
 
-# Generate population with realistic constraints
-explorer = EmployeeStoryExplorer()
-success = explorer.run_simulation(
-    population_size=1000,
-    random_seed=42,
-    target_salary=80000,
-    target_level=3
-)
+# With custom analysis period
+python employee_simulation_orchestrator.py \
+  --scenario individual \
+  --employee-data "level:3,salary:65000,performance:Achieving" \
+  --analysis-years 7
 ```
 
-### Custom Level Distribution
+#### Generate Population Analysis
+```bash
+# Standard population analysis (100 employees)
+python employee_simulation_orchestrator.py --scenario basic
 
-```python
-# 50% Level 3 employees (standard hire level)
-explorer.run_simulation(
-    population_size=200,
-    level_distribution=[0.05, 0.05, 0.50, 0.20, 0.15, 0.05],
-    target_level=3
-)
+# Large-scale analysis with custom parameters
+python employee_simulation_orchestrator.py \
+  --scenario basic \
+  --population-size 1000 \
+  --max-cycles 20 \
+  --random-seed 12345
 ```
 
-### Gender Pay Gap Simulation
+#### Using the Makefile
+```bash
+# Run all quality checks
+make test
+make flake  
+make black
 
-```python
-# Apply 2024 UK average gender pay gap
-explorer.run_simulation(
-    population_size=500,
-    gender_pay_gap_percent=15.8,
-    target_level=5
-)
+# Run the application
+make run
+
+# Analyze individual employee
+make analyze-individual EMPLOYEE_DATA="level:4,salary:70000,performance:High Performing"
 ```
 
-### Interactive Exploration
+## 📋 System Architecture
 
-Open `employee_explorer.ipynb` for interactive widget-based exploration with:
-- Real-time population generation
-- Custom salary constraints
-- Level distribution controls
-- Gender pay gap simulation
-- Advanced filtering and visualization
+### Core Components
 
-## Architecture
+```
+employee-simulation-system/
+├── 🎮 Core Orchestration
+│   ├── employee_simulation_orchestrator.py    # Main entry point and CLI
+│   └── config_examples.py                     # Configuration templates
+│
+├── 👥 Population Simulation  
+│   ├── employee_population_simulator.py       # Generate realistic populations
+│   ├── individual_progression_simulator.py    # Model career trajectories
+│   └── salary_forecasting_engine.py          # Advanced salary projections
+│
+├── 📊 Analysis & Intelligence
+│   ├── median_convergence_analyzer.py         # Pay gap convergence analysis
+│   ├── intervention_strategy_simulator.py     # Cost-benefit modeling
+│   └── analyze_individual_progression.py      # Individual career analysis
+│
+├── 📈 Visualization & Reporting
+│   ├── visualization_generator.py             # Statistical charts
+│   ├── interactive_dashboard_generator.py     # Web-based dashboards
+│   ├── management_dashboard_generator.py      # Executive summaries
+│   └── analysis_narrator.py                  # Automated insights
+│
+├── 🔧 Utilities & Infrastructure
+│   ├── individual_employee_parser.py          # Data parsing & validation
+│   ├── smart_logging_manager.py              # Intelligent logging
+│   ├── file_optimization_manager.py          # Performance optimization
+│   └── performance_optimization_manager.py    # System tuning
+│
+└── 📦 Testing & Quality
+    ├── tests/                                 # Comprehensive test suite
+    ├── Makefile                              # Build automation
+    └── requirements.txt                       # Dependencies
+```
 
-### Core Modules
+### Data Flow
 
-1. **`employee_population_simulator.py`** - Population generation with realistic constraints
-2. **`employee_simulation_orchestrator.py`** - Main coordination engine
-3. **`employee_story_tracker.py`** - Pattern detection and story tracking
-4. **`performance_review_system.py`** - Performance rating and progression logic
-5. **`review_cycle_simulator.py`** - Multi-cycle career simulation
-6. **`visualization_generator.py`** - Chart and graph generation
-7. **`interactive_dashboard_generator.py`** - Interactive dashboard creation
+```mermaid
+graph TB
+    A[CLI Input / Employee Data] --> B[Data Parser & Validator]
+    B --> C[Population Generator]
+    C --> D[Analysis Engine]
+    D --> E[Forecasting & Simulation]
+    E --> F[Visualization Generator]
+    F --> G[Dashboard & Reports]
+    
+    H[Configuration] --> B
+    H --> C
+    H --> D
+    
+    I[Logging & Monitoring] --> D
+    I --> E
+    I --> F
+```
 
-### Key Features
+## 🎛️ Configuration
 
-- **Smart Logging**: Configurable logging with progress indicators
-- **File Optimization**: Structured output organization
-- **Performance Optimization**: Efficient handling of large populations (10K+ employees)
-- **Story Export**: Multiple export formats with narrative generation
-
-## Configuration Options
-
-The system supports extensive configuration:
+The system uses YAML-based configuration with environment-specific overrides:
 
 ```python
+# Basic configuration
 config = {
-    'population_size': 1000,
-    'random_seed': 42,
-    'level_distribution': [0.25, 0.25, 0.20, 0.15, 0.10, 0.05],
-    'gender_pay_gap_percent': 15.8,
-    'salary_constraints': {
-        1: {'min': 28000, 'max': 35000, 'median_target': 30000},
-        2: {'min': 45000, 'max': 72000, 'median_target': 60000},
-        3: {'min': 72000, 'max': 95000, 'median_target': 83939}
-    }
+    "population_size": 100,
+    "max_cycles": 15,
+    "analysis_years": 5,
+    "generate_visualizations": True,
+    "export_formats": ["json", "csv"],
+    "confidence_interval": 0.95,
+    "market_inflation_rate": 0.025
 }
 ```
 
-## Use Cases
+### Scenario Types
+- `individual`: Single employee career analysis
+- `basic`: Standard population simulation (100-500 employees)
+- `large_scale`: Enterprise simulation (1000+ employees)
+- `equity_focused`: Pay gap analysis with intervention modeling
 
-### HR Analytics
-- Analyze salary distributions and identify pay equity issues
-- Model the impact of different hiring strategies
-- Understand career progression patterns
+## 📖 Usage Examples
 
-### Organizational Planning
-- Simulate the effects of level distribution changes
-- Plan for salary budget impacts
-- Model negotiation dynamics
+### Example 1: Individual Career Analysis
+```bash
+python employee_simulation_orchestrator.py \
+  --scenario individual \
+  --employee-data "level:3,salary:65000,performance:High Performing,gender:Female,tenure:2"
+```
 
-### Research & Development
-- Test hypotheses about organizational behavior
-- Generate realistic datasets for HR tool development
-- Analyze correlation between performance and compensation
+**Output:**
+- 5-year salary progression (Conservative/Realistic/Optimistic scenarios)
+- Annual growth rate calculations
+- Median convergence analysis
+- Performance-based recommendations
+- Interactive visualization chart
 
-## Output Examples
+### Example 2: Department Pay Gap Analysis
+```bash
+python employee_simulation_orchestrator.py \
+  --scenario equity_focused \
+  --population-size 500 \
+  --log-level debug
+```
 
-The system generates:
-- **Population Analysis Reports**: Detailed markdown reports with insights
-- **Visualization Charts**: Distribution plots, performance correlations
-- **Employee Matches**: Specific employees meeting criteria
-- **Story Narratives**: Interesting career progression patterns
+**Output:**
+- Gender pay gap statistics
+- Level-based equity analysis  
+- Intervention cost modeling
+- Executive dashboard with recommendations
+- Risk assessment and compliance metrics
 
-## Requirements
+### Example 3: Large-Scale Simulation
+```bash
+python employee_simulation_orchestrator.py \
+  --scenario large_scale \
+  --population-size 2000 \
+  --max-cycles 25 \
+  --analysis-years 7
+```
 
-- Python 3.9+
-- pandas, numpy, matplotlib, seaborn, plotly
-- jupyter, ipywidgets (for interactive notebooks)
+**Output:**
+- Comprehensive population analysis
+- Advanced statistical modeling
+- Performance optimization recommendations
+- Detailed technical reports
+- Publication-ready visualizations
 
-## Getting Started
+## 📊 Output Files & Artifacts
 
-1. Install dependencies: `pip install -r requirements.txt`
-2. Run basic simulation: `python run_employee_simulation.py`
-3. Explore interactively: `jupyter notebook employee_explorer.ipynb`
+### Generated Artifacts
+```
+artifacts/
+├── individual_analysis/           # Individual employee reports
+│   ├── individual_analysis_*.json
+│   └── visualizations/
+│       └── salary_projection_*.html
+├── advanced_analysis/             # Population-level analysis
+│   ├── management_dashboard_*.html
+│   ├── technical_analysis_*.json
+│   └── charts/
+└── exports/                       # Data exports
+    ├── population_data_*.csv
+    └── analysis_results_*.json
+```
+
+### Key Output Types
+
+1. **JSON Reports**: Detailed technical analysis with all calculations
+2. **HTML Dashboards**: Executive-ready visualizations with insights
+3. **CSV Exports**: Raw data for external analysis
+4. **Interactive Charts**: Plotly-based visualizations for presentations
+
+## 🧪 Testing & Quality
+
+```bash
+# Run all tests
+make test
+
+# Code quality checks  
+make flake
+make black-check
+
+# Generate coverage report
+pytest --cov=. --cov-report=html
+```
+
+### Test Coverage
+- Unit tests for all core components (48 test cases)
+- Integration tests for end-to-end workflows
+- Performance benchmarks for large populations
+- Data validation and edge case handling
+
+## 🔍 Troubleshooting
+
+### Common Issues
+
+**ImportError**: Missing dependencies
+```bash
+pip install -r requirements.txt
+```
+
+**Memory Issues**: Large populations (>5000 employees)
+```bash
+# Reduce population size or enable optimization
+python employee_simulation_orchestrator.py --scenario basic --population-size 1000
+```
+
+**Visualization Errors**: Missing plotting libraries
+```bash
+pip install plotly matplotlib seaborn
+```
+
+### Debug Mode
+```bash
+python employee_simulation_orchestrator.py --scenario individual --log-level debug --employee-data "level:5,salary:80000,performance:Exceeding"
+```
+
+## 🤝 Contributing
+
+1. Fork the repository
+2. Create a feature branch: `git checkout -b feature/new-analysis`
+3. Make changes with tests: `make test`
+4. Ensure code quality: `make flake && make black`
+5. Submit a pull request
+
+### Development Setup
+```bash
+# Install development dependencies
+pip install -r requirements-dev.txt
+
+# Install pre-commit hooks
+pre-commit install
+
+# Run full test suite
+make test
+```
+
+## 📄 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## 🙋‍♀️ Support & Contact
+
+- **Issues**: [GitHub Issues](https://github.com/bruvio/employee-simulation-system/issues)
+- **Documentation**: [Wiki](https://github.com/bruvio/employee-simulation-system/wiki)  
+- **Author**: [bruvio](https://github.com/bruvio)
 
 ---
 
-*Generated with enhanced employee simulation system featuring realistic salary constraints, negotiation dynamics, and comprehensive story tracking.*
+**Built with ❤️ for HR Analytics and People Operations**
+
+*This system is designed to promote pay equity, career development, and data-driven HR decision making.*

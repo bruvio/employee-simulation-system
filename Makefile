@@ -29,9 +29,9 @@ black-check:
 flake:
 	flake8 . --max-line-length=120 --exclude=.venv,__pycache__,artifacts,images,htmlcov
 
-.PHONY: test
-test:
-	$(PYTEST) -v
+.PHONY: pytest
+pytest:
+	$(PYTEST)  -vvv -rPxwef
 
 .PHONY: pip-compile
 pip-compile:
@@ -61,5 +61,13 @@ clean:
 	find . -type f -name "*.pyc" -delete
 	find . -type d -name "__pycache__" -exec rm -rf {} + 2>/dev/null || true
 	rm -rf .pytest_cache htmlcov .coverage
+
+.PHONY: coverage
+coverage:  ## coverage report
+	coverage report --fail-under 90
+	coverage html -i
+
+.PHONY: unit
+unit: | pytest coverage  ## run all tests and test coverage
 
 .DEFAULT_GOAL := help
