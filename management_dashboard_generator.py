@@ -306,7 +306,8 @@ class ManagementDashboardGenerator:
         fig = go.Figure()
 
         # Gender salary distributions
-        for i, gender in enumerate(df["gender"].unique()):
+        gender_order = sorted(df["gender"].unique())
+        for i, gender in enumerate(gender_order):
             gender_data = df[df["gender"] == gender]
             fig.add_trace(
                 go.Histogram(
