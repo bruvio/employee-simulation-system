@@ -234,7 +234,7 @@ class ManagementDashboardGenerator:
 
         # Below median employees
         level_medians = df.groupby("level")["salary"].median()
-        below_median_count = sum(1 for _, emp in df.iterrows() if emp["salary"] < level_medians[emp["level"]])
+        below_median_count = (df["salary"] < df["level"].map(level_medians)).sum()
         below_median_percent = (below_median_count / len(df)) * 100
 
         fig.add_trace(
