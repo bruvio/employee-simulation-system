@@ -1,79 +1,65 @@
+# Employee Simulation System Makefile
 
+PYTHON = python
+PYTEST = pytest
 
+.PHONY: help
+help:
+	@echo "Employee Simulation System"
+	@echo "Available targets:"
+	@echo "  black               - Format code with black"
+	@echo "  black-check         - Check code formatting with black"
+	@echo "  flake               - Run flake8 linting"
+	@echo "  test                - Run unit tests"
+	@echo "  pip-compile         - Compile requirements"
+	@echo "  pip-upgrade         - Upgrade requirements"
+	@echo "  run                 - Run the application"
+	@echo "  analyze-individual  - Run individual employee analysis (set EMPLOYEE_DATA)"
+	@echo "  clean               - Clean temporary files"
 
+.PHONY: black
+black:
+	black --line-length=120 .
 
-# RUNAPP  = uvicorn app.main:app --host 0.0.0.0 --port 5000 --reload
-PYTEST  = pytest --cov app --cov-append --cov-report=html -v $(OPTS)
-COMPILE = pip-compile -v
+.PHONY: black-check
+black-check:
+	black --line-length=120 --check .
 
-all: help
+.PHONY: flake
+flake:
+	flake8 . --max-line-length=120 --exclude=.venv,__pycache__,artifacts,images,htmlcov
 
-env:  ## build python env
-	/bin/bash -c "python -m venv venv && \
-		source venv/bin/activate && \
-		pip install --upgrade pip && \
-		pip install pip-tools==7.0.0 && \
-		pip install -r requirements.txt"
+.PHONY: test
+test:
+	$(PYTEST) -v
 
-env_test: env  ## build python env for testing
-	pip install -r requirements.txt
-	pip install -r requirements-test.txt
+.PHONY: pip-compile
+pip-compile:
+	pip-compile requirements.txt
+	pip-compile requirements-test.txt
 
+.PHONY: pip-upgrade
+pip-upgrade:
+	pip-compile -U requirements.txt
+	pip-compile -U requirements-test.txt
 
-pip_compile:  ## create requirements
-	$(COMPILE) requirements.in
-	$(COMPILE) requirements-test.in
+.PHONY: run
+run:
+	$(PYTHON) employee_simulation_orchestrator.py --scenario basic --population-size 100
 
-pip_upgrade:  ## upgrade requirements
-	$(COMPILE) -U requirements.in
-	$(COMPILE) -U requirements-test.in
+.PHONY: analyze-individual
+analyze-individual:
+	@if [ -z "$(EMPLOYEE_DATA)" ]; then \
+		echo "Error: EMPLOYEE_DATA is required"; \
+		echo "Example: make analyze-individual EMPLOYEE_DATA='level:5,salary:80692.5,performance:Exceeding'"; \
+		exit 1; \
+	fi
+	$(PYTHON) employee_simulation_orchestrator.py --scenario individual --employee-data "$(EMPLOYEE_DATA)"
 
-pip_sync:  ## sync requirements
-	pip-sync -v requirements.txt requirements-test.txt
-black:  ## format code with black
-	black -l120 .
+.PHONY: clean
+clean:
+	find . -type f -name "*.pyc" -delete
+	find . -type d -name "__pycache__" -exec rm -rf {} + 2>/dev/null || true
+	rm -rf .pytest_cache htmlcov .coverage
 
-format:  ## check black code formatting
-	black -l120 --check .
-
-fix:
-	isort .
-	black -l120 .
-	docformatter -r -i --wrap-summaries 120 --wrap-descriptions 120 .
-
-lint:
-	flake8 .
-
-
-.PHONY: unit	
-unit:  ## run unit tests
-	pytest -vvv -rPxf --cov=. --cov-append --cov-report term-missing tests
-flake:  ## check using flake
-	flake8 .
-
-mypy:  ## check python typing using mypy
-	pip install types-mock types-tabulate
-	mypy . --ignore-missing-imports
-
-# unit:  ## run unit tests
-# 	$(PYTEST) app/tests/unit
-
-# component:  ## run component tests
-# 	$(PYTEST) app/tests/component --cov app --cov-append -vvv
-
-coverage:  ## coverage report
-	coverage report --fail-under 90
-	coverage html -i
-
-pytest: | unit coverage  ## run all tests and test coverage
-
-test: | env_test format safety mypy flake pytest  ## check environment, build, linting and run tests
-
-help: ## print help
-	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-20s\033[0m %s\n", $$1, $$2}'
-
-
-autoflake:
-	autoflake --in-place --remove-all-unused-imports --expand-star-imports --remove-duplicate-keys --remove-unused-variables **/*.*
-	black -l120 .
-	
+.DEFAULT_GOAL := help

@@ -111,10 +111,15 @@ class InterventionStrategySimulator:
         }
 
         LOGGER.info(f"Recommended strategy: {optimal_strategy['strategy_name']}")
-        LOGGER.info(
-            f"Estimated cost: £{optimal_strategy['total_cost']:,.0f} ({optimal_strategy['cost_as_percent_payroll']:.2%})"
-        )
-        LOGGER.info(f"Timeline: {optimal_strategy['timeline_years']} years")
+
+        # Enhanced cost reporting with temporal context
+        cost_breakdown = optimal_strategy.get("temporal_breakdown", {})
+        cost_explanation = cost_breakdown.get("explanation", f"£{optimal_strategy['total_cost']:,.0f} total cost")
+
+        LOGGER.info(f"Cost Analysis: {cost_explanation}")
+        LOGGER.info(f"Cost Type: {optimal_strategy.get('implementation_type', 'standard_intervention')}")
+        LOGGER.info(f"Budget Impact: {optimal_strategy['cost_as_percent_payroll']:.2%} of annual payroll")
+        LOGGER.info(f"Implementation Timeline: {optimal_strategy['timeline_years']} years")
 
         return result
 
@@ -362,6 +367,15 @@ class InterventionStrategySimulator:
             "applicable": True,
             "timeline_years": 0.25,  # 3 months to implement
             "total_cost": total_cost,
+            "implementation_type": "one_time_salary_adjustment",
+            "cost_description": f"One-time salary adjustments: £{total_cost:,.0f}",
+            "annual_ongoing_cost": total_cost,  # The annual ongoing cost is the salary increase
+            "temporal_breakdown": {
+                "immediate_implementation_cost": 0,  # No upfront costs
+                "annual_salary_increase": total_cost,  # Permanent salary increase
+                "cost_period": "annual_ongoing",
+                "explanation": f"This represents £{total_cost:,.0f} in annual salary increases (not a one-time payment)",
+            },
             "cost_as_percent_payroll": total_cost / self.baseline_metrics["total_payroll"],
             "affected_employees": len(underpaid_females),
             "average_adjustment": total_cost / len(underpaid_females) if underpaid_females else 0,
@@ -397,6 +411,15 @@ class InterventionStrategySimulator:
             "timeline_years": years,
             "total_cost": actual_total_cost,
             "annual_cost": feasible_annual_cost,
+            "implementation_type": "phased_salary_adjustment",
+            "cost_description": f"Phased salary adjustments over {years} years",
+            "temporal_breakdown": {
+                "immediate_implementation_cost": 0,
+                "annual_salary_increase": feasible_annual_cost,
+                "total_annual_increase_after_completion": actual_total_cost,
+                "cost_period": "phased_annual_implementation",
+                "explanation": f"£{feasible_annual_cost:,.0f} additional salary costs per year for {years} years, reaching £{actual_total_cost:,.0f} total annual increase",
+            },
             "cost_as_percent_payroll": actual_total_cost / self.baseline_metrics["total_payroll"],
             "affected_employees": immediate_strategy["affected_employees"],
             "average_adjustment": (

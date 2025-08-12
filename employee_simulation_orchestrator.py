@@ -5,7 +5,7 @@ from datetime import datetime
 import json
 from pathlib import Path
 import sys
-from typing import Dict, List
+from typing import Any, Dict, List
 
 import pandas as pd
 
@@ -1024,25 +1024,59 @@ class EmployeeSimulationOrchestrator:
                     )
                     self.smart_logger.log_info(intervention_narrative)
 
-            # Phase 4: Export Advanced Analysis Reports
+            # Phase 4: Generate Advanced Visualizations (ENHANCED per PRP)
+            if self.config.get("enable_advanced_visualizations", True) and results["analysis_results"]:
+                self.smart_logger.start_phase("Phase 4: Generate Advanced Visualizations", 4)
+
+                # Generate comprehensive visualizations for advanced analysis
+                try:
+                    viz_generator = VisualizationGenerator(
+                        population_data=population_data,
+                        inequality_progression=[],  # Not applicable for advanced analysis
+                    )
+
+                    # Generate analysis-specific visualizations
+                    viz_files = viz_generator.generate_complete_analysis()
+                    results["visualization_files"] = viz_files
+
+                    self.smart_logger.update_progress(f"Generated {len(viz_files)} visualization files")
+
+                    # Add user-friendly narrative for visualization generation
+                    if narrator:
+                        viz_narrative = narrator.narrate_visualization_generation(
+                            {
+                                "charts_generated": len(viz_files),
+                                "visualization_types": ["salary_equity", "gap_analysis", "trend_charts"],
+                                "output_location": "images/simulation_run_*/charts/",
+                            }
+                        )
+                        self.smart_logger.log_info(viz_narrative)
+
+                except Exception as e:
+                    self.smart_logger.log_warning(f"Visualization generation failed: {e}")
+                    results["visualization_error"] = str(e)
+
+                self.smart_logger.complete_phase("Phase 4: Generate Advanced Visualizations")
+
+            # Phase 5: Export Advanced Analysis Reports
             if self.config.get("export_advanced_analysis_reports", True) and results["analysis_results"]:
-                self.smart_logger.start_phase("Phase 4: Export Advanced Analysis Reports", 3)
+                self.smart_logger.start_phase("Phase 5: Export Advanced Analysis Reports", 3)
 
                 export_files = self._export_advanced_analysis_reports(results["analysis_results"], population_data)
-                results["files_generated"] = export_files
+                results["files_generated"] = {**(results.get("files_generated", {})), **export_files}
 
-                self.smart_logger.complete_phase("Phase 4: Export Advanced Analysis Reports")
+                self.smart_logger.complete_phase("Phase 5: Export Advanced Analysis Reports")
                 self.smart_logger.log_success(
                     f"Advanced analysis reports exported: {len(export_files)} files generated"
                 )
 
-            # Phase 5: Generate Management Dashboard (NEW)
+            # Phase 6: Generate Management Dashboard (NEW)
             if (
                 self.config.get("enable_advanced_visualizations", True)
                 and self.config.get("generate_management_dashboard", True)
                 and results["analysis_results"]
             ):
-                self.smart_logger.start_phase("Phase 5: Generate Management Dashboard", 3)
+                self.smart_logger.start_phase("Phase 6: Generate Management Dashboard", 3)
 
                 try:
                     from management_dashboard_generator import ManagementDashboardGenerator
@@ -1057,7 +1091,7 @@ class EmployeeSimulationOrchestrator:
                     dashboard_files = dashboard_generator.generate_executive_dashboard()
                     results["dashboard_files"] = dashboard_files
 
-                    self.smart_logger.complete_phase("Phase 5: Generate Management Dashboard")
+                    self.smart_logger.complete_phase("Phase 6: Generate Management Dashboard")
                     self.smart_logger.log_success(
                         f"Management dashboard generated: {dashboard_files.get('components_generated', 0)} components"
                     )
@@ -1730,6 +1764,226 @@ class EmployeeSimulationOrchestrator:
         return "\n".join(lines)
 
 
+def run_individual_employee_analysis(employee_data, config: Dict[str, Any]) -> None:
+    """Run analysis for a single individual employee.
+
+    Args:
+        employee_data: Parsed and validated EmployeeData instance
+        config: Configuration dictionary for analysis
+    """
+    from individual_employee_parser import create_individual_employee
+
+    # Create employee record compatible with simulation system
+    employee_record = create_individual_employee(employee_data)
+    population_data = [employee_record]
+
+    logger = get_smart_logger()
+
+    # Display employee information
+    print(f"\n🧑‍💼 Individual Employee Analysis")
+    print(f"{'='*50}")
+    print(f"Employee: {employee_data.name}")
+    print(f"Level: {employee_data.level}")
+    print(f"Current Salary: £{employee_data.salary:,.2f}")
+    print(f"Performance Rating: {employee_data.performance_rating}")
+    print(f"Gender: {employee_data.gender}")
+    print(f"Tenure: {employee_data.tenure_years} years")
+    print(f"Department: {employee_data.department}")
+
+    try:
+        # Initialize individual progression simulator
+        logger.log_info("Starting individual progression analysis")
+        from individual_progression_simulator import IndividualProgressionSimulator
+
+        progression_simulator = IndividualProgressionSimulator(population_data)
+
+        # Run 5-year projection analysis
+        analysis_years = config.get("progression_analysis_years", 5)
+
+        print(f"\n📊 {analysis_years}-Year Salary Progression Analysis")
+        print(f"{'='*50}")
+
+        # Create employee record for progression simulator
+        employee_record = {
+            "employee_id": employee_data.employee_id,
+            "name": employee_data.name,
+            "level": employee_data.level,
+            "salary": employee_data.salary,
+            "performance_rating": employee_data.performance_rating,
+            "gender": employee_data.gender,
+            "tenure_years": employee_data.tenure_years,
+            "department": employee_data.department,
+        }
+
+        # Run all scenarios together
+        all_projections = progression_simulator.project_salary_progression(
+            employee_data=employee_record, years=analysis_years, scenarios=["conservative", "realistic", "optimistic"]
+        )
+
+        # Extract individual scenarios
+        conservative_projection = {
+            "expected_final_salary": all_projections["projections"]["conservative"]["final_salary"],
+            "scenarios": {"conservative": all_projections["projections"]["conservative"]},
+        }
+        realistic_projection = {
+            "expected_final_salary": all_projections["projections"]["realistic"]["final_salary"],
+            "scenarios": {"realistic": all_projections["projections"]["realistic"]},
+        }
+        optimistic_projection = {
+            "expected_final_salary": all_projections["projections"]["optimistic"]["final_salary"],
+            "scenarios": {"optimistic": all_projections["projections"]["optimistic"]},
+        }
+
+        # Display results
+        print(f"\n📈 Scenario Analysis (Year {analysis_years}):")
+        print(f"├─ Conservative: £{conservative_projection['expected_final_salary']:,.0f}")
+        print(f"├─ Realistic:    £{realistic_projection['expected_final_salary']:,.0f}")
+        print(f"└─ Optimistic:   £{optimistic_projection['expected_final_salary']:,.0f}")
+
+        # Calculate potential salary increase
+        current_salary = employee_data.salary
+        realistic_increase = realistic_projection["expected_final_salary"] - current_salary
+
+        # Calculate annual growth rate
+        annual_growth_rate = (realistic_projection["expected_final_salary"] / current_salary) ** (
+            1 / analysis_years
+        ) - 1
+
+        print(f"\n💰 Financial Impact (Realistic Scenario):")
+        print(f"├─ Current Salary: £{current_salary:,.0f}")
+        print(f"├─ Future Salary:  £{realistic_projection['expected_final_salary']:,.0f}")
+        print(f"├─ Total Increase: £{realistic_increase:,.0f}")
+        print(f"└─ Annual Growth:  {annual_growth_rate:.1%}")
+
+        # Check if employee is below median for their level
+        try:
+            from median_convergence_analyzer import MedianConvergenceAnalyzer
+
+            convergence_analyzer = MedianConvergenceAnalyzer(population_data)
+            convergence_analysis = convergence_analyzer.analyze_convergence_timeline(employee_data.employee_id)
+
+            if convergence_analysis.get("below_median", False):
+                print(f"\n⚠️  Below Median Analysis:")
+                print(f"├─ Current gap: {convergence_analysis.get('gap_percent', 0):.1%} below level median")
+                print(f"├─ Natural convergence: {convergence_analysis.get('natural_convergence_years', 'N/A')} years")
+                print(
+                    f"└─ With intervention: {convergence_analysis.get('intervention_convergence_years', 'N/A')} years"
+                )
+            else:
+                print(f"\n✅ Above Median: Employee is performing above median for Level {employee_data.level}")
+
+        except Exception as e:
+            logger.log_warning(f"Could not perform median convergence analysis: {e}")
+
+        # Performance path analysis
+        print(f"\n🎯 Performance Path Analysis:")
+        performance_path = realistic_projection.get("performance_path", [])
+        if performance_path:
+            print(f"Expected performance trajectory over {analysis_years} years:")
+            for i, rating in enumerate(performance_path[:5], 1):  # Show first 5 years
+                print(f"Year {i}: {rating}")
+
+        # Recommendations
+        print(f"\n💡 Recommendations:")
+        if employee_data.performance_rating in ["High Performing", "Exceeding"]:
+            print("├─ Consider for accelerated development programs")
+            print("├─ Evaluate for promotion opportunities")
+            print("└─ Ensure competitive retention package")
+        elif employee_data.performance_rating == "Achieving":
+            print("├─ Focus on consistent performance delivery")
+            print("├─ Identify skill development opportunities")
+            print("└─ Regular check-ins to maintain trajectory")
+        else:
+            print("├─ Implement performance improvement plan")
+            print("├─ Provide additional training and support")
+            print("└─ Set clear expectations and milestones")
+
+        # Export individual analysis if requested
+        if config.get("export_individual_analysis", True):
+            export_individual_analysis_results(
+                employee_data,
+                {
+                    "conservative": conservative_projection,
+                    "realistic": realistic_projection,
+                    "optimistic": optimistic_projection,
+                    "convergence_analysis": convergence_analysis if "convergence_analysis" in locals() else None,
+                },
+            )
+
+        print(f"\n✅ Individual analysis completed successfully")
+
+    except Exception as e:
+        logger.log_error(f"Individual employee analysis failed: {e}")
+        print(f"\nError during analysis: {e}")
+        import traceback
+
+        traceback.print_exc()
+        sys.exit(1)
+
+
+def export_individual_analysis_results(employee_data, analysis_results: Dict[str, Any]) -> None:
+    """Export individual employee analysis results to file.
+
+    Args:
+        employee_data: EmployeeData instance
+        analysis_results: Dictionary containing analysis results
+    """
+    try:
+        from pathlib import Path
+        import json
+        from datetime import datetime
+
+        # Create output directory
+        output_dir = Path("artifacts/individual_analysis")
+        output_dir.mkdir(parents=True, exist_ok=True)
+
+        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+
+        # Calculate annual growth rate from analysis results
+        current_salary = employee_data.salary
+        final_salary = analysis_results["realistic"]["expected_final_salary"]
+        timeline_years = analysis_results["realistic"].get("timeline_years", 5)  # Default to 5 years
+
+        # Calculate compound annual growth rate (CAGR)
+        if timeline_years > 0 and current_salary > 0:
+            annual_growth_rate = ((final_salary / current_salary) ** (1 / timeline_years) - 1) * 100
+        else:
+            annual_growth_rate = 0
+
+        # Create comprehensive results dictionary
+        export_data = {
+            "employee_info": {
+                "name": employee_data.name,
+                "employee_id": employee_data.employee_id,
+                "level": employee_data.level,
+                "current_salary": employee_data.salary,
+                "performance_rating": employee_data.performance_rating,
+                "gender": employee_data.gender,
+                "tenure_years": employee_data.tenure_years,
+                "department": employee_data.department,
+            },
+            "analysis_timestamp": timestamp,
+            "projection_results": analysis_results,
+            "summary": {
+                "current_salary": employee_data.salary,
+                "realistic_final_salary": analysis_results["realistic"]["expected_final_salary"],
+                "total_potential_increase": analysis_results["realistic"]["expected_final_salary"]
+                - employee_data.salary,
+                "annual_growth_rate": annual_growth_rate,
+            },
+        }
+
+        # Export to JSON
+        json_file = output_dir / f"individual_analysis_{employee_data.employee_id}_{timestamp}.json"
+        with open(json_file, "w") as f:
+            json.dump(export_data, f, indent=2, default=str)
+
+        print(f"\n📄 Analysis exported to: {json_file}")
+
+    except Exception as e:
+        get_smart_logger().log_warning(f"Could not export analysis results: {e}")
+
+
 def main():
     """Command-line interface for the simulation orchestrator."""
     parser = argparse.ArgumentParser(description="Employee Population Simulation Orchestrator")
@@ -1773,6 +2027,11 @@ def main():
 
     parser.add_argument(
         "--log-level", choices=["ERROR", "WARNING", "INFO", "DEBUG"], default="INFO", help="Logging level"
+    )
+
+    # Individual employee analysis arguments
+    parser.add_argument(
+        "--employee-data", type=str, help="Individual employee data in format 'level:X,salary:Y,performance:Z'"
     )
 
     args = parser.parse_args()
@@ -1839,6 +2098,30 @@ def main():
         config["max_cycles"] = args.max_cycles
     if hasattr(args, "random_seed") and args.random_seed != 42:  # Only override if different from default
         config["random_seed"] = args.random_seed
+
+    # Handle individual employee data if provided
+    if args.employee_data:
+        try:
+            from individual_employee_parser import parse_employee_data_string
+
+            get_smart_logger().log_info(f"Parsing individual employee data: {args.employee_data}")
+
+            # Parse and validate employee data
+            employee_data = parse_employee_data_string(args.employee_data)
+            get_smart_logger().log_info(
+                f"Parsed employee: Level {employee_data.level}, £{employee_data.salary:,.0f}, {employee_data.performance_rating}"
+            )
+
+            # Run individual employee analysis
+            return run_individual_employee_analysis(employee_data, config)
+
+        except Exception as e:
+            get_smart_logger().log_error(f"Failed to parse individual employee data: {e}")
+            print(f"\nError: {e}")
+            print("\nExpected format: 'level:X,salary:Y,performance:Z'")
+            print("Example: 'level:5,salary:80692.5,performance:Exceeding'")
+            print("\nValid performance ratings: Not met, Partially met, Achieving, High Performing, Exceeding")
+            sys.exit(1)
 
     # Initialize orchestrator
     orchestrator = EmployeeSimulationOrchestrator(config=config)
