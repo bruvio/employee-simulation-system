@@ -50,7 +50,7 @@ class ManagementDashboardGenerator:
                 "title_size": 18,
                 "axis_size": 12,
                 "layout": "summary_focused",
-                "complexity": "simplified"
+                "complexity": "simplified",
             },
             "analytical": {
                 "color_scheme": ["#d62728", "#9467bd", "#8c564b", "#e377c2", "#7f7f7f"],
@@ -60,7 +60,7 @@ class ManagementDashboardGenerator:
                 "title_size": 16,
                 "axis_size": 11,
                 "layout": "detail_focused",
-                "complexity": "comprehensive"
+                "complexity": "comprehensive",
             },
             "compliance": {
                 "color_scheme": ["#2ca02c", "#ff7f0e", "#1f77b4", "#d62728", "#9467bd"],
@@ -70,8 +70,8 @@ class ManagementDashboardGenerator:
                 "title_size": 17,
                 "axis_size": 12,
                 "layout": "audit_focused",
-                "complexity": "regulatory"
-            }
+                "complexity": "regulatory",
+            },
         }
 
         # Get theme from config or default to executive
@@ -160,7 +160,7 @@ class ManagementDashboardGenerator:
         equity_analysis = intervention_results.get("equity_analysis", {})
         optimal_approach = equity_analysis.get("optimal_approach", {})
         estimated_cost = optimal_approach.get("total_investment", 0)
-        
+
         # Extract temporal breakdown
         temporal_breakdown = optimal_approach.get("temporal_breakdown", {})
         cost_explanation = temporal_breakdown.get("explanation", f"£{estimated_cost:,.0f} intervention cost")

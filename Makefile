@@ -8,6 +8,7 @@ help:
 	@echo "Employee Simulation System"
 	@echo "Available targets:"
 	@echo "  black               - Format code with black"
+	@echo "  black-check         - Check code formatting with black"
 	@echo "  flake               - Run flake8 linting"
 	@echo "  test                - Run unit tests"
 	@echo "  pip-compile         - Compile requirements"
@@ -19,6 +20,10 @@ help:
 .PHONY: black
 black:
 	black --line-length=120 .
+
+.PHONY: black-check
+black-check:
+	black --line-length=120 --check .
 
 .PHONY: flake
 flake:

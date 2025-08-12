@@ -111,12 +111,11 @@ class InterventionStrategySimulator:
         }
 
         LOGGER.info(f"Recommended strategy: {optimal_strategy['strategy_name']}")
-        
+
         # Enhanced cost reporting with temporal context
-        cost_breakdown = optimal_strategy.get('temporal_breakdown', {})
-        cost_period = cost_breakdown.get('cost_period', 'unknown')
-        cost_explanation = cost_breakdown.get('explanation', f"£{optimal_strategy['total_cost']:,.0f} total cost")
-        
+        cost_breakdown = optimal_strategy.get("temporal_breakdown", {})
+        cost_explanation = cost_breakdown.get("explanation", f"£{optimal_strategy['total_cost']:,.0f} total cost")
+
         LOGGER.info(f"Cost Analysis: {cost_explanation}")
         LOGGER.info(f"Cost Type: {optimal_strategy.get('implementation_type', 'standard_intervention')}")
         LOGGER.info(f"Budget Impact: {optimal_strategy['cost_as_percent_payroll']:.2%} of annual payroll")
@@ -375,7 +374,7 @@ class InterventionStrategySimulator:
                 "immediate_implementation_cost": 0,  # No upfront costs
                 "annual_salary_increase": total_cost,  # Permanent salary increase
                 "cost_period": "annual_ongoing",
-                "explanation": f"This represents £{total_cost:,.0f} in annual salary increases (not a one-time payment)"
+                "explanation": f"This represents £{total_cost:,.0f} in annual salary increases (not a one-time payment)",
             },
             "cost_as_percent_payroll": total_cost / self.baseline_metrics["total_payroll"],
             "affected_employees": len(underpaid_females),
@@ -419,7 +418,7 @@ class InterventionStrategySimulator:
                 "annual_salary_increase": feasible_annual_cost,
                 "total_annual_increase_after_completion": actual_total_cost,
                 "cost_period": "phased_annual_implementation",
-                "explanation": f"£{feasible_annual_cost:,.0f} additional salary costs per year for {years} years, reaching £{actual_total_cost:,.0f} total annual increase"
+                "explanation": f"£{feasible_annual_cost:,.0f} additional salary costs per year for {years} years, reaching £{actual_total_cost:,.0f} total annual increase",
             },
             "cost_as_percent_payroll": actual_total_cost / self.baseline_metrics["total_payroll"],
             "affected_employees": immediate_strategy["affected_employees"],
