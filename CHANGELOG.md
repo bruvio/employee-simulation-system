@@ -1,3 +1,10 @@
+## [1.1.1](https://github.com/bruvio/employee-simulation-system/compare/1.1.0...1.1.1) (2025-08-12)
+
+
+### Bug Fixes
+
+* more improvements ([#6](https://github.com/bruvio/employee-simulation-system/issues/6)) ([4abb0aa](https://github.com/bruvio/employee-simulation-system/commit/4abb0aa2d7b455bcc83de2da1f6df23aa0d72579))
+
 # [1.1.0](https://github.com/bruvio/employee-simulation-system/compare/1.0.1...1.1.0) (2025-08-11)
 
 
