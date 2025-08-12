@@ -1916,56 +1916,58 @@ def run_individual_employee_analysis(employee_data, config: Dict[str, Any]) -> N
                 from pathlib import Path
                 import plotly.graph_objects as go
                 import plotly.offline as pyo
-                
+
                 # Create output directory
                 viz_dir = Path("artifacts/individual_analysis/visualizations")
                 viz_dir.mkdir(parents=True, exist_ok=True)
-                
+
                 # Create salary progression chart
                 fig = go.Figure()
-                
+
                 scenarios = ["Conservative", "Realistic", "Optimistic"]
                 final_salaries = [
-                    conservative_projection['expected_final_salary'],
-                    realistic_projection['expected_final_salary'],
-                    optimistic_projection['expected_final_salary']
+                    conservative_projection["expected_final_salary"],
+                    realistic_projection["expected_final_salary"],
+                    optimistic_projection["expected_final_salary"],
                 ]
-                
-                colors = ['#ff7f0e', '#2ca02c', '#1f77b4']
-                
-                fig.add_trace(go.Bar(
-                    x=scenarios,
-                    y=final_salaries,
-                    marker_color=colors,
-                    text=[f"£{salary:,.0f}" for salary in final_salaries],
-                    textposition='auto',
-                ))
-                
+
+                colors = ["#ff7f0e", "#2ca02c", "#1f77b4"]
+
+                fig.add_trace(
+                    go.Bar(
+                        x=scenarios,
+                        y=final_salaries,
+                        marker_color=colors,
+                        text=[f"£{salary:,.0f}" for salary in final_salaries],
+                        textposition="auto",
+                    )
+                )
+
                 # Add current salary line
                 fig.add_hline(
                     y=employee_data.salary,
                     line_dash="dash",
                     line_color="red",
-                    annotation_text=f"Current Salary: £{employee_data.salary:,.0f}"
+                    annotation_text=f"Current Salary: £{employee_data.salary:,.0f}",
                 )
-                
+
                 fig.update_layout(
                     title=f"5-Year Salary Projection - {employee_data.name}",
                     xaxis_title="Scenario",
                     yaxis_title="Projected Salary (£)",
                     showlegend=False,
-                    height=500
+                    height=500,
                 )
-                
+
                 # Save chart
                 timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
                 chart_file = viz_dir / f"salary_projection_{employee_data.employee_id}_{timestamp}.html"
                 pyo.plot(fig, filename=str(chart_file), auto_open=False)
-                
+
                 print(f"\n📈 Visualizations generated:")
                 print(f"├─ {chart_file}")
                 logger.log_info(f"Generated salary projection chart: {chart_file}")
-                    
+
             except Exception as viz_error:
                 logger.log_warning(f"Could not generate visualizations: {viz_error}")
 

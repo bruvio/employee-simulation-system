@@ -22,7 +22,7 @@ from model_interventions import (
     run_median_convergence_analysis,
     run_equity_analysis,
     create_equity_report,
-    main
+    main,
 )
 
 
@@ -57,7 +57,7 @@ class TestUtilityFunctions:
 class TestPopulationDataLoading:
     """Test population data loading functionality."""
 
-    @patch('model_interventions.EmployeePopulationGenerator')
+    @patch("model_interventions.EmployeePopulationGenerator")
     def test_load_population_data_generate(self, mock_generator_class):
         """Test population data generation."""
         # Setup mock
@@ -65,21 +65,21 @@ class TestPopulationDataLoading:
         mock_generator_class.return_value = mock_generator
         mock_population = [
             {"employee_id": 1, "level": 3, "salary": 65000, "gender": "Female"},
-            {"employee_id": 2, "level": 4, "salary": 80000, "gender": "Male"}
+            {"employee_id": 2, "level": 4, "salary": 80000, "gender": "Male"},
         ]
         mock_generator.generate_population.return_value = mock_population
 
         result = load_population_data("generate")
-        
+
         assert result == mock_population
         mock_generator_class.assert_called_once()
         mock_generator.generate_population.assert_called_once()
 
-    @patch('builtins.open', mock_open(read_data='[{"employee_id": 1, "salary": 50000}]'))
+    @patch("builtins.open", mock_open(read_data='[{"employee_id": 1, "salary": 50000}]'))
     def test_load_population_data_from_file(self):
         """Test loading population data from JSON file."""
         result = load_population_data("test_file.json")
-        
+
         assert isinstance(result, list)
         assert len(result) >= 0  # Should return data
 
@@ -103,39 +103,39 @@ class TestReportGeneration:
             "total_cost": 150000,
             "affected_employees": 25,
             "recommendations": ["Increase salaries for underrepresented groups"],
-            "timeline": "6 months"
+            "timeline": "6 months",
         }
-        
+
         self.convergence_result = {
             "below_median_employees": [
                 {"employee_id": 1, "current_salary": 60000, "target_salary": 70000},
-                {"employee_id": 2, "current_salary": 65000, "target_salary": 72000}
+                {"employee_id": 2, "current_salary": 65000, "target_salary": 72000},
             ],
             "total_adjustment_cost": 17000,
-            "median_salary": 75000
+            "median_salary": 75000,
         }
-        
+
         self.equity_result = {
             "gender_analysis": self.gender_gap_result,
             "convergence_analysis": self.convergence_result,
             "combined_cost": 167000,
-            "priority_recommendations": ["Focus on Level 3 employees", "Review promotion criteria"]
+            "priority_recommendations": ["Focus on Level 3 employees", "Review promotion criteria"],
         }
 
     def test_create_gender_gap_report_text(self):
         """Test gender gap report creation in text format."""
         report = create_gender_gap_report(self.gender_gap_result, "text")
-        
+
         assert isinstance(report, str)
         assert len(report) > 0
         assert "15.0%" in report  # Current gap
-        assert "5.0%" in report   # Target gap
+        assert "5.0%" in report  # Target gap
         assert "£150,000" in report  # Cost
 
     def test_create_gender_gap_report_json(self):
         """Test gender gap report creation in JSON format."""
         report = create_gender_gap_report(self.gender_gap_result, "json")
-        
+
         assert isinstance(report, str)
         # Should be valid JSON
         parsed = json.loads(report)
@@ -145,7 +145,7 @@ class TestReportGeneration:
     def test_create_median_convergence_report_text(self):
         """Test median convergence report creation in text format."""
         report = create_median_convergence_report(self.convergence_result, "text")
-        
+
         assert isinstance(report, str)
         assert len(report) > 0
         assert "£17,000" in report  # Total cost
@@ -154,7 +154,7 @@ class TestReportGeneration:
     def test_create_median_convergence_report_json(self):
         """Test median convergence report creation in JSON format."""
         report = create_median_convergence_report(self.convergence_result, "json")
-        
+
         assert isinstance(report, str)
         # Should be valid JSON
         parsed = json.loads(report)
@@ -164,7 +164,7 @@ class TestReportGeneration:
     def test_create_equity_report_text(self):
         """Test equity report creation in text format."""
         report = create_equity_report(self.equity_result, "text")
-        
+
         assert isinstance(report, str)
         assert len(report) > 0
         assert "£167,000" in report  # Combined cost
@@ -172,7 +172,7 @@ class TestReportGeneration:
     def test_create_equity_report_json(self):
         """Test equity report creation in JSON format."""
         report = create_equity_report(self.equity_result, "json")
-        
+
         assert isinstance(report, str)
         # Should be valid JSON
         parsed = json.loads(report)
@@ -182,42 +182,42 @@ class TestReportGeneration:
 class TestReportSaving:
     """Test report saving functionality."""
 
-    @patch('builtins.open', mock_open())
-    @patch('model_interventions.Path')
+    @patch("builtins.open", mock_open())
+    @patch("model_interventions.Path")
     def test_save_report_text(self, mock_path):
         """Test saving text report."""
         report_content = "Test report content"
         output_file = "test_report.txt"
-        
+
         save_report(report_content, output_file, "text")
-        
+
         # Should have attempted to write file
         mock_open().return_value.write.assert_called()
 
-    @patch('builtins.open', mock_open())
-    @patch('model_interventions.Path')
+    @patch("builtins.open", mock_open())
+    @patch("model_interventions.Path")
     def test_save_report_json(self, mock_path):
         """Test saving JSON report."""
         report_content = '{"test": "data"}'
         output_file = "test_report.json"
-        
+
         save_report(report_content, output_file, "json")
-        
+
         # Should have attempted to write file
         mock_open().return_value.write.assert_called()
 
     def test_save_report_with_temp_file(self):
         """Test saving report to actual temporary file."""
         report_content = "Test report for file operations"
-        
-        with tempfile.NamedTemporaryFile(mode='w', delete=False, suffix='.txt') as tmp_file:
+
+        with tempfile.NamedTemporaryFile(mode="w", delete=False, suffix=".txt") as tmp_file:
             temp_path = tmp_file.name
-        
+
         try:
             save_report(report_content, temp_path, "text")
-            
+
             # Verify file was created and has content
-            with open(temp_path, 'r') as f:
+            with open(temp_path, "r") as f:
                 saved_content = f.read()
                 assert report_content in saved_content
         finally:
@@ -230,17 +230,23 @@ class TestAnalysisFunctions:
     def setup_method(self):
         """Setup test fixtures."""
         self.population_data = [
-            {"employee_id": 1, "level": 3, "salary": 60000, "gender": "Female", "performance_rating": "High Performing"},
+            {
+                "employee_id": 1,
+                "level": 3,
+                "salary": 60000,
+                "gender": "Female",
+                "performance_rating": "High Performing",
+            },
             {"employee_id": 2, "level": 3, "salary": 75000, "gender": "Male", "performance_rating": "Achieving"},
-            {"employee_id": 3, "level": 4, "salary": 80000, "gender": "Female", "performance_rating": "Exceeding"}
+            {"employee_id": 3, "level": 4, "salary": 80000, "gender": "Female", "performance_rating": "Exceeding"},
         ]
-        
+
         self.mock_args = MagicMock()
         self.mock_args.target_gap = 0.05
         self.mock_args.budget = 100000
         self.mock_args.output_format = "text"
 
-    @patch('model_interventions.InterventionStrategySimulator')
+    @patch("model_interventions.InterventionStrategySimulator")
     def test_run_gender_gap_analysis(self, mock_simulator_class):
         """Test gender gap analysis execution."""
         # Setup mock
@@ -249,32 +255,30 @@ class TestAnalysisFunctions:
         mock_simulator.analyze_gender_pay_gap_remediation.return_value = {
             "current_gap": 0.15,
             "remediation_cost": 50000,
-            "affected_employees": 10
+            "affected_employees": 10,
         }
 
         result = run_gender_gap_analysis(self.population_data, self.mock_args)
-        
+
         assert isinstance(result, dict)
         assert "current_gap" in result
         mock_simulator_class.assert_called_once()
 
-    @patch('model_interventions.MedianConvergenceAnalyzer')
+    @patch("model_interventions.MedianConvergenceAnalyzer")
     def test_run_median_convergence_analysis(self, mock_analyzer_class):
         """Test median convergence analysis execution."""
         # Setup mock
         mock_analyzer = MagicMock()
         mock_analyzer_class.return_value = mock_analyzer
-        mock_analyzer.identify_below_median_employees.return_value = [
-            {"employee_id": 1, "salary_gap": 5000}
-        ]
+        mock_analyzer.identify_below_median_employees.return_value = [{"employee_id": 1, "salary_gap": 5000}]
 
         result = run_median_convergence_analysis(self.population_data, self.mock_args)
-        
+
         assert isinstance(result, dict)
         mock_analyzer_class.assert_called_once()
 
-    @patch('model_interventions.run_gender_gap_analysis')
-    @patch('model_interventions.run_median_convergence_analysis')
+    @patch("model_interventions.run_gender_gap_analysis")
+    @patch("model_interventions.run_median_convergence_analysis")
     def test_run_equity_analysis(self, mock_convergence, mock_gender):
         """Test comprehensive equity analysis."""
         # Setup mocks
@@ -282,12 +286,12 @@ class TestAnalysisFunctions:
         mock_convergence.return_value = {"adjustment_cost": 30000}
 
         result = run_equity_analysis(self.population_data, self.mock_args)
-        
+
         assert isinstance(result, dict)
         assert "gender_analysis" in result
         assert "convergence_analysis" in result
         assert "combined_cost" in result
-        
+
         mock_gender.assert_called_once()
         mock_convergence.assert_called_once()
 
@@ -295,14 +299,14 @@ class TestAnalysisFunctions:
 class TestMainFunction:
     """Test the main CLI function."""
 
-    @patch('model_interventions.argparse.ArgumentParser')
-    @patch('model_interventions.load_population_data')
+    @patch("model_interventions.argparse.ArgumentParser")
+    @patch("model_interventions.load_population_data")
     def test_main_gender_gap_analysis(self, mock_load_data, mock_parser_class):
         """Test main function with gender gap analysis."""
         # Setup mocks
         mock_parser = MagicMock()
         mock_parser_class.return_value = mock_parser
-        
+
         mock_args = MagicMock()
         mock_args.analysis_type = "gender_gap"
         mock_args.data_source = "generate"
@@ -313,25 +317,25 @@ class TestMainFunction:
         mock_population = [{"employee_id": 1, "salary": 50000, "gender": "Female"}]
         mock_load_data.return_value = mock_population
 
-        with patch('model_interventions.run_gender_gap_analysis') as mock_analysis:
+        with patch("model_interventions.run_gender_gap_analysis") as mock_analysis:
             mock_analysis.return_value = {"current_gap": 0.1, "total_cost": 25000}
-            
-            with patch('builtins.print'):  # Suppress output
+
+            with patch("builtins.print"):  # Suppress output
                 try:
                     main()
                 except SystemExit:
                     pass  # Expected for successful completion
-                
+
                 mock_analysis.assert_called_once()
 
-    @patch('model_interventions.argparse.ArgumentParser')
-    @patch('model_interventions.load_population_data')
+    @patch("model_interventions.argparse.ArgumentParser")
+    @patch("model_interventions.load_population_data")
     def test_main_convergence_analysis(self, mock_load_data, mock_parser_class):
         """Test main function with convergence analysis."""
         # Setup mocks
         mock_parser = MagicMock()
         mock_parser_class.return_value = mock_parser
-        
+
         mock_args = MagicMock()
         mock_args.analysis_type = "convergence"
         mock_args.data_source = "generate"
@@ -341,25 +345,25 @@ class TestMainFunction:
         mock_population = [{"employee_id": 1, "salary": 60000}]
         mock_load_data.return_value = mock_population
 
-        with patch('model_interventions.run_median_convergence_analysis') as mock_analysis:
+        with patch("model_interventions.run_median_convergence_analysis") as mock_analysis:
             mock_analysis.return_value = {"adjustment_cost": 15000}
-            
-            with patch('builtins.print'):
+
+            with patch("builtins.print"):
                 try:
                     main()
                 except SystemExit:
                     pass
-                
+
                 mock_analysis.assert_called_once()
 
-    @patch('model_interventions.argparse.ArgumentParser')
+    @patch("model_interventions.argparse.ArgumentParser")
     def test_main_error_handling(self, mock_parser_class):
         """Test main function error handling."""
         mock_parser = MagicMock()
         mock_parser_class.return_value = mock_parser
         mock_parser.parse_args.side_effect = Exception("CLI parsing failed")
 
-        with patch('builtins.print'):
+        with patch("builtins.print"):
             try:
                 main()
             except (SystemExit, Exception):
@@ -374,7 +378,7 @@ class TestIntegrationScenarios:
         # Test the integration of multiple components
         population_data = [
             {"employee_id": 1, "level": 3, "salary": 60000, "gender": "Female"},
-            {"employee_id": 2, "level": 3, "salary": 70000, "gender": "Male"}
+            {"employee_id": 2, "level": 3, "salary": 70000, "gender": "Male"},
         ]
 
         # Test formatting functions
@@ -385,12 +389,7 @@ class TestIntegrationScenarios:
         assert formatted_percentage == "12.5%"
 
         # Test report generation with mock data
-        mock_result = {
-            "current_gap": 0.125,
-            "target_gap": 0.05,
-            "total_cost": 65000,
-            "affected_employees": 1
-        }
+        mock_result = {"current_gap": 0.125, "target_gap": 0.05, "total_cost": 65000, "affected_employees": 1}
 
         report = create_gender_gap_report(mock_result, "text")
         assert len(report) > 0
@@ -401,7 +400,7 @@ class TestIntegrationScenarios:
         """Test error recovery in various scenarios."""
         # Test with empty population data
         empty_population = []
-        
+
         # Should handle empty data gracefully
         try:
             format_currency(None)
