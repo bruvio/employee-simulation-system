@@ -284,6 +284,35 @@ class AnalysisNarrator:
             "complete": "Management dashboard ready - professional visualizations generated",
         }
 
+    def narrate_visualization_generation(self, viz_data: Dict[str, Any]) -> str:
+        """Create user-friendly narrative for visualization generation.
+        
+        Args:
+            viz_data: Visualization generation data including charts_generated, types, location
+            
+        Returns:
+            User-friendly narrative about visualization generation
+        """
+        charts_generated = viz_data.get("charts_generated", 0)
+        viz_types = viz_data.get("visualization_types", [])
+        output_location = viz_data.get("output_location", "images/")
+        
+        types_description = ", ".join([t.replace("_", " ").title() for t in viz_types])
+        
+        return f"""📊 **Professional Visualizations Generated**
+
+✅ **Charts Created**: {charts_generated} interactive visualizations
+📈 **Types**: {types_description}
+📁 **Location**: {output_location}
+
+💼 **What this provides**:
+   • Executive-ready charts for management presentations
+   • Visual analysis of salary equity patterns
+   • Interactive drill-down capabilities for detailed exploration
+   • Professional formatting suitable for board meetings
+
+➡️ **Next**: Assembling comprehensive management dashboard..."""
+
     def get_progress_narrative(self, step_name: str, step_data: Dict[str, Any]) -> str:
         """Get user-friendly narrative for any analysis step.
 

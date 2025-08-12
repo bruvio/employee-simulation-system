@@ -1,0 +1,46 @@
+# Employee Simulation System - Docker Compose Configuration
+version: '3.8'
+
+services:
+  employee-sim:
+    build: .
+    container_name: employee-simulation-system
+    volumes:
+      # Mount source code for development
+      - .:/app
+      # Persist artifacts and outputs
+      - ./artifacts:/app/artifacts
+      - ./images:/app/images
+      - ./logs:/app/logs
+    environment:
+      - PYTHONPATH=/app
+      - SIMULATION_DEFAULT_POPULATION_SIZE=1000
+      - SIMULATION_DEFAULT_RANDOM_SEED=42
+      - GENDER_PAY_GAP_DEFAULT_PERCENT=15.8
+      - MAX_PROJECTION_YEARS=10
+      - BUDGET_CONSTRAINT_PERCENT=0.005
+    working_dir: /app
+    command: bash
+    
+  # Service for running tests
+  test:
+    build: .
+    container_name: employee-sim-test
+    volumes:
+      - .:/app
+    environment:
+      - PYTHONPATH=/app
+    working_dir: /app
+    command: python -m pytest -v --cov=. --cov-report=term-missing
+    
+  # Service for running individual employee simulation
+  individual:
+    build: .
+    container_name: employee-sim-individual  
+    volumes:
+      - .:/app
+      - ./artifacts:/app/artifacts
+      - ./images:/app/images
+    environment:
+      - PYTHONPATH=/app
+    working_dir: /app

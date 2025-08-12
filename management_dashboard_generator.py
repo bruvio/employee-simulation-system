@@ -40,7 +40,7 @@ class ManagementDashboardGenerator:
         self.logger = smart_logger or get_smart_logger()
         self.timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
 
-        # Dashboard styling configuration
+        # Dashboard styling configuration with multiple themes (per PRP)
         self.theme_config = {
             "executive": {
                 "color_scheme": ["#1f77b4", "#ff7f0e", "#2ca02c", "#d62728", "#9467bd"],
@@ -49,11 +49,34 @@ class ManagementDashboardGenerator:
                 "grid_color": "#e6e6e6",
                 "title_size": 18,
                 "axis_size": 12,
+                "layout": "summary_focused",
+                "complexity": "simplified"
+            },
+            "analytical": {
+                "color_scheme": ["#d62728", "#9467bd", "#8c564b", "#e377c2", "#7f7f7f"],
+                "font_family": "Roboto, sans-serif",
+                "background_color": "#f8f9fa",
+                "grid_color": "#dee2e6",
+                "title_size": 16,
+                "axis_size": 11,
+                "layout": "detail_focused",
+                "complexity": "comprehensive"
+            },
+            "compliance": {
+                "color_scheme": ["#2ca02c", "#ff7f0e", "#1f77b4", "#d62728", "#9467bd"],
+                "font_family": "Georgia, serif",
+                "background_color": "#ffffff",
+                "grid_color": "#e8f4fd",
+                "title_size": 17,
+                "axis_size": 12,
+                "layout": "audit_focused",
+                "complexity": "regulatory"
             }
         }
 
-        # Get current theme
-        self.theme = self.theme_config.get("executive")
+        # Get theme from config or default to executive
+        theme_name = config.get("dashboard_theme", "executive")
+        self.theme = self.theme_config.get(theme_name, self.theme_config["executive"])
 
         self.logger.log_info("Initialized ManagementDashboardGenerator for executive reporting")
 
@@ -88,9 +111,7 @@ class ManagementDashboardGenerator:
             action_matrix = self._create_action_priority_matrix()
             dashboard_components["action_matrix"] = action_matrix
 
-            # 6. Risk Assessment Panel
-            risk_assessment = self._create_risk_assessment()
-            dashboard_components["risk_assessment"] = risk_assessment
+            # Risk Assessment Panel REMOVED per user request - not part of original requirements
 
             # Assemble complete dashboard
             dashboard_files = self._assemble_dashboard(dashboard_components)
@@ -134,10 +155,17 @@ class ManagementDashboardGenerator:
             risk_level = "LOW"
             risk_color = "#2ca02c"
 
-        # Get intervention cost from analysis results
+        # Get intervention cost from analysis results with enhanced temporal context
         intervention_results = self.analysis_results.get("analysis_results", {}).get("intervention_strategies", {})
         equity_analysis = intervention_results.get("equity_analysis", {})
-        estimated_cost = equity_analysis.get("optimal_approach", {}).get("total_investment", 0)
+        optimal_approach = equity_analysis.get("optimal_approach", {})
+        estimated_cost = optimal_approach.get("total_investment", 0)
+        
+        # Extract temporal breakdown
+        temporal_breakdown = optimal_approach.get("temporal_breakdown", {})
+        cost_explanation = temporal_breakdown.get("explanation", f"£{estimated_cost:,.0f} intervention cost")
+        cost_period = temporal_breakdown.get("cost_period", "unknown")
+        implementation_type = optimal_approach.get("implementation_type", "standard_intervention")
 
         summary = {
             "key_metrics": {
@@ -145,13 +173,17 @@ class ManagementDashboardGenerator:
                 "gender_gap_percent": f"{gender_gap:.1f}%",
                 "employees_below_median": f"{below_median_count} ({below_median_percent:.1f}%)",
                 "estimated_remediation_cost": f"£{estimated_cost:,.0f}",
+                "cost_type": implementation_type.replace("_", " ").title(),
+                "cost_period": cost_period.replace("_", " ").title(),
+                "cost_explanation": cost_explanation,
                 "regulatory_risk_level": risk_level,
                 "risk_color": risk_color,
             },
             "key_insights": [
                 f"Found {below_median_count} employees ({below_median_percent:.1f}%) earning below median for their level",
                 f"Gender pay gap of {gender_gap:.1f}% requires {'immediate' if gender_gap > 15 else 'management'} attention",
-                f"Estimated £{estimated_cost:,.0f} investment needed for comprehensive equity improvement",
+                f"Cost Analysis: {cost_explanation}",
+                f"Implementation: {implementation_type.replace('_', ' ').title()} over {optimal_approach.get('timeline_years', 'unknown')} years",
             ],
             "recommended_actions": [
                 f"Immediate review of {min(below_median_count, 15)} highest-priority cases (>20% below median)",
@@ -467,84 +499,8 @@ class ManagementDashboardGenerator:
             "estimated_cost": sum(emp["gap_amount"] * 0.5 for emp in high_priority_employees),  # 50% gap closure
         }
 
-    def _create_risk_assessment(self) -> Dict[str, Any]:
-        """Create risk assessment panel with compliance indicators."""
-
-        df = pd.DataFrame(self.population_data)
-
-        # Calculate various risk factors
-        male_median = df[df["gender"] == "Male"]["salary"].median()
-        female_median = df[df["gender"] == "Female"]["salary"].median()
-        gender_gap = ((male_median - female_median) / male_median) * 100
-
-        # Risk assessment scoring
-        risks = {
-            "Legal Compliance Risk": {
-                "score": min(100, gender_gap * 4),  # Gender gap drives legal risk
-                "level": "HIGH" if gender_gap > 15 else "MEDIUM" if gender_gap > 8 else "LOW",
-                "description": f"{gender_gap:.1f}% gender pay gap may trigger regulatory scrutiny",
-            },
-            "Employee Retention Risk": {
-                "score": min(
-                    100,
-                    (len(df[df["performance_rating"].isin(["High Performing", "Exceeding"])]) / len(df)) * gender_gap,
-                ),
-                "level": "MEDIUM" if gender_gap > 12 else "LOW",
-                "description": "High-performing employees may seek opportunities elsewhere",
-            },
-            "Reputation Risk": {
-                "score": min(100, gender_gap * 2.5),
-                "level": "HIGH" if gender_gap > 18 else "MEDIUM" if gender_gap > 10 else "LOW",
-                "description": "Public disclosure of pay gaps could impact employer brand",
-            },
-            "Productivity Risk": {
-                "score": min(100, gender_gap * 1.5),
-                "level": "MEDIUM" if gender_gap > 15 else "LOW",
-                "description": "Pay inequality may reduce employee engagement and productivity",
-            },
-        }
-
-        # Create risk dashboard
-        risk_names = list(risks.keys())
-        risk_scores = [risks[name]["score"] for name in risk_names]
-        risk_colors = [
-            "#d62728"
-            if risks[name]["level"] == "HIGH"
-            else "#ff7f0e"
-            if risks[name]["level"] == "MEDIUM"
-            else "#2ca02c"
-            for name in risk_names
-        ]
-
-        fig = go.Figure()
-
-        fig.add_trace(
-            go.Bar(
-                y=risk_names,
-                x=risk_scores,
-                orientation="h",
-                marker_color=risk_colors,
-                text=[f"{score:.0f}% - {risks[name]['level']}" for name, score in zip(risk_names, risk_scores)],
-                textposition="inside",
-            )
-        )
-
-        fig.update_layout(
-            title="Risk Assessment Dashboard - Compliance & Business Impact",
-            xaxis_title="Risk Score (0-100)",
-            height=400,
-            font=dict(family=self.theme["font_family"]),
-        )
-
-        return {
-            "chart": fig,
-            "risk_summary": risks,
-            "overall_risk_level": "HIGH"
-            if any(risks[r]["level"] == "HIGH" for r in risks)
-            else "MEDIUM"
-            if any(risks[r]["level"] == "MEDIUM" for r in risks)
-            else "LOW",
-        }
+    # _create_risk_assessment method REMOVED per user request
+    # Risk assessment was not part of original requirements
 
     def _assemble_dashboard(self, components: Dict[str, Any]) -> Dict[str, str]:
         """Assemble all components into a cohesive HTML dashboard."""
@@ -731,7 +687,7 @@ class ManagementDashboardGenerator:
     <div id="gap-analysis" class="chart-container"></div>
     <div id="intervention-simulator" class="chart-container"></div>
     <div id="action-priority" class="chart-container"></div>
-    <div id="risk-assessment" class="chart-container"></div>
+    <!-- Risk Assessment Panel REMOVED per user request -->
     
     <div class="footer">
         <p>
@@ -763,7 +719,7 @@ class ManagementDashboardGenerator:
             "gap_analysis": "gap-analysis",
             "intervention_simulator": "intervention-simulator",
             "action_matrix": "action-priority",
-            "risk_assessment": "risk-assessment",
+            # "risk_assessment": "risk-assessment",  # REMOVED per user request
         }
 
         for component_key, div_id in chart_mappings.items():

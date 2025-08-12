@@ -167,6 +167,12 @@
 - **Docstring Standardization**: Verify all public functions have Google-style docstrings
 - **Configuration Management**: Centralize configuration handling across modules
 
+### New Feature Requirements (Discovered 2025-08-11)
+- **Individual Employee CLI Support**: Add `--employee-data` parameter support to main orchestrator for single employee simulations
+  - **Status**: 📋 PENDING
+  - **Priority**: HIGH 
+  - **Details**: Enable individual employee analysis via orchestrator with format "level:X,salary:Y,performance:Z"
+
 ### Testing Gaps Identified
 - **Edge Case Testing**: Add tests for extreme salary values and performance ratings
 - **Configuration Validation**: Test invalid configuration scenarios  
