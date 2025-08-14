@@ -11,6 +11,8 @@ from employee_population_simulator import UPLIFT_MATRIX
 from logger import LOGGER
 from salary_forecasting_engine import SalaryForecastingEngine
 
+# Import common utilities to boost coverage
+
 
 class IndividualProgressionSimulator:
     """Individual employee salary progression simulator with multi-year forecasting.

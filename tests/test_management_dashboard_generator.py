@@ -4,12 +4,10 @@
 Tests dashboard generation, visualization creation, and executive reporting functionality.
 """
 
-import pytest
-import tempfile
-from pathlib import Path
-from unittest.mock import patch, MagicMock, mock_open
-import json
 from datetime import datetime
+from unittest.mock import MagicMock, mock_open, patch
+
+import pytest
 
 # Import the module under test
 from management_dashboard_generator import ManagementDashboardGenerator
@@ -154,7 +152,7 @@ class TestManagementDashboardGenerator:
         # Test if generate_html_report method exists
         if hasattr(generator, "generate_html_report"):
             with patch("builtins.open", mock_open()):
-                result = generator.generate_html_report(self.sample_data, "test_report.html")
+                generator.generate_html_report(self.sample_data, "test_report.html")
                 mock_plot.assert_called()
         else:
             assert generator is not None

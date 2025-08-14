@@ -1914,6 +1914,7 @@ def run_individual_employee_analysis(employee_data, config: Dict[str, Any]) -> N
             try:
                 logger.log_info("Generating individual employee visualizations")
                 from pathlib import Path
+
                 import plotly.graph_objects as go
                 import plotly.offline as pyo
 
@@ -2002,9 +2003,9 @@ def export_individual_analysis_results(employee_data, analysis_results: Dict[str
         analysis_results: Dictionary containing analysis results
     """
     try:
-        from pathlib import Path
-        import json
         from datetime import datetime
+        import json
+        from pathlib import Path
 
         # Create output directory
         output_dir = Path("artifacts/individual_analysis")

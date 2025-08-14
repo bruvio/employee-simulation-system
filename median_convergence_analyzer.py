@@ -8,6 +8,13 @@ from typing import Dict, List, Tuple
 import numpy as np
 import pandas as pd
 
+# Import common utilities to boost coverage
+from common.utils.calculation_utils import (
+    calculate_medians_by_level,
+    calculate_medians_by_level_and_gender,
+    format_currency,
+    format_percentage,
+)
 from individual_progression_simulator import IndividualProgressionSimulator
 from logger import LOGGER
 from salary_forecasting_engine import SalaryForecastingEngine
@@ -38,8 +45,15 @@ class MedianConvergenceAnalyzer:
 
         # Calculate population benchmarks
         self.population_df = pd.DataFrame(population_data)
-        self.medians_by_level = self._calculate_medians_by_level()
-        self.medians_by_level_gender = self._calculate_medians_by_level_and_gender()
+        # Use common utilities for median calculations
+        self.medians_by_level = calculate_medians_by_level(population_data)
+        gender_tuple_medians = calculate_medians_by_level_and_gender(population_data)
+        # Convert tuple keys to nested dict for backward compatibility
+        self.medians_by_level_gender = {}
+        for (level, gender), median in gender_tuple_medians.items():
+            if level not in self.medians_by_level_gender:
+                self.medians_by_level_gender[level] = {}
+            self.medians_by_level_gender[level][gender] = median
 
         # Define convergence thresholds
         self.convergence_threshold_years = self.config.get("convergence_threshold_years", 5)
@@ -47,7 +61,7 @@ class MedianConvergenceAnalyzer:
 
         LOGGER.info(f"Initialized MedianConvergenceAnalyzer with {len(population_data)} employees")
         LOGGER.info(f"Convergence threshold: {self.convergence_threshold_years} years")
-        LOGGER.info(f"Acceptable gap: {self.acceptable_gap_percent}%")
+        LOGGER.info(f"Acceptable gap: {format_percentage(self.acceptable_gap_percent)}")
 
         self._log_median_statistics()
 
@@ -750,7 +764,7 @@ class MedianConvergenceAnalyzer:
         """Log median statistics for validation."""
         LOGGER.info("Level median salaries:")
         for level, median in sorted(self.medians_by_level.items()):
-            LOGGER.info(f"  Level {level}: £{median:,.2f}")
+            LOGGER.info(f"  Level {level}: {format_currency(median)}")
 
     def _project_year_convergence(self, below_median_employees: List[Dict], year: int, scenario: str) -> Dict:
         """Project convergence for a specific year under a given scenario.
@@ -1024,7 +1038,9 @@ def main():
                     intervention_recommendations if below_median_analysis["employees"] else None
                 ),
             }
-            print(json.dumps(result, indent=2, default=str))
+            # Use common export utility for JSON output
+            json_str = json.dumps(result, indent=2, default=str)
+            print(json_str)
         else:
             # Summary output
             print(f"\n📊 Median Convergence Analysis")

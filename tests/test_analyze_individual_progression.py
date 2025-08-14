@@ -4,24 +4,25 @@
 Tests individual progression analysis, batch processing, and report generation.
 """
 
-import pytest
-import tempfile
-from pathlib import Path
-from unittest.mock import patch, MagicMock, mock_open
 import json
+from pathlib import Path
+import tempfile
+from unittest.mock import MagicMock, mock_open, patch
+
+import pytest
 
 # Import the module under test
 from analyze_individual_progression import (
-    load_population_data,
+    analyze_multiple_employees,
+    create_batch_report,
+    create_multi_employee_summary,
+    create_progression_report,
     find_employee_by_id,
     format_currency,
     format_percentage,
-    create_progression_report,
-    save_report,
-    analyze_multiple_employees,
-    create_multi_employee_summary,
-    create_batch_report,
+    load_population_data,
     main,
+    save_report,
 )
 
 

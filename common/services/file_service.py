@@ -1,20 +1,17 @@
 """File management service for centralized file operations."""
 
-import os
+from datetime import datetime
+import json
+from pathlib import Path
 import shutil
 import tempfile
-from pathlib import Path
-from typing import List, Dict, Any, Optional, Union, Generator
-import json
-from datetime import datetime
+from typing import Any, Dict, List, Optional, Union
 
-from ..config.constants import DEFAULT_OUTPUT_DIR, DEFAULT_REPORTS_DIR, MAX_LOG_MESSAGE_LENGTH
+from ..config.constants import DEFAULT_OUTPUT_DIR, DEFAULT_REPORTS_DIR
 
 
 class FileServiceError(Exception):
     """Custom exception for file service operations."""
-
-    pass
 
 
 class FileService:

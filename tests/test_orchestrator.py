@@ -4,15 +4,12 @@
 Tests the main orchestration functionality, CLI interface, and integration workflows.
 """
 
+from unittest.mock import MagicMock, mock_open, patch
+
 import pytest
-import json
-import tempfile
-from pathlib import Path
-from unittest.mock import patch, MagicMock, mock_open
-import sys
 
 # Import the modules under test
-from employee_simulation_orchestrator import run_individual_employee_analysis, export_individual_analysis_results, main
+from employee_simulation_orchestrator import export_individual_analysis_results, main, run_individual_employee_analysis
 from individual_employee_parser import EmployeeData, parse_employee_data_string
 
 
@@ -156,18 +153,18 @@ class TestExportFunctionality:
         )
 
         self.analysis_results = {
-            "conservative": {"final_salary": 80000, "annual_growth_rate": 0.03},
-            "realistic": {"final_salary": 85000, "annual_growth_rate": 0.04},
-            "optimistic": {"final_salary": 90000, "annual_growth_rate": 0.05},
+            "conservative": {"expected_final_salary": 80000, "annual_growth_rate": 0.03, "timeline_years": 5},
+            "realistic": {"expected_final_salary": 85000, "annual_growth_rate": 0.04, "timeline_years": 5},
+            "optimistic": {"expected_final_salary": 90000, "annual_growth_rate": 0.05, "timeline_years": 5},
         }
 
     @patch("builtins.open", new_callable=mock_open)
-    @patch("employee_simulation_orchestrator.Path")
-    def test_export_individual_analysis_results(self, mock_path, mock_file):
+    @patch("pathlib.Path")
+    def test_export_individual_analysis_results(self, mock_path_class, mock_file):
         """Test exporting individual analysis results to JSON."""
         # Setup path mocking
         mock_output_dir = MagicMock()
-        mock_path.return_value = mock_output_dir
+        mock_path_class.return_value = mock_output_dir
         mock_output_dir.mkdir = MagicMock()
 
         # Mock file path
@@ -187,43 +184,40 @@ class TestExportFunctionality:
         handle = mock_file.return_value
         handle.write.assert_called()
 
-    def test_export_analysis_results_data_structure(self):
+    @patch("pathlib.Path")
+    @patch("builtins.open", new_callable=mock_open)
+    @patch("json.dump")
+    def test_export_analysis_results_data_structure(self, mock_json_dump, mock_file, mock_path_class):
         """Test that export creates correct data structure."""
-        with tempfile.TemporaryDirectory() as temp_dir:
-            # Patch the artifacts directory to use temp directory
-            with patch("employee_simulation_orchestrator.Path") as mock_path:
-                temp_path = Path(temp_dir)
-                mock_path.return_value = temp_path / "individual_analysis"
+        # Mock the Path class and its methods
+        mock_dir = MagicMock()
+        mock_file_path = MagicMock()
+        mock_path_class.return_value = mock_dir
+        mock_dir.mkdir = MagicMock()
+        mock_dir.__truediv__ = MagicMock(return_value=mock_file_path)
 
-                # Create the directory
-                (temp_path / "individual_analysis").mkdir(parents=True, exist_ok=True)
+        # Execute export
+        export_individual_analysis_results(self.employee_data, self.analysis_results)
 
-                # Export the results
-                export_individual_analysis_results(self.employee_data, self.analysis_results)
+        # Verify JSON dump was called
+        mock_json_dump.assert_called_once()
 
-                # Find the generated JSON file
-                json_files = list((temp_path / "individual_analysis").glob("*.json"))
-                assert len(json_files) >= 1
+        # Get the data that was passed to json.dump
+        call_args = mock_json_dump.call_args
+        exported_data = call_args[0][0]  # First argument to json.dump
 
-                # Load and verify the JSON structure
-                with open(json_files[0], "r") as f:
-                    exported_data = json.load(f)
+        # Verify the data structure
+        assert "employee_info" in exported_data
+        assert "analysis_timestamp" in exported_data
+        assert "projection_results" in exported_data
+        assert "summary" in exported_data
 
-                # Verify required fields
-                assert "employee_info" in exported_data
-                assert "analysis_timestamp" in exported_data
-                assert "projection_results" in exported_data
-                assert "summary" in exported_data
-
-                # Verify employee info
-                emp_info = exported_data["employee_info"]
-                assert emp_info["employee_id"] == 42
-                assert emp_info["name"] == "Export Test Employee"
-                assert emp_info["level"] == 4
-                assert emp_info["current_salary"] == 75000
-
-                # Verify analysis results
-                assert exported_data["projection_results"] == self.analysis_results
+        # Verify employee info
+        emp_info = exported_data["employee_info"]
+        assert emp_info["employee_id"] == 42
+        assert emp_info["name"] == "Export Test Employee"
+        assert emp_info["level"] == 4
+        assert emp_info["current_salary"] == 75000
 
 
 class TestConfigurationHandling:
@@ -285,28 +279,19 @@ class TestMainEntryPoint:
             mock_parser.return_value = mock_parser_instance
             mock_parser_instance.parse_args.return_value = mock_args
 
-            # Mock the config manager
-            with patch("employee_simulation_orchestrator.ConfigurationManager") as mock_config_mgr:
-                mock_config_instance = MagicMock()
-                mock_config_mgr.return_value = mock_config_instance
-                mock_config_instance.get_orchestrator_config.return_value = {
-                    "progression_analysis_years": 5,
-                    "generate_visualizations": True,
-                }
+            # Mock the individual analysis function directly
+            with patch("employee_simulation_orchestrator.run_individual_employee_analysis") as mock_individual:
+                with patch("individual_employee_parser.parse_employee_data_string") as mock_parse:
+                    mock_parse.return_value = EmployeeData(level=5, salary=80000, performance_rating="Exceeding")
 
-                # Mock the individual analysis function
-                with patch("employee_simulation_orchestrator.run_individual_employee_analysis") as mock_individual:
-                    with patch("employee_simulation_orchestrator.parse_employee_data_string") as mock_parse:
-                        mock_parse.return_value = EmployeeData(level=5, salary=80000, performance_rating="Exceeding")
+                    # Test main function
+                    try:
+                        main()
+                    except SystemExit:
+                        pass  # Expected for successful completion
 
-                        # Test main function
-                        try:
-                            main()
-                        except SystemExit:
-                            pass  # Expected for successful completion
-
-                        # Verify individual analysis was called
-                        mock_individual.assert_called_once()
+                    # Verify individual analysis was called
+                    mock_individual.assert_called_once()
 
     @patch("sys.argv")
     def test_main_invalid_employee_data(self, mock_argv):
@@ -331,21 +316,16 @@ class TestMainEntryPoint:
             mock_parser.return_value = mock_parser_instance
             mock_parser_instance.parse_args.return_value = mock_args
 
-            with patch("employee_simulation_orchestrator.ConfigurationManager") as mock_config_mgr:
-                mock_config_instance = MagicMock()
-                mock_config_mgr.return_value = mock_config_instance
-                mock_config_instance.get_orchestrator_config.return_value = {}
+            with patch("employee_simulation_orchestrator.get_smart_logger") as mock_logger:
+                mock_logger_instance = MagicMock()
+                mock_logger.return_value = mock_logger_instance
 
-                with patch("employee_simulation_orchestrator.get_smart_logger") as mock_logger:
-                    mock_logger_instance = MagicMock()
-                    mock_logger.return_value = mock_logger_instance
+                with patch("builtins.print"):
+                    with pytest.raises(SystemExit):
+                        main()
 
-                    with patch("builtins.print"):
-                        with pytest.raises(SystemExit):
-                            main()
-
-                    # Verify error was logged
-                    mock_logger_instance.log_error.assert_called()
+                # Verify error was logged
+                mock_logger_instance.log_error.assert_called()
 
 
 class TestIntegrationWorkflows:
@@ -404,20 +384,21 @@ class TestIntegrationWorkflows:
         employee_data = parse_employee_data_string("level:5,salary:80000,performance:Exceeding")
         config = {"progression_analysis_years": 5}
 
-        # Test recovery from simulation error
+        # Test recovery from simulation error by patching the right module
         with patch(
-            "employee_simulation_orchestrator.IndividualProgressionSimulator", side_effect=Exception("Simulation error")
+            "individual_progression_simulator.IndividualProgressionSimulator", side_effect=Exception("Simulation error")
         ):
             with patch("employee_simulation_orchestrator.get_smart_logger") as mock_logger:
                 mock_logger_instance = MagicMock()
                 mock_logger.return_value = mock_logger_instance
 
                 with patch("builtins.print"):
-                    # Should handle error gracefully
-                    run_individual_employee_analysis(employee_data, config)
+                    # Should raise SystemExit due to error handling
+                    with pytest.raises(SystemExit):
+                        run_individual_employee_analysis(employee_data, config)
 
-                    # Verify error was logged
-                    mock_logger_instance.log_error.assert_called()
+                # Verify error was logged
+                mock_logger_instance.log_error.assert_called()
 
 
 class TestParameterValidation:

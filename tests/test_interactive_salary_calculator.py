@@ -4,8 +4,9 @@
 Tests interactive salary calculation, widget functionality, and IPython integration.
 """
 
+from unittest.mock import MagicMock, patch
+
 import pytest
-from unittest.mock import patch, MagicMock
 
 # Import the module under test
 from interactive_salary_calculator import InteractiveSalaryCalculator

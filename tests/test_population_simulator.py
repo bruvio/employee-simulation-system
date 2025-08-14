@@ -4,9 +4,9 @@
 Tests population generation, salary constraints, and distribution logic.
 """
 
+from unittest.mock import patch
+
 import pytest
-from unittest.mock import patch, MagicMock
-import random
 
 # Import the module under test
 from employee_population_simulator import EmployeePopulationGenerator
@@ -295,7 +295,7 @@ class TestEmployeePopulationGenerator:
     @patch("employee_population_simulator.LOGGER")
     def test_generate_population_logging(self, mock_logger):
         """Test that population generation includes proper logging."""
-        population = self.generator.generate_population()
+        self.generator.generate_population()
 
         # Verify logging occurred
         mock_logger.info.assert_called()

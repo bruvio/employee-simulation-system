@@ -4,8 +4,9 @@
 Tests narrative generation, story creation, and analysis reporting functionality.
 """
 
+from unittest.mock import mock_open, patch
+
 import pytest
-from unittest.mock import patch, MagicMock, mock_open
 
 # Import the module under test
 from analysis_narrator import AnalysisNarrator

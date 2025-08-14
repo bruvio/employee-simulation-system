@@ -1,7 +1,5 @@
 """Centralized constants for the employee simulation system."""
 
-from typing import Dict, List, Any
-
 # Population Configuration
 DEFAULT_POPULATION_SIZE = 1000
 MIN_POPULATION_SIZE = 1

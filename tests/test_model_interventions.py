@@ -4,25 +4,26 @@
 Tests intervention modeling functions, report generation, and analysis workflows.
 """
 
-import pytest
-import tempfile
-from pathlib import Path
-from unittest.mock import patch, MagicMock, mock_open
 import json
+from pathlib import Path
+import tempfile
+from unittest.mock import MagicMock, mock_open, patch
+
+import pytest
 
 # Import the module under test
 from model_interventions import (
-    load_population_data,
-    format_currency,
-    format_percentage,
+    create_equity_report,
     create_gender_gap_report,
     create_median_convergence_report,
-    save_report,
+    format_currency,
+    format_percentage,
+    load_population_data,
+    main,
+    run_equity_analysis,
     run_gender_gap_analysis,
     run_median_convergence_analysis,
-    run_equity_analysis,
-    create_equity_report,
-    main,
+    save_report,
 )
 
 
@@ -97,7 +98,7 @@ class TestPopulationDataLoading:
         """Test loading with invalid data source."""
         # Should handle invalid sources gracefully
         try:
-            result = load_population_data("invalid_source")
+            load_population_data("invalid_source")
         except (ValueError, FileNotFoundError):
             pass  # Expected for invalid sources
 
@@ -527,7 +528,6 @@ class TestIntegrationScenarios:
     def test_error_recovery_scenarios(self):
         """Test error recovery in various scenarios."""
         # Test with empty population data
-        empty_population = []
 
         # Should handle empty data gracefully
         try:

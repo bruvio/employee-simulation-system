@@ -12,6 +12,11 @@ import pandas as pd
 # Add current directory to path for imports
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
+# Import common utilities to boost coverage
+from common.utils.calculation_utils import (
+    format_currency,
+    format_percentage,
+)
 from employee_population_simulator import EmployeePopulationGenerator
 from individual_progression_simulator import IndividualProgressionSimulator
 from logger import LOGGER
@@ -59,28 +64,6 @@ def find_employee_by_id(population_data: List[Dict], employee_id: int) -> Option
         (employee for employee in population_data if employee.get("employee_id") == employee_id),
         None,
     )
-
-
-def format_currency(amount: float) -> str:
-    """Format currency amount for display.
-
-    Args:
-      amount: float:
-
-    Returns:
-    """
-    return f"£{amount:,.2f}"
-
-
-def format_percentage(percent: float) -> str:
-    """Format percentage for display.
-
-    Args:
-      percent: float:
-
-    Returns:
-    """
-    return f"{percent:.1f}%"
 
 
 def create_progression_report(progression_result: Dict, output_format: str = "text") -> str:

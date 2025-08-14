@@ -27,7 +27,7 @@ black-check:
 
 .PHONY: flake
 flake:
-	flake8 . --max-line-length=120 --exclude=.venv,__pycache__,artifacts,images,htmlcov
+	flake8 . 
 
 .PHONY: pytest
 pytest:

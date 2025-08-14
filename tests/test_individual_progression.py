@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 """Tests for individual_progression_simulator module."""
 
+from unittest.mock import patch
+
 import pytest
-from unittest.mock import patch, MagicMock
 
 # Import the module under test
 from individual_progression_simulator import IndividualProgressionSimulator

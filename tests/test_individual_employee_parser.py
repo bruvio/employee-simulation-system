@@ -8,8 +8,8 @@ Author: Employee Simulation System
 Date: 2025-08-11
 """
 
-import pytest
 from pydantic import ValidationError
+import pytest
 
 # Import the module under test
 from individual_employee_parser import (

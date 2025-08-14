@@ -1,17 +1,15 @@
 """Centralized calculation utilities for the employee simulation system."""
 
+from datetime import datetime
 import math
 import statistics
-from typing import Dict, List, Tuple, Optional, Any
-import pandas as pd
-from datetime import datetime, timedelta
+from typing import Any, Dict, List, Optional, Tuple
 
 from ..config.constants import (
-    DEFAULT_CONFIDENCE_LEVEL,
-    DEFAULT_MARKET_INFLATION_RATE,
     CURRENCY_DECIMAL_PLACES,
-    PERCENTAGE_DECIMAL_PLACES,
     CURRENCY_SYMBOL,
+    DEFAULT_CONFIDENCE_LEVEL,
+    PERCENTAGE_DECIMAL_PLACES,
 )
 
 

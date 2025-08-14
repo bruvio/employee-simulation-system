@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 """Tests for intervention_strategy_simulator module."""
 
+from unittest.mock import patch
+
 import pytest
-from unittest.mock import patch, MagicMock
 
 # Import the module under test
 from intervention_strategy_simulator import InterventionStrategySimulator
