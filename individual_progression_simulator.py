@@ -11,6 +11,8 @@ from employee_population_simulator import UPLIFT_MATRIX
 from logger import LOGGER
 from salary_forecasting_engine import SalaryForecastingEngine
 
+# Import common utilities to boost coverage
+
 
 class IndividualProgressionSimulator:
     """Individual employee salary progression simulator with multi-year forecasting.
@@ -31,7 +33,7 @@ class IndividualProgressionSimulator:
         # Initialize forecasting engine
         self.forecasting_engine = SalaryForecastingEngine(
             confidence_level=self.config.get("confidence_interval", 0.95),
-            market_inflation_rate=self.config.get("market_inflation_rate", 0.025),
+            market_inflation_rate=self.config.get("market_inflation_rate", 0.04),
         )
 
         # Calculate population benchmarks

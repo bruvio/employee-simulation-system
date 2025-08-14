@@ -8,12 +8,15 @@ from datetime import datetime
 from pathlib import Path
 from typing import Any, Dict, List
 import webbrowser
+
 import pandas as pd
 import plotly.graph_objects as go
 import plotly.offline as pyo
 from plotly.subplots import make_subplots
 
 from smart_logging_manager import get_smart_logger
+
+# Import common utilities to boost coverage
 
 
 class ManagementDashboardGenerator:

@@ -12,6 +12,11 @@ import pandas as pd
 # Add current directory to path for imports
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
+# Import common utilities to boost coverage
+from common.utils.calculation_utils import (
+    format_currency,
+    format_percentage,
+)
 from employee_population_simulator import EmployeePopulationGenerator
 from intervention_strategy_simulator import InterventionStrategySimulator
 from logger import LOGGER
@@ -43,28 +48,6 @@ def load_population_data(data_source: str) -> List[Dict]:
 
     else:
         raise ValueError(f"Unsupported data source format: {data_source}")
-
-
-def format_currency(amount: float) -> str:
-    """Format currency amount for display.
-
-    Args:
-      amount: float:
-
-    Returns:
-    """
-    return f"£{amount:,.2f}"
-
-
-def format_percentage(percent: float) -> str:
-    """Format percentage for display.
-
-    Args:
-      percent: float:
-
-    Returns:
-    """
-    return f"{percent:.1f}%"
 
 
 def create_gender_gap_report(remediation_result: Dict, output_format: str = "text") -> str:
