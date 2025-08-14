@@ -17,6 +17,13 @@ from employee_population_simulator import EmployeePopulationGenerator
 from employee_story_tracker import EmployeeStoryTracker
 from file_optimization_manager import FileOptimizationManager
 
+# Import GEL scenario modules
+from gel_output_manager import GELOutputManager
+from gel_policy_constraints import GELPolicyConstraints
+from report_builder_html import HTMLReportBuilder
+from report_builder_md import MarkdownReportBuilder
+from roles_config import RolesConfigLoader
+
 # Import advanced analysis modules
 from individual_progression_simulator import IndividualProgressionSimulator
 from interactive_dashboard_generator import InteractiveDashboardGenerator
@@ -2058,6 +2065,148 @@ def export_individual_analysis_results(employee_data, analysis_results: Dict[str
         get_smart_logger().log_warning(f"Could not export analysis results: {e}")
 
 
+def run_gel_reporting(orchestrator, simulation_results, config):
+    """Run GEL scenario reporting with cohesive HTML and Markdown outputs.
+    
+    Args:
+        orchestrator: EmployeeSimulationOrchestrator instance
+        simulation_results: Results from simulation
+        config: Configuration dictionary
+        
+    Returns:
+        Dictionary with GEL reporting results and file paths
+    """
+    logger = get_smart_logger()
+    
+    try:
+        # Extract configuration
+        org = config.get("gel_org", "GEL")
+        roles_config_path = config.get("gel_roles_config_path")
+        timestamp = datetime.now()
+        
+        # Initialize GEL output manager
+        gel_output = GELOutputManager(base_results_dir="results")
+        
+        # Create run directory
+        run_dirs = gel_output.create_gel_run_directory(
+            org=org, 
+            timestamp=timestamp,
+            create_latest_link=True
+        )
+        
+        logger.log_info(f"Created GEL run directory: {run_dirs['run_root']}")
+        
+        # Load roles configuration if provided
+        roles_config = None
+        roles_config_hash = "default"
+        if roles_config_path:
+            try:
+                roles_loader = RolesConfigLoader()
+                roles_config = roles_loader.load_config(roles_config_path)
+                roles_config_hash = roles_loader.calculate_config_hash(roles_config)
+                logger.log_info(f"Loaded roles config: {len(roles_config.roles)} roles")
+            except Exception as e:
+                logger.log_warning(f"Failed to load roles config: {e}")
+        
+        # Apply GEL policy constraints
+        population_data = simulation_results.get("population_data", [])
+        if population_data and roles_config:
+            try:
+                policy_constraints = GELPolicyConstraints(
+                    population_data, 
+                    config={
+                        "max_direct_reports": roles_config.intervention_policy.max_direct_reports,
+                        "inequality_budget_percent": roles_config.intervention_policy.inequality_budget_percent,
+                        "high_performer_threshold": 4.0
+                    }
+                )
+                
+                # Analyze managers and teams
+                manager_teams = policy_constraints.identify_managers_and_teams()
+                prioritized_interventions = policy_constraints.prioritize_interventions(manager_teams)
+                optimized_allocations = policy_constraints.optimize_budget_allocation(prioritized_interventions)
+                policy_summary = policy_constraints.generate_policy_summary(manager_teams, optimized_allocations)
+                
+                logger.log_info(f"Applied policy constraints: {len(manager_teams)} managers analyzed")
+            except Exception as e:
+                logger.log_warning(f"Policy constraints failed: {e}")
+                policy_summary = {}
+        else:
+            policy_summary = {}
+        
+        # Prepare analysis payload
+        analysis_payload = {
+            "population_stratification": simulation_results.get("advanced_analysis", {}).get("median_convergence", {}),
+            "inequality_analysis": simulation_results.get("advanced_analysis", {}).get("intervention_strategies", {}),
+            "high_performers": policy_summary.get("intervention_impact", {}),
+            "recommendations": {
+                "immediate": [],
+                "medium_term": policy_summary.get("recommendations", []),
+                "success_metrics": [
+                    {"name": "Gender Pay Gap", "description": "Overall percentage gap between genders", "target_value": "< 5%"},
+                    {"name": "Policy Compliance", "description": "Percentage of managers with ≤6 direct reports", "target_value": "100%"}
+                ]
+            },
+            "role_config": {"roles": roles_config.roles if roles_config else []}
+        }
+        
+        # Create manifest
+        manifest_data = gel_output.create_manifest_data(
+            scenario=org,
+            org=org,
+            timestamp=timestamp,
+            config_hash=roles_config_hash,
+            population=len(population_data),
+            median_salary=simulation_results.get("summary_metrics", {}).get("median_salary", 0),
+            below_median_pct=simulation_results.get("advanced_analysis", {}).get("median_convergence", {}).get("below_median_percent", 0),
+            gender_gap_pct=simulation_results.get("summary_metrics", {}).get("gender_pay_gap_percent", 0),
+            intervention_budget_pct=roles_config.intervention_policy.inequality_budget_percent if roles_config else 0.5,
+            recommended_uplifts_cost_pct=policy_summary.get("budget_analysis", {}).get("budget_utilization_percent", 0) / 100,
+            additional_metadata={
+                "random_seed": config.get("random_seed", 42),
+                "currency": roles_config.currency if roles_config else "GBP",
+                "config_version": roles_config.version if roles_config else 1,
+                "max_direct_reports": roles_config.intervention_policy.max_direct_reports if roles_config else 6
+            }
+        )
+        
+        # Generate reports
+        md_builder = MarkdownReportBuilder(output_dir=run_dirs["run_root"])
+        html_builder = HTMLReportBuilder(output_dir=run_dirs["run_root"])
+        
+        # Create temporary files first
+        temp_md = md_builder.build_gel_report(analysis_payload, manifest_data, "report.md")
+        temp_html = html_builder.build_gel_report(analysis_payload, manifest_data, run_dirs["assets"], "index.html")
+        
+        # Organize all outputs
+        final_paths = gel_output.organize_gel_outputs(
+            run_directories=run_dirs,
+            html_report=temp_html,
+            markdown_report=temp_md,
+            manifest_data=manifest_data,
+            cleanup_temp=False  # Keep files since they're already in final location
+        )
+        
+        # Validate output
+        validation = gel_output.validate_gel_output(run_dirs["run_root"])
+        
+        return {
+            "success": True,
+            "report_path": str(run_dirs["run_root"]),
+            "html_report": str(final_paths.get("html_report", run_dirs["run_root"] / "index.html")),
+            "markdown_report": str(final_paths.get("markdown_report", run_dirs["run_root"] / "report.md")),
+            "manifest": str(final_paths.get("manifest", run_dirs["run_root"] / "manifest.json")),
+            "assets_dir": str(run_dirs["assets"]),
+            "validation": validation,
+            "policy_summary": policy_summary,
+            "timestamp": timestamp.isoformat() + "Z"
+        }
+        
+    except Exception as e:
+        logger.log_error(f"GEL reporting failed: {e}")
+        return {"success": False, "error": str(e)}
+
+
 def main():
     """Command-line interface for the simulation orchestrator."""
     parser = argparse.ArgumentParser(description="Employee Population Simulation Orchestrator")
@@ -2098,6 +2247,11 @@ def main():
     parser.add_argument(
         "--analysis-years", type=int, default=5, help="Number of years for progression analysis (default: 5)"
     )
+
+    # GEL scenario specific arguments
+    parser.add_argument("--report", action="store_true", help="Generate cohesive GEL report (HTML and Markdown)")
+    parser.add_argument("--roles-config", type=str, help="Path to YAML roles configuration file")
+    parser.add_argument("--org", type=str, help="Organization identifier for GEL reporting")
 
     parser.add_argument(
         "--log-level", choices=["ERROR", "WARNING", "INFO", "DEBUG"], default="INFO", help="Logging level"
@@ -2174,6 +2328,24 @@ def main():
         config["random_seed"] = args.random_seed
     if hasattr(args, "analysis_years") and args.analysis_years != 5:  # Only override if different from default
         config["progression_analysis_years"] = args.analysis_years
+    
+    # Handle GEL scenario specific configuration
+    if args.report or args.roles_config:
+        config["enable_gel_reporting"] = True
+        config["gel_org"] = args.org or "GEL"
+        config["gel_roles_config_path"] = args.roles_config
+        
+        # Enable required analysis for GEL reporting
+        config["enable_advanced_analysis"] = True
+        config["run_median_convergence_analysis"] = True  
+        config["run_intervention_strategy_analysis"] = True
+        
+        # Use clean GEL output format
+        config["gel_output_format"] = True
+        
+        get_smart_logger().log_info(f"Enabled GEL reporting for organization: {config['gel_org']}")
+        if args.roles_config:
+            get_smart_logger().log_info(f"Using roles configuration: {args.roles_config}")
 
     # Handle individual employee data if provided
     if args.employee_data:
@@ -2320,6 +2492,24 @@ def main():
                 except Exception as e:
                     print(f"Advanced Analysis Failed: {e}")
                     # Continue with regular results even if advanced analysis fails
+
+            # Run GEL reporting if enabled
+            if config.get("enable_gel_reporting", False):
+                print("\n=== GENERATING GEL REPORTS ===")
+                try:
+                    gel_results = run_gel_reporting(orchestrator, results, config)
+                    
+                    # Merge GEL results
+                    if gel_results:
+                        results["gel_reporting"] = gel_results
+                        print(f"✅ GEL Reports generated: {gel_results.get('report_path', 'Unknown location')}")
+                        print(f"📊 HTML Report: {gel_results.get('html_report', 'index.html')}")
+                        print(f"📝 Markdown Report: {gel_results.get('markdown_report', 'report.md')}")
+                        print(f"📋 Manifest: {gel_results.get('manifest', 'manifest.json')}")
+                    
+                except Exception as e:
+                    print(f"GEL Reporting Failed: {e}")
+                    # Continue with regular results even if GEL reporting fails
 
             print("\n=== SIMULATION COMPLETED SUCCESSFULLY ===")
             print(f"Timestamp: {results['timestamp']}")

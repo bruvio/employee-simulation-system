@@ -1,0 +1,78 @@
+org: GEL
+currency: GBP
+version: 1
+intervention_policy:
+  max_direct_reports: 6
+  inequality_budget_percent: 0.5   # per-manager budget cap
+roles:
+  - title: "Airlock Coordinator"
+    min_salaries: [37000]
+  - title: "Data Engineer"
+    min_salaries: [73000]
+    headcount_hint: 4
+  - title: "Director of Equity Assurance"
+    min_salaries: [101500]
+    notes: "18-month FTC"
+  - title: "Genome Analyst"
+    min_salaries: [47500, 60000]
+    headcount_hint: 2
+  - title: "Platform Engineer"
+    min_salaries: [71500]
+  - title: "Platform Engineer - EDS"
+    min_salaries: [71500]
+  - title: "QA Engineer - Python"
+    min_salaries: [53500]
+  - title: "R&D Laboratory Scientist"
+    min_salaries: [33500]
+    notes: "12-month FTC"
+  - title: "Senior Product Designer"
+    min_salaries: [63300, 71300]
+  - title: "Solutions Architect"
+    min_salaries: [93500]
+  - title: "Applied Machine Learning Researcher"
+    min_salaries: [70500]
+  - title: "Audience Engagement Lead"
+    min_salaries: [65500]
+    headcount_hint: 2
+  - title: "Bioinformatics Engineer"
+    min_salaries: [56000]
+  - title: "Chief Information Security Officer"
+    min_salaries: [127000]
+  - title: "Committee Manager - Participant Panel"
+    min_salaries: [44500]
+  - title: "Cyber Security Engineer"
+    min_salaries: [71500]
+  - title: "Director of Portfolio Management"
+    min_salaries: [92000]
+  - title: "Genomic Data Scientist"
+    min_salaries: [55000]
+    headcount_hint: 2
+  - title: "Infrastructure Architect"
+    min_salaries: [86000]
+  - title: "Platform Engineer (12 Month FTC)"
+    min_salaries: [71500]
+  - title: "Platform Engineer (CCoE)"
+    min_salaries: [71500]
+  - title: "Platform Engineer (HPC)"
+    min_salaries: [71500]
+  - title: "Principal Engineer (SRE)"
+    min_salaries: [103500]
+  - title: "QA Engineer (Genie)"
+    min_salaries: [53500]
+  - title: "QA Engineer (KDMS)"
+    min_salaries: [53000]
+  - title: "Scientific Curator"
+    min_salaries: [47500]
+  - title: "Senior Platform Engineer (Developer Platform)"
+    min_salaries: [76500]
+    headcount_hint: 2
+  - title: "Senior QA Engineer"
+    min_salaries: [55500]
+  - title: "Service Owner DDSR"
+    min_salaries: [113500]
+    notes: "12-month FTC"
+  - title: "Software Engineer"
+    min_salaries: [71500]
+  - title: "Strategic Communications Lead"
+    min_salaries: [64000, 65500]
+    notes: "18-month FTC"

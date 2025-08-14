@@ -85,7 +85,24 @@
 
 ---
 
-## Current Active Tasks (2025-08-11)
+## Current Active Tasks (2025-08-14)
+
+### 🔥 High Priority - GEL Scenario Implementation (NEW)
+
+#### GEL Reporting & Role Configuration - Task 1
+- **Task**: Implement GEL scenario with cohesive reporting and role-minimums configuration  
+- **Owner**: Development Team  
+- **Due**: 2025-08-16  
+- **Status**: 🚧 IN PROGRESS  
+- **PRP**: PRPs/PRP_GEL_reporting_and_roles_config_task1.md
+- **Details**: 
+  - Single HTML/Markdown reports instead of scattered artifacts
+  - Role→minimum salary configuration with YAML support
+  - Policy-aware manager interventions (≤6 directs, 0.5% budget cap)
+  - Clean deterministic output directory structure
+  - Mermaid diagrams in reports
+
+---
 
 ### 🔥 High Priority - Phase 5 Completion
 
