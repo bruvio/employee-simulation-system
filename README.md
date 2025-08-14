@@ -83,9 +83,9 @@ python employee_simulation_orchestrator.py --scenario basic
 # Large-scale analysis with custom parameters
 python employee_simulation_orchestrator.py \
   --scenario basic \
-  --population-size 1000 \
+  --population-size 200 \
   --max-cycles 20 \
-  --random-seed 12345
+  --random-seed 42
 ```
 
 #### Using the Makefile
@@ -218,9 +218,9 @@ python employee_simulation_orchestrator.py \
 ```bash
 python employee_simulation_orchestrator.py \
   --scenario large_scale \
-  --population-size 2000 \
+  --population-size 200 \
   --max-cycles 25 \
-  --analysis-years 7
+  --analysis-years 3
 ```
 
 **Output:**
