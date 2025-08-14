@@ -901,7 +901,7 @@ class EmployeeSimulationOrchestrator:
 
         analysis_config = {
             "confidence_interval": 0.95,
-            "market_inflation_rate": 0.025,
+            "market_inflation_rate": 0.04,
             "progression_years": self.config.get("progression_analysis_years", 5),
             "convergence_threshold_years": self.config.get("convergence_threshold_years", 5),
             "acceptable_gap_percent": self.config.get("acceptable_gap_percent", 5.0),

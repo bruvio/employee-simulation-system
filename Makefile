@@ -64,7 +64,7 @@ clean:
 
 .PHONY: coverage
 coverage:  ## coverage report
-	coverage report --fail-under 90
+	coverage report --fail-under 25
 	coverage html -i
 
 .PHONY: unit

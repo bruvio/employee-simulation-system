@@ -33,7 +33,7 @@ class IndividualProgressionSimulator:
         # Initialize forecasting engine
         self.forecasting_engine = SalaryForecastingEngine(
             confidence_level=self.config.get("confidence_interval", 0.95),
-            market_inflation_rate=self.config.get("market_inflation_rate", 0.025),
+            market_inflation_rate=self.config.get("market_inflation_rate", 0.04),
         )
 
         # Calculate population benchmarks
