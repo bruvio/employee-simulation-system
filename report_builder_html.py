@@ -18,62 +18,57 @@ from logger import LOGGER
 
 class HTMLReportBuilder:
     """HTML report builder for GEL scenario single consolidated reports.
-    
+
     Creates self-contained HTML files with embedded charts, tables, and styling.
     Follows the same narrative structure as the Markdown report.
     """
-    
+
     def __init__(self, output_dir: Union[str, Path] = "results"):
         self.output_dir = Path(output_dir)
         self.output_dir.mkdir(parents=True, exist_ok=True)
         self.logger = LOGGER
-        
+
     def build_gel_report(
-        self, 
-        analysis_payload: Dict[str, Any], 
+        self,
+        analysis_payload: Dict[str, Any],
         manifest: Dict[str, Any],
         assets_dir: Optional[Path] = None,
-        output_file: str = "index.html"
+        output_file: str = "index.html",
     ) -> Path:
         """Build comprehensive GEL scenario HTML report with embedded charts.
-        
+
         Args:
             analysis_payload: Complete analysis results from orchestrator
             manifest: Run manifest with metadata and KPIs
             assets_dir: Optional assets directory for external chart references
             output_file: Output filename
-            
+
         Returns:
             Path to generated HTML report file
         """
         self.logger.info("Building GEL scenario HTML report")
-        
+
         report_path = self.output_dir / output_file
-        
+
         # Generate embedded charts
         charts = self._generate_charts(analysis_payload, manifest, assets_dir)
-        
+
         # Build HTML content
-        html_content = self._build_html_structure(
-            analysis_payload, manifest, charts
-        )
-        
-        with open(report_path, 'w', encoding='utf-8') as f:
+        html_content = self._build_html_structure(analysis_payload, manifest, charts)
+
+        with open(report_path, "w", encoding="utf-8") as f:
             f.write(html_content)
-        
+
         self.logger.info(f"Generated HTML report: {report_path}")
         return report_path
-    
+
     def _build_html_structure(
-        self, 
-        analysis_payload: Dict[str, Any], 
-        manifest: Dict[str, Any],
-        charts: Dict[str, str]
+        self, analysis_payload: Dict[str, Any], manifest: Dict[str, Any], charts: Dict[str, str]
     ) -> str:
         """Build complete HTML document structure."""
         org = manifest.get("org", "Unknown")
         timestamp = manifest.get("timestamp_utc", datetime.utcnow().isoformat())
-        
+
         return f"""<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -108,7 +103,7 @@ class HTMLReportBuilder:
     </script>
 </body>
 </html>"""
-    
+
     def _get_css_styles(self) -> str:
         """Generate embedded CSS styles."""
         return """<style>
@@ -352,13 +347,13 @@ class HTMLReportBuilder:
             }
         }
     </style>"""
-    
+
     def _generate_html_header(self, manifest: Dict[str, Any]) -> str:
         """Generate HTML header section."""
         org = manifest.get("org", "Unknown")
         timestamp = manifest.get("timestamp_utc", "Unknown")
         scenario = manifest.get("scenario", "GEL")
-        
+
         return f"""
     <div class="header">
         <h1>{org} Employee Analysis Report</h1>
@@ -368,7 +363,7 @@ class HTMLReportBuilder:
             <strong>Organization:</strong> {org}
         </div>
     </div>"""
-    
+
     def _generate_toc(self) -> str:
         """Generate table of contents."""
         return """
@@ -385,19 +380,15 @@ class HTMLReportBuilder:
             <li><a href="#appendix">8. Appendix</a></li>
         </ul>
     </div>"""
-    
-    def _generate_overview_section(
-        self, 
-        manifest: Dict[str, Any], 
-        analysis_payload: Dict[str, Any]
-    ) -> str:
+
+    def _generate_overview_section(self, manifest: Dict[str, Any], analysis_payload: Dict[str, Any]) -> str:
         """Generate overview and inputs section."""
         population = manifest.get("population", 0)
         median_salary = manifest.get("median_salary", 0)
         below_median_pct = manifest.get("below_median_pct", 0)
         gender_gap_pct = manifest.get("gender_gap_pct", 0)
         budget_pct = manifest.get("intervention_budget_pct", 0.5)
-        
+
         return f"""
     <div class="section" id="overview">
         <h2>1. Overview & Inputs</h2>
@@ -432,7 +423,7 @@ class HTMLReportBuilder:
             <tr><td>Max Direct Reports</td><td>{manifest.get("max_direct_reports", 6)}</td></tr>
         </table>
     </div>"""
-    
+
     def _generate_data_flow_section(self) -> str:
         """Generate data flow section with Mermaid diagram."""
         return """
@@ -466,21 +457,17 @@ class HTMLReportBuilder:
                 end
         </div>
     </div>"""
-    
-    def _generate_population_section(
-        self, 
-        analysis_payload: Dict[str, Any], 
-        charts: Dict[str, str]
-    ) -> str:
+
+    def _generate_population_section(self, analysis_payload: Dict[str, Any], charts: Dict[str, str]) -> str:
         """Generate population stratification section."""
         stratification = analysis_payload.get("population_stratification", {})
-        
+
         content = """
     <div class="section" id="stratification">
         <h2>3. Population Stratification</h2>
         
         <h3>By Level and Role</h3>"""
-        
+
         # Add level distribution table
         if "by_level" in stratification:
             content += """
@@ -489,7 +476,7 @@ class HTMLReportBuilder:
                 <tr><th>Level</th><th>Count</th><th>Median Salary</th><th>Gender Split</th></tr>
             </thead>
             <tbody>"""
-            
+
             for level, data in stratification["by_level"].items():
                 count = data.get("count", 0)
                 median = data.get("median_salary", 0)
@@ -501,11 +488,11 @@ class HTMLReportBuilder:
                     <td>£{median:,.2f}</td>
                     <td>{gender_split}</td>
                 </tr>"""
-            
+
             content += """
             </tbody>
         </table>"""
-        
+
         # Add population chart if available
         if "population_chart" in charts:
             content += f"""
@@ -513,7 +500,7 @@ class HTMLReportBuilder:
             <h4>Population Distribution Chart</h4>
             {charts["population_chart"]}
         </div>"""
-        
+
         # Add manager distribution
         manager_data = stratification.get("managers", {})
         if manager_data:
@@ -521,7 +508,7 @@ class HTMLReportBuilder:
             avg_reports = manager_data.get("average_direct_reports", 0)
             max_reports = manager_data.get("max_direct_reports", 0)
             at_limit = manager_data.get("at_policy_limit", 0)
-            
+
             content += f"""
         <div class="alert alert-info">
             <h4>Manager Distribution Summary</h4>
@@ -532,23 +519,20 @@ class HTMLReportBuilder:
                 <li><strong>Managers at Policy Limit (6):</strong> {at_limit}</li>
             </ul>
         </div>"""
-        
+
         content += """
     </div>"""
-        
+
         return content
-    
+
     def _generate_inequality_section(
-        self, 
-        analysis_payload: Dict[str, Any], 
-        manifest: Dict[str, Any],
-        charts: Dict[str, str]
+        self, analysis_payload: Dict[str, Any], manifest: Dict[str, Any], charts: Dict[str, str]
     ) -> str:
         """Generate inequality and risk analysis section."""
         inequality_data = analysis_payload.get("inequality_analysis", {})
         below_median_pct = manifest.get("below_median_pct", 0)
         gender_gap_pct = manifest.get("gender_gap_pct", 0)
-        
+
         # Determine risk level
         if below_median_pct > 40:
             risk_level = "High"
@@ -559,7 +543,7 @@ class HTMLReportBuilder:
         else:
             risk_level = "Low"
             risk_class = "alert-success"
-        
+
         content = f"""
     <div class="section" id="inequality">
         <h2>4. Inequality & Risk Analysis</h2>
@@ -571,14 +555,14 @@ class HTMLReportBuilder:
                 <li><strong>Gender Pay Gap:</strong> {gender_gap_pct:.1f}% overall gap requiring attention</li>
             </ul>
         </div>"""
-        
+
         # Role minimum compliance
         role_compliance = inequality_data.get("role_minimum_compliance", {})
         if role_compliance:
             violations = role_compliance.get("violations", 0)
             total_checked = role_compliance.get("total_employees", 0)
             compliance_rate = (total_checked - violations) / max(total_checked, 1) * 100
-            
+
             content += f"""
         <h3>Role Minimum Compliance</h3>
         <table>
@@ -587,7 +571,7 @@ class HTMLReportBuilder:
             <tr><td>Total Employees Checked</td><td>{total_checked}</td></tr>
             <tr><td>Compliance Rate</td><td>{compliance_rate:.1f}%</td></tr>
         </table>"""
-        
+
         # Gap analysis by segment
         segments = inequality_data.get("segments", {})
         if segments:
@@ -598,7 +582,7 @@ class HTMLReportBuilder:
                 <tr><th>Segment</th><th>Affected Employees</th><th>Average Gap</th><th>Total Cost to Close</th></tr>
             </thead>
             <tbody>"""
-            
+
             for segment_name, segment_data in segments.items():
                 affected = segment_data.get("affected_count", 0)
                 avg_gap = segment_data.get("average_gap", 0)
@@ -610,11 +594,11 @@ class HTMLReportBuilder:
                     <td>£{avg_gap:,.2f}</td>
                     <td>£{total_cost:,.2f}</td>
                 </tr>"""
-            
+
             content += """
             </tbody>
         </table>"""
-        
+
         # Add inequality chart if available
         if "inequality_chart" in charts:
             content += f"""
@@ -622,28 +606,25 @@ class HTMLReportBuilder:
             <h4>Inequality Analysis Chart</h4>
             {charts["inequality_chart"]}
         </div>"""
-        
+
         content += """
     </div>"""
-        
+
         return content
-    
+
     def _generate_high_performers_section(
-        self, 
-        analysis_payload: Dict[str, Any], 
-        manifest: Dict[str, Any],
-        charts: Dict[str, str]
+        self, analysis_payload: Dict[str, Any], manifest: Dict[str, Any], charts: Dict[str, str]
     ) -> str:
         """Generate high performer recognition section."""
         high_performers = analysis_payload.get("high_performers", {})
         budget_pct = manifest.get("intervention_budget_pct", 0.5)
-        
+
         total_high_performers = high_performers.get("total_identified", 0)
         eligible_for_uplift = high_performers.get("eligible_for_uplift", 0)
         estimated_cost = high_performers.get("estimated_uplift_cost_pct", 0)
-        
+
         budget_utilization = (estimated_cost / budget_pct * 100) if budget_pct > 0 else 0
-        
+
         content = f"""
     <div class="section" id="highperformers">
         <h2>5. High-Performer Recognition (within constraints)</h2>
@@ -675,7 +656,7 @@ class HTMLReportBuilder:
                 <div class="label">Budget Utilization</div>
             </div>
         </div>"""
-        
+
         # Trade-offs within budget
         trade_offs = high_performers.get("trade_offs", [])
         if trade_offs:
@@ -687,13 +668,13 @@ class HTMLReportBuilder:
                 <tr><th>Employee ID</th><th>Current Salary</th><th>Proposed Uplift</th><th>Impact</th></tr>
             </thead>
             <tbody>"""
-            
+
             for i, trade_off in enumerate(trade_offs[:10], 1):  # Show top 10
                 employee_id = trade_off.get("employee_id", f"EMP{i}")
                 current_salary = trade_off.get("current_salary", 0)
                 proposed_uplift = trade_off.get("proposed_uplift", 0)
                 impact = trade_off.get("inequality_impact", "Unknown")
-                
+
                 content += f"""
                 <tr>
                     <td>{employee_id}</td>
@@ -701,11 +682,11 @@ class HTMLReportBuilder:
                     <td>£{proposed_uplift:,.2f}</td>
                     <td>{impact}</td>
                 </tr>"""
-            
+
             content += """
             </tbody>
         </table>"""
-        
+
         # Add high performers chart if available
         if "high_performers_chart" in charts:
             content += f"""
@@ -713,17 +694,17 @@ class HTMLReportBuilder:
             <h4>High Performers Analysis</h4>
             {charts["high_performers_chart"]}
         </div>"""
-        
+
         content += """
     </div>"""
-        
+
         return content
-    
+
     def _generate_budget_allocation_section(self, manifest: Dict[str, Any]) -> str:
         """Generate budget allocation section with Mermaid diagram."""
         max_reports = manifest.get("max_direct_reports", 6)
         budget_pct = manifest.get("intervention_budget_pct", 0.5)
-        
+
         return f"""
     <div class="section" id="budgetallocation">
         <h2>6. Manager Budget Allocation Process</h2>
@@ -769,21 +750,17 @@ class HTMLReportBuilder:
                 style N1 fill:#ffcdd2
         </div>
     </div>"""
-    
-    def _generate_recommendations_section(
-        self, 
-        analysis_payload: Dict[str, Any], 
-        manifest: Dict[str, Any]
-    ) -> str:
+
+    def _generate_recommendations_section(self, analysis_payload: Dict[str, Any], manifest: Dict[str, Any]) -> str:
         """Generate targeted recommendations section."""
         recommendations = analysis_payload.get("recommendations", {})
-        
+
         content = """
     <div class="section" id="recommendations">
         <h2>7. Targeted Recommendations</h2>
         
         <h3>Immediate Actions</h3>"""
-        
+
         immediate_actions = recommendations.get("immediate", [])
         if immediate_actions:
             for i, action in enumerate(immediate_actions, 1):
@@ -792,7 +769,7 @@ class HTMLReportBuilder:
                 proposed_uplift = action.get("proposed_uplift", 0)
                 expected_impact = action.get("expected_impact", "Unknown")
                 uplift_pct = (proposed_uplift / max(current_salary, 1) * 100) if current_salary > 0 else 0
-                
+
                 content += f"""
         <div class="recommendation">
             <h4>Action {i}: {action.get('action_type', 'Salary Adjustment')}</h4>
@@ -809,17 +786,17 @@ class HTMLReportBuilder:
         <div class="alert alert-info">
             <p>No immediate actions identified within current budget constraints.</p>
         </div>"""
-        
+
         # Medium-term strategies
         content += """
         <h3>Medium-Term Strategies (6-12 months)</h3>"""
-        
+
         medium_term = recommendations.get("medium_term", [])
         if medium_term:
             content += "<ul>"
             for strategy in medium_term:
                 content += f"""<li><strong>{strategy.get('title', 'Strategy')}:</strong> {strategy.get('description', 'No description')}"""
-                if cost := strategy.get('estimated_cost'):
+                if cost := strategy.get("estimated_cost"):
                     content += f" <em>(Estimated Cost: £{cost:,.2f})</em>"
                 content += "</li>"
             content += "</ul>"
@@ -828,12 +805,12 @@ class HTMLReportBuilder:
         <div class="alert alert-info">
             <p>Medium-term strategies are being developed based on immediate action results.</p>
         </div>"""
-        
+
         # Success metrics
         content += """
         <h3>Success Metrics</h3>
         <p>Track these metrics to measure intervention effectiveness:</p>"""
-        
+
         metrics = recommendations.get("success_metrics", [])
         if metrics:
             content += """
@@ -842,35 +819,31 @@ class HTMLReportBuilder:
                 <tr><th>Metric</th><th>Description</th><th>Target</th></tr>
             </thead>
             <tbody>"""
-            
+
             for metric in metrics:
-                name = metric.get('name', 'Metric')
-                description = metric.get('description', 'No description')
-                target = metric.get('target_value', 'TBD')
+                name = metric.get("name", "Metric")
+                description = metric.get("description", "No description")
+                target = metric.get("target_value", "TBD")
                 content += f"""
                 <tr>
                     <td>{name}</td>
                     <td>{description}</td>
                     <td>{target}</td>
                 </tr>"""
-            
+
             content += """
             </tbody>
         </table>"""
-        
+
         content += """
     </div>"""
-        
+
         return content
-    
-    def _generate_appendix_section(
-        self, 
-        manifest: Dict[str, Any], 
-        analysis_payload: Dict[str, Any]
-    ) -> str:
+
+    def _generate_appendix_section(self, manifest: Dict[str, Any], analysis_payload: Dict[str, Any]) -> str:
         """Generate appendix section."""
         config_hash = manifest.get("roles_config_sha256", "Unknown")
-        
+
         content = f"""
     <div class="section" id="appendix">
         <h2>8. Appendix</h2>
@@ -905,7 +878,7 @@ class HTMLReportBuilder:
         
         <h3>Role Configuration Summary</h3>
         <p><strong>Total Roles Configured:</strong> {len(analysis_payload.get("role_config", {}).get("roles", []))}</p>"""
-        
+
         # Show sample roles
         roles = analysis_payload.get("role_config", {}).get("roles", [])
         if roles:
@@ -915,7 +888,7 @@ class HTMLReportBuilder:
                 <tr><th>Role Title</th><th>Minimum Salary</th><th>Notes</th></tr>
             </thead>
             <tbody>"""
-            
+
             for role in roles[:10]:  # Show first 10 roles
                 title = role.get("title", "Unknown")
                 min_salary = min(role.get("min_salaries", [0]))
@@ -926,22 +899,22 @@ class HTMLReportBuilder:
                     <td>£{min_salary:,.2f}</td>
                     <td>{notes}</td>
                 </tr>"""
-            
+
             if len(roles) > 10:
                 content += f"""
                 <tr>
                     <td colspan="3"><em>... and {len(roles) - 10} more roles</em></td>
                 </tr>"""
-            
+
             content += """
             </tbody>
         </table>"""
-        
+
         content += """
     </div>"""
-        
+
         return content
-    
+
     def _generate_footer(self) -> str:
         """Generate footer section."""
         return f"""
@@ -949,63 +922,57 @@ class HTMLReportBuilder:
         <p><em>Report generated by Employee Simulation Orchestrator - GEL Scenario</em></p>
         <p>Generated at: {datetime.utcnow().isoformat()}Z</p>
     </div>"""
-    
+
     def _generate_charts(
-        self, 
-        analysis_payload: Dict[str, Any], 
-        manifest: Dict[str, Any],
-        assets_dir: Optional[Path]
+        self, analysis_payload: Dict[str, Any], manifest: Dict[str, Any], assets_dir: Optional[Path]
     ) -> Dict[str, str]:
         """Generate embedded charts for the report.
-        
+
         Returns dictionary with chart HTML content or references.
         """
         charts = {}
-        
+
         # Generate sample population distribution chart
         try:
             stratification = analysis_payload.get("population_stratification", {})
             if "by_level" in stratification:
                 levels = list(stratification["by_level"].keys())
                 counts = [data.get("count", 0) for data in stratification["by_level"].values()]
-                
+
                 fig = go.Figure()
-                fig.add_trace(go.Bar(
-                    x=levels,
-                    y=counts,
-                    marker_color='rgba(44, 90, 160, 0.8)',
-                    name='Employee Count'
-                ))
-                
+                fig.add_trace(go.Bar(x=levels, y=counts, marker_color="rgba(44, 90, 160, 0.8)", name="Employee Count"))
+
                 fig.update_layout(
                     title="Employee Distribution by Level",
                     xaxis_title="Level",
                     yaxis_title="Count",
                     height=400,
-                    margin=dict(l=50, r=50, t=50, b=50)
+                    margin=dict(l=50, r=50, t=50, b=50),
                 )
-                
+
                 charts["population_chart"] = f'<div id="population-chart"></div>'
-                charts["plotly_init"] = f"""
+                charts[
+                    "plotly_init"
+                ] = f"""
                 Plotly.newPlot('population-chart', {fig.to_json()});
                 """
-        
+
         except Exception as e:
             self.logger.warning(f"Failed to generate population chart: {e}")
-        
+
         return charts
 
 
 if __name__ == "__main__":
     # Test the HTML report builder
     from report_builder_md import create_sample_analysis_payload
-    
+
     builder = HTMLReportBuilder(output_dir="test_output")
-    
+
     # Create sample data
     sample_manifest = {
         "scenario": "GEL",
-        "org": "GEL", 
+        "org": "GEL",
         "timestamp_utc": "2025-08-14T10:00:00Z",
         "population": 201,
         "median_salary": 71500,
@@ -1016,11 +983,11 @@ if __name__ == "__main__":
         "roles_config_sha256": "8689a92285a3a305d8f4c87c2a54f3b7e1d29c6f8b7a4e5d3c2b1a9f8e7d6c5b4",
         "random_seed": 42,
         "currency": "GBP",
-        "config_version": 1
+        "config_version": 1,
     }
-    
+
     sample_payload = create_sample_analysis_payload()
-    
+
     # Generate report
     report_path = builder.build_gel_report(sample_payload, sample_manifest)
     print(f"Generated test HTML report: {report_path}")
