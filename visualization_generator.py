@@ -956,7 +956,9 @@ def create_parser():
     parser.add_argument("--population-file", help="JSON file with population data")
     parser.add_argument("--inequality-file", help="CSV file with inequality progression data")
     parser.add_argument(
-        "--output-dir", default=None, help="Output directory for visualizations (uses centralized paths if not specified)"
+        "--output-dir",
+        default=None,
+        help="Output directory for visualizations (uses centralized paths if not specified)",
     )
     parser.add_argument("--interactive", action="store_true", help="Create interactive dashboard")
 

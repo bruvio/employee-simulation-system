@@ -91,7 +91,7 @@ class ConfigurationManager:
 
         # Handle new config structure with defaults section
         defaults = nested_config.get("defaults", {})
-        
+
         # Population settings - check defaults first, then direct keys for backwards compatibility
         pop_config = defaults if defaults else nested_config.get("population", {})
 
@@ -158,7 +158,9 @@ class ConfigurationManager:
         )
 
         # Advanced analysis settings - check defaults.advanced_analysis first, then direct advanced_analysis key
-        analysis_config = defaults.get("advanced_analysis", {}) if defaults else nested_config.get("advanced_analysis", {})
+        analysis_config = (
+            defaults.get("advanced_analysis", {}) if defaults else nested_config.get("advanced_analysis", {})
+        )
         flat_config.update(
             {
                 "enable_advanced_analysis": analysis_config.get("enable_advanced_analysis", False),
@@ -191,7 +193,7 @@ class ConfigurationManager:
         scenarios = self.base_config.get("scenarios", {})
         if scenario_name in scenarios:
             return scenarios[scenario_name]
-        
+
         # Also check legacy locations for backwards compatibility
         legacy_scenarios = self.base_config.get("user_stories", {}).get("scenarios", {})
         if scenario_name in legacy_scenarios:
@@ -208,11 +210,11 @@ class ConfigurationManager:
         """Get list of available scenario names."""
         # Get scenarios from new structure
         scenarios = list(self.base_config.get("scenarios", {}).keys())
-        
+
         # Also get from legacy locations
         legacy_scenarios = list(self.base_config.get("user_stories", {}).get("scenarios", {}).keys())
         examples = list(self.base_config.get("customization_examples", {}).keys())
-        
+
         # Combine all scenarios and remove duplicates
         all_scenarios = scenarios + legacy_scenarios + [name for name in examples if name != "description"]
         return list(set(all_scenarios))

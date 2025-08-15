@@ -43,6 +43,7 @@ try:
     from intervention_strategy_simulator import InterventionStrategySimulator
     from logger import LOGGER
     from median_convergence_analyzer import MedianConvergenceAnalyzer
+
     # Import path management
     from app_paths import override_output_base, validate_output_path
 except ImportError as e:
@@ -387,6 +388,7 @@ class EmployeeStoryExplorer:
 
         # Save the plot
         from app_paths import get_chart_path
+
         plot_path = get_chart_path("employee_population_analysis.png")
         plt.savefig(plot_path, dpi=300, bbox_inches="tight")
         plt.show()
@@ -684,7 +686,7 @@ Examples:
         except (PermissionError, OSError, ValueError) as e:
             print(f"❌ Error with output directory '{args.out}': {e}")
             print("💡 Tips:")
-            print("   - Ensure the parent directory exists and is writable") 
+            print("   - Ensure the parent directory exists and is writable")
             print("   - Use absolute paths for clarity (e.g., /home/user/results)")
             print("   - Check disk space and permissions")
             sys.exit(1)

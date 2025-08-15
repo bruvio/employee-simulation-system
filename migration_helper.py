@@ -37,43 +37,38 @@ Examples:
   
   # Show detailed migration strategy
   python migration_helper.py --strategy
-        """
+        """,
     )
-    
-    parser.add_argument("--check", action="store_true", 
-                       help="Check for migration needs and show assessment")
-    parser.add_argument("--migrate", action="store_true",
-                       help="Perform full migration with backup creation")
-    parser.add_argument("--clean-empty", action="store_true", 
-                       help="Remove empty legacy directories only")
-    parser.add_argument("--strategy", action="store_true",
-                       help="Show detailed migration strategy documentation")
-    parser.add_argument("--quiet", action="store_true",
-                       help="Reduce output verbosity")
-    
+
+    parser.add_argument("--check", action="store_true", help="Check for migration needs and show assessment")
+    parser.add_argument("--migrate", action="store_true", help="Perform full migration with backup creation")
+    parser.add_argument("--clean-empty", action="store_true", help="Remove empty legacy directories only")
+    parser.add_argument("--strategy", action="store_true", help="Show detailed migration strategy documentation")
+    parser.add_argument("--quiet", action="store_true", help="Reduce output verbosity")
+
     # If no arguments, show help
     if len(sys.argv) == 1:
         parser.print_help()
         return
-    
+
     args = parser.parse_args()
-    
+
     if args.strategy:
         show_migration_strategy()
         return
-    
+
     # Get migration assessment
     migration_info = check_migration_needed()
-    
+
     if args.check:
         print_migration_summary(migration_info)
         return
-    
+
     if args.migrate:
         if not args.quiet:
             print("🔄 Starting full migration process...")
             print_migration_summary(migration_info)
-        
+
         if migration_info["needs_attention"]:
             if migration_info["has_data"]:
                 print("\n📦 Creating backups...")
@@ -91,14 +86,15 @@ Examples:
                 print("✅ No data to backup - directories are empty")
         else:
             print("✅ No migration needed - system is up to date")
-    
+
     if args.clean_empty:
         clean_empty_directories(migration_info, quiet=args.quiet)
 
 
 def show_migration_strategy():
     """Show detailed migration strategy documentation."""
-    print("""
+    print(
+        """
 📋 EMPLOYEE SIMULATION MIGRATION STRATEGY
 ==========================================
 
@@ -145,7 +141,8 @@ SAFETY MEASURES:
 ✅ Clear error messages with specific solutions
 ✅ Dry-run capabilities for verification
 ✅ Rollback strategy documentation
-""")
+"""
+    )
 
 
 def clean_empty_directories(migration_info: dict, quiet: bool = False):
@@ -154,9 +151,9 @@ def clean_empty_directories(migration_info: dict, quiet: bool = False):
         if not quiet:
             print("✅ No empty directories to clean")
         return
-    
+
     cleaned = []
-    
+
     # Clean empty artifacts directory
     if migration_info["legacy_artifacts"]:
         artifacts_path = Path("artifacts")
@@ -173,7 +170,7 @@ def clean_empty_directories(migration_info: dict, quiet: bool = False):
                         print(f"⚠️  Could not remove artifacts/: {e}")
             elif not quiet:
                 print("⚠️  artifacts/ contains files - skipping (use --migrate to backup first)")
-    
+
     # Clean empty results subdirectories (but keep results/ itself for new structure)
     if migration_info["legacy_results"]:
         results_path = Path("results")
@@ -189,7 +186,7 @@ def clean_empty_directories(migration_info: dict, quiet: bool = False):
                     except OSError as e:
                         if not quiet:
                             print(f"⚠️  Could not remove results/{item.name}/: {e}")
-    
+
     if cleaned and not quiet:
         print(f"✅ Cleaned {len(cleaned)} empty directories: {', '.join(cleaned)}")
     elif not cleaned and not quiet:

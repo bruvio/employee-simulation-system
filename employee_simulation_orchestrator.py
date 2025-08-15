@@ -37,8 +37,15 @@ from visualization_generator import VisualizationGenerator
 
 # Import centralized path management
 from app_paths import (
-    ensure_dirs, get_artifact_path, get_chart_path, get_table_path,
-    get_population_size, RUN_DIR, ARTIFACTS_DIR, CHARTS_DIR, TABLES_DIR
+    ensure_dirs,
+    get_artifact_path,
+    get_chart_path,
+    get_table_path,
+    get_population_size,
+    RUN_DIR,
+    ARTIFACTS_DIR,
+    CHARTS_DIR,
+    TABLES_DIR,
 )
 
 
@@ -55,10 +62,10 @@ class EmployeeSimulationOrchestrator:
     def __init__(self, config=None, cli_population_size=None):
         self.config = config or self._load_config_with_fallback()
         self.timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-        
+
         # Ensure output directories exist
         ensure_dirs()
-        
+
         # Set up centralized paths
         self.artifacts_dir = ARTIFACTS_DIR
         self.charts_dir = CHARTS_DIR
@@ -78,7 +85,7 @@ class EmployeeSimulationOrchestrator:
             suppress_noisy_libraries=True,
         )
         self.logger = self.smart_logger.get_logger("EmployeeSimulationOrchestrator")
-        
+
         # Enforce and log population size
         try:
             population_size, source = get_population_size(self.config, cli_population_size)
@@ -2211,6 +2218,22 @@ def run_gel_reporting(orchestrator, simulation_results, config):
         temp_md = md_builder.build_gel_report(analysis_payload, manifest_data, "report.md")
         temp_html = html_builder.build_gel_report(analysis_payload, manifest_data, run_dirs["assets"], "index.html")
 
+        # Generate professional dashboard
+        from professional_dashboard_builder import ProfessionalDashboardBuilder
+
+        dashboard_builder = ProfessionalDashboardBuilder()
+
+        # Load scenario config for dashboard context
+        scenario_config = config if config else {}
+
+        dashboard_path = dashboard_builder.build_comprehensive_dashboard(
+            analysis_payload=analysis_payload,
+            manifest=manifest_data,
+            run_directory=run_dirs["run_root"],
+            scenario_config=scenario_config,
+            output_file="professional_dashboard.html",
+        )
+
         # Organize all outputs
         final_paths = gel_output.organize_gel_outputs(
             run_directories=run_dirs,
@@ -2228,6 +2251,7 @@ def run_gel_reporting(orchestrator, simulation_results, config):
             "report_path": str(run_dirs["run_root"]),
             "html_report": str(final_paths.get("html_report", run_dirs["run_root"] / "index.html")),
             "markdown_report": str(final_paths.get("markdown_report", run_dirs["run_root"] / "report.md")),
+            "professional_dashboard": str(dashboard_path),
             "manifest": str(final_paths.get("manifest", run_dirs["run_root"] / "manifest.json")),
             "assets_dir": str(run_dirs["assets"]),
             "validation": validation,

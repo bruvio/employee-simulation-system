@@ -508,8 +508,8 @@ class ManagementDashboardGenerator:
     def _assemble_dashboard(self, components: Dict[str, Any]) -> Dict[str, str]:
         """Assemble all components into a cohesive HTML dashboard."""
 
-        # Create dashboard HTML
-        html_content = self._create_dashboard_html(components)
+        # Create comprehensive dashboard HTML with all files and explanations
+        html_content = self._create_comprehensive_dashboard_html(components)
 
         # Save dashboard file
         dashboard_dir = Path("artifacts/advanced_analysis")
