@@ -672,14 +672,20 @@ Examples:
 
     args = parser.parse_args()
 
-    # Handle output directory override
+    # Handle output directory override with enhanced integration
     if args.out:
         try:
             validate_output_path(Path(args.out))
             override_output_base(args.out)
             print(f"✅ Output directory set to: {args.out}")
-        except (PermissionError, OSError) as e:
-            print(f"❌ Error with output directory: {e}")
+            print(f"    → All simulation outputs will be saved to: {args.out}/run_YYYYMMDD_HHMMSS/")
+            print(f"    → This overrides SIM_OUTPUT_DIR environment variable")
+        except (PermissionError, OSError, ValueError) as e:
+            print(f"❌ Error with output directory '{args.out}': {e}")
+            print("💡 Tips:")
+            print("   - Ensure the parent directory exists and is writable") 
+            print("   - Use absolute paths for clarity (e.g., /home/user/results)")
+            print("   - Check disk space and permissions")
             sys.exit(1)
 
     # Validate population size requirement
