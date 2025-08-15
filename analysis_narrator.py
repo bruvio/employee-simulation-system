@@ -97,9 +97,7 @@ class AnalysisNarrator:
         return narrative
 
     def narrate_population_generation(self, population_stats: Dict[str, Any]) -> str:
-        """
-        Generate narrative for population generation phase.
-        """
+        """Generate narrative for population generation phase."""
 
         total_employees = population_stats.get("total_employees", 0)
         gender_gap = population_stats.get("gender_gap_percent", 0)
@@ -126,9 +124,7 @@ class AnalysisNarrator:
         return narrative
 
     def narrate_convergence_analysis(self, analysis_results: Dict[str, Any]) -> str:
-        """
-        Generate narrative for median convergence analysis.
-        """
+        """Generate narrative for median convergence analysis."""
 
         below_median_count = analysis_results.get("below_median_count", 0)
         total_employees = analysis_results.get("total_employees", 200)
@@ -173,9 +169,7 @@ class AnalysisNarrator:
         return narrative
 
     def narrate_intervention_analysis(self, intervention_results: Dict[str, Any]) -> str:
-        """
-        Generate narrative for intervention strategy analysis.
-        """
+        """Generate narrative for intervention strategy analysis."""
 
         gender_gap_data = intervention_results.get("gender_gap_remediation", {})
         equity_analysis = intervention_results.get("equity_analysis", {})
@@ -224,9 +218,7 @@ class AnalysisNarrator:
         return narrative
 
     def narrate_dashboard_generation(self, dashboard_results: Dict[str, Any]) -> str:
-        """
-        Generate narrative for dashboard generation phase.
-        """
+        """Generate narrative for dashboard generation phase."""
 
         components_count = dashboard_results.get("components_generated", 0)
         dashboard_path = dashboard_results.get("main_dashboard", "")
@@ -260,9 +252,7 @@ class AnalysisNarrator:
         return narrative
 
     def _get_population_narrative_templates(self) -> Dict[str, str]:
-        """
-        Get narrative templates for population generation.
-        """
+        """Get narrative templates for population generation."""
         return {
             "start": "Generating realistic employee population based on your organization's structure...",
             "salary_generation": "Creating salary distributions that reflect real-world negotiation patterns...",
@@ -271,9 +261,7 @@ class AnalysisNarrator:
         }
 
     def _get_convergence_narrative_templates(self) -> Dict[str, str]:
-        """
-        Get narrative templates for convergence analysis.
-        """
+        """Get narrative templates for convergence analysis."""
         return {
             "start": "Analyzing salary equity patterns across all employee levels...",
             "median_calculation": "Calculating fair salary benchmarks for each position level...",
@@ -283,9 +271,7 @@ class AnalysisNarrator:
         }
 
     def _get_intervention_narrative_templates(self) -> Dict[str, str]:
-        """
-        Get narrative templates for intervention analysis.
-        """
+        """Get narrative templates for intervention analysis."""
         return {
             "start": "Evaluating management intervention strategies and costs...",
             "cost_analysis": "Calculating budget requirements for different remediation approaches...",
@@ -295,9 +281,7 @@ class AnalysisNarrator:
         }
 
     def _get_dashboard_narrative_templates(self) -> Dict[str, str]:
-        """
-        Get narrative templates for dashboard generation.
-        """
+        """Get narrative templates for dashboard generation."""
         return {
             "start": "Creating management dashboard with executive-friendly visualizations...",
             "component_generation": "Building interactive charts for salary equity analysis...",
@@ -369,9 +353,7 @@ class AnalysisNarrator:
             return self._get_generic_narrative(step_name, step_data)
 
     def _get_generic_narrative(self, step_name: str, step_data: Dict[str, Any]) -> str:
-        """
-        Generate generic user-friendly narrative for unknown steps.
-        """
+        """Generate generic user-friendly narrative for unknown steps."""
 
         friendly_name = step_name.replace("_", " ").title()
 
@@ -387,9 +369,7 @@ This analysis will contribute to the overall salary equity assessment.
         return generic_narrative
 
     def create_completion_summary(self, results: Dict[str, Any]) -> str:
-        """
-        Create final completion summary with key takeaways.
-        """
+        """Create final completion summary with key takeaways."""
 
         # Extract key metrics from results
         population_size = results.get("population_size", 200)

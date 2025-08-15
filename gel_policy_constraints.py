@@ -327,9 +327,7 @@ class GELPolicyConstraints:
     def generate_policy_summary(
         self, manager_teams: Dict[int, Dict], optimized_allocations: Dict[int, Dict]
     ) -> Dict[str, Any]:
-        """
-        Generate comprehensive policy compliance and impact summary.
-        """
+        """Generate comprehensive policy compliance and impact summary."""
         # Manager compliance analysis
         total_managers = len(manager_teams)
         compliant_managers = sum(1 for team in manager_teams.values() if team["compliant_team_size"])
@@ -384,9 +382,7 @@ class GELPolicyConstraints:
     def _generate_policy_recommendations(
         self, manager_teams: Dict, optimized_allocations: Dict, total_managers: int, compliant_managers: int
     ) -> List[Dict[str, str]]:
-        """
-        Generate policy recommendations based on analysis.
-        """
+        """Generate policy recommendations based on analysis."""
         recommendations = []
 
         # Team size recommendations
