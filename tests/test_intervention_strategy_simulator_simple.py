@@ -1,19 +1,24 @@
 #!/usr/bin/env python3
-"""Simple tests for intervention_strategy_simulator module."""
+"""
+Simple tests for intervention_strategy_simulator module.
+"""
 
 from unittest.mock import patch
 
 
-
 def test_import_module():
-    """Test that the module can be imported."""
+    """
+    Test that the module can be imported.
+    """
     import intervention_strategy_simulator
 
     assert hasattr(intervention_strategy_simulator, "__file__")
 
 
 def test_intervention_strategy_simulator_init():
-    """Test InterventionStrategySimulator initialization."""
+    """
+    Test InterventionStrategySimulator initialization.
+    """
     import intervention_strategy_simulator
 
     # Check if the class exists first
@@ -31,7 +36,9 @@ def test_intervention_strategy_simulator_init():
 
 
 def test_utility_functions_exist():
-    """Test utility functions exist."""
+    """
+    Test utility functions exist.
+    """
     import intervention_strategy_simulator
 
     # Check that basic classes exist
@@ -43,7 +50,9 @@ def test_utility_functions_exist():
 
 
 def test_basic_methods():
-    """Test basic methods exist and can be called."""
+    """
+    Test basic methods exist and can be called.
+    """
     import intervention_strategy_simulator
 
     # Check if the class exists first
@@ -72,7 +81,9 @@ def test_basic_methods():
 
 @patch("builtins.print")
 def test_simulation_methods(mock_print):
-    """Test simulation methods with mock data."""
+    """
+    Test simulation methods with mock data.
+    """
     import intervention_strategy_simulator
 
     # Just check module exists and has some attributes
@@ -91,7 +102,9 @@ def test_simulation_methods(mock_print):
 
 
 def test_configuration_methods():
-    """Test configuration methods."""
+    """
+    Test configuration methods.
+    """
     import intervention_strategy_simulator
 
     # Just verify module can be imported and has basic structure

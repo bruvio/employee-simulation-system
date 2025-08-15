@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
-"""Configuration Examples and Usage Guide for Employee Simulation System.
+"""
+Configuration Examples and Usage Guide for Employee Simulation System.
 
 This script demonstrates how to use the configuration system and scenarios.
 """
@@ -10,7 +11,9 @@ from config_manager import ConfigurationManager
 
 
 def show_usage_examples():
-    """Show examples of how to use the configuration system."""
+    """
+    Show examples of how to use the configuration system.
+    """
     print("=== Employee Simulation System - Configuration Examples ===\n")
 
     # Initialize configuration manager
@@ -55,7 +58,9 @@ def show_usage_examples():
 
 
 def demonstrate_programmatic_usage():
-    """Show how to use configuration manager programmatically."""
+    """
+    Show how to use configuration manager programmatically.
+    """
     print("\n=== PROGRAMMATIC CONFIGURATION USAGE ===\n")
 
     config_manager = ConfigurationManager("config.json")
@@ -82,7 +87,9 @@ def demonstrate_programmatic_usage():
 
 
 def create_custom_scenario_example():
-    """Example of creating a custom scenario."""
+    """
+    Example of creating a custom scenario.
+    """
     print("\n=== CREATING CUSTOM SCENARIOS ===\n")
 
     config_manager = ConfigurationManager("config.json")
@@ -109,7 +116,9 @@ def create_custom_scenario_example():
 
 
 def show_advanced_configuration_options():
-    """Show advanced configuration options available."""
+    """
+    Show advanced configuration options available.
+    """
     print("\n=== ADVANCED CONFIGURATION OPTIONS ===\n")
 
     config_manager = ConfigurationManager("config.json")

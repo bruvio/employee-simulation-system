@@ -12,7 +12,8 @@ from logger import LOGGER
 
 
 class SalaryForecastingEngine:
-    """Core mathematical utilities for salary progression modeling and forecasting.
+    """
+    Core mathematical utilities for salary progression modeling and forecasting.
 
     Provides CAGR calculations, compound growth formulas, confidence intervals, and statistical modeling for individual
     employee salary projections.
@@ -31,7 +32,8 @@ class SalaryForecastingEngine:
         LOGGER.info(f"Market inflation rate: {market_inflation_rate:.2%}")
 
     def calculate_cagr(self, starting_value: float, ending_value: float, years: int) -> float:
-        """Calculate Compound Annual Growth Rate (CAGR)
+        """
+        Calculate Compound Annual Growth Rate (CAGR)
 
         Formula: CAGR = (ending_value / starting_value)^(1/years) - 1
 
@@ -52,7 +54,8 @@ class SalaryForecastingEngine:
         return (ending_value / starting_value) ** (1 / years) - 1
 
     def project_compound_growth(self, initial_value: float, growth_rate: float, years: int) -> float:
-        """Project future value using compound growth.
+        """
+        Project future value using compound growth.
 
         Formula: future_value = initial_value × (1 + growth_rate)^years
 
@@ -73,7 +76,8 @@ class SalaryForecastingEngine:
         return initial_value * ((1 + growth_rate) ** years)
 
     def calculate_uplift_increase(self, current_salary: float, level: int, performance_rating: str) -> float:
-        """Calculate salary increase based on UPLIFT_MATRIX.
+        """
+        Calculate salary increase based on UPLIFT_MATRIX.
 
         Args:
           current_salary: Current employee salary
@@ -102,7 +106,8 @@ class SalaryForecastingEngine:
     def calculate_confidence_interval(
         self, projected_values: List[float], confidence_level: Optional[float] = None
     ) -> Tuple[float, float]:
-        """Calculate confidence interval for projected salary values.
+        """
+        Calculate confidence interval for projected salary values.
 
         Args:
           projected_values: List of projected salary values
@@ -132,7 +137,8 @@ class SalaryForecastingEngine:
         return stats.t.interval(confidence, degrees_freedom, loc=mean, scale=std_error)
 
     def generate_performance_scenarios(self, current_rating: str) -> Dict[str, List[str]]:
-        """Generate realistic performance rating paths for different scenarios.
+        """
+        Generate realistic performance rating paths for different scenarios.
 
         Args:
           current_rating: Current performance rating
@@ -182,7 +188,8 @@ class SalaryForecastingEngine:
         return rating_progression[current_rating]
 
     def calculate_time_to_target(self, current_salary: float, target_salary: float, annual_growth_rate: float) -> float:
-        """Calculate years needed to reach target salary.
+        """
+        Calculate years needed to reach target salary.
 
         Formula: years = log(target / current) / log(1 + growth_rate)
 
@@ -205,7 +212,8 @@ class SalaryForecastingEngine:
     def apply_market_adjustments(
         self, salary_path: List[float], market_adjustment_years: List[int] = None
     ) -> List[float]:
-        """Apply market adjustment cycles to salary progression.
+        """
+        Apply market adjustment cycles to salary progression.
 
         Args:
           salary_path: List of projected salaries by year
@@ -238,7 +246,8 @@ class SalaryForecastingEngine:
     def calculate_population_median_progression(
         self, population_data: List[Dict], years: int = 5
     ) -> Dict[int, List[float]]:
-        """Calculate median salary progression by level across population.
+        """
+        Calculate median salary progression by level across population.
 
         Args:
           population_data: List of employee dictionaries
@@ -271,7 +280,8 @@ class SalaryForecastingEngine:
         return median_progression
 
     def _calculate_performance_variance(self) -> Dict[str, float]:
-        """Calculate historical variance in performance-based salary increases.
+        """
+        Calculate historical variance in performance-based salary increases.
 
         Args:
 
@@ -288,7 +298,8 @@ class SalaryForecastingEngine:
         }
 
     def validate_calculations(self) -> bool:
-        """Validate mathematical calculations with known test cases.
+        """
+        Validate mathematical calculations with known test cases.
 
         Args:
 
@@ -328,7 +339,9 @@ class SalaryForecastingEngine:
 
 
 def main():
-    """Main function for testing and validation."""
+    """
+    Main function for testing and validation.
+    """
     parser = argparse.ArgumentParser(description="Salary Forecasting Engine")
     parser.add_argument("--test-calculations", action="store_true", help="Run validation tests")
     parser.add_argument(

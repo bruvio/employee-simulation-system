@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
-"""Comprehensive tests for smart_logging_manager module.
+"""
+Comprehensive tests for smart_logging_manager module.
 
 Tests the intelligent logging system, phase tracking, and context-aware messaging.
 """
@@ -15,14 +16,20 @@ from smart_logging_manager import SmartLoggingManager, get_smart_logger
 
 
 class TestSmartLoggingManager:
-    """Test the SmartLoggingManager class."""
+    """
+    Test the SmartLoggingManager class.
+    """
 
     def setup_method(self):
-        """Setup test fixtures."""
+        """
+        Setup test fixtures.
+        """
         self.logger = SmartLoggingManager(log_level="INFO")
 
     def test_initialization_default(self):
-        """Test logger initialization with default settings."""
+        """
+        Test logger initialization with default settings.
+        """
         logger = SmartLoggingManager()
 
         assert logger is not None
@@ -32,7 +39,9 @@ class TestSmartLoggingManager:
         assert hasattr(logger, "log_success")
 
     def test_initialization_with_custom_level(self):
-        """Test logger initialization with custom log level."""
+        """
+        Test logger initialization with custom log level.
+        """
         logger = SmartLoggingManager(log_level="DEBUG")
         assert logger is not None
 
@@ -40,7 +49,9 @@ class TestSmartLoggingManager:
         assert logger_warning is not None
 
     def test_log_info(self):
-        """Test info logging functionality."""
+        """
+        Test info logging functionality.
+        """
         with patch("smart_logging_manager.logging") as mock_logging:
             mock_logger = MagicMock()
             mock_logging.getLogger.return_value = mock_logger
@@ -52,7 +63,9 @@ class TestSmartLoggingManager:
             mock_logger.info.assert_called()
 
     def test_log_warning(self):
-        """Test warning logging functionality."""
+        """
+        Test warning logging functionality.
+        """
         with patch("smart_logging_manager.logging") as mock_logging:
             mock_logger = MagicMock()
             mock_logging.getLogger.return_value = mock_logger
@@ -64,7 +77,9 @@ class TestSmartLoggingManager:
             mock_logger.warning.assert_called()
 
     def test_log_error(self):
-        """Test error logging functionality."""
+        """
+        Test error logging functionality.
+        """
         with patch("smart_logging_manager.logging") as mock_logging:
             mock_logger = MagicMock()
             mock_logging.getLogger.return_value = mock_logger
@@ -76,7 +91,9 @@ class TestSmartLoggingManager:
             mock_logger.error.assert_called()
 
     def test_log_success(self):
-        """Test success logging functionality."""
+        """
+        Test success logging functionality.
+        """
         with patch("smart_logging_manager.logging") as mock_logging:
             mock_logger = MagicMock()
             mock_logging.getLogger.return_value = mock_logger
@@ -88,7 +105,9 @@ class TestSmartLoggingManager:
             assert mock_logger.info.called or mock_logger.log.called
 
     def test_start_phase_tracking(self):
-        """Test phase tracking functionality."""
+        """
+        Test phase tracking functionality.
+        """
         logger = SmartLoggingManager()
 
         # Test if start_phase method exists
@@ -101,7 +120,9 @@ class TestSmartLoggingManager:
             pytest.skip("start_phase method not implemented")
 
     def test_phase_tracking_workflow(self):
-        """Test complete phase tracking workflow."""
+        """
+        Test complete phase tracking workflow.
+        """
         with patch("smart_logging_manager.logging") as mock_logging:
             mock_logger = MagicMock()
             mock_logging.getLogger.return_value = mock_logger
@@ -126,7 +147,9 @@ class TestSmartLoggingManager:
                 pytest.skip("Phase tracking methods not implemented")
 
     def test_context_aware_messaging(self):
-        """Test context-aware message formatting."""
+        """
+        Test context-aware message formatting.
+        """
         logger = SmartLoggingManager()
 
         # Test different types of messages - just verify they work
@@ -145,7 +168,9 @@ class TestSmartLoggingManager:
             assert hasattr(logger, "log_success")
 
     def test_message_formatting(self):
-        """Test message formatting and enhancement."""
+        """
+        Test message formatting and enhancement.
+        """
         logger = SmartLoggingManager()
 
         # Test with various message types
@@ -168,7 +193,9 @@ class TestSmartLoggingManager:
                     pytest.fail(f"Failed to log message '{message}': {e}")
 
     def test_log_level_filtering(self):
-        """Test that log level filtering works correctly."""
+        """
+        Test that log level filtering works correctly.
+        """
         # Create logger with WARNING level
         with patch("smart_logging_manager.logging") as mock_logging:
             mock_logger = MagicMock()
@@ -189,7 +216,9 @@ class TestSmartLoggingManager:
             mock_logger.warning.assert_called()
 
     def test_concurrent_logging(self):
-        """Test logging from multiple contexts."""
+        """
+        Test logging from multiple contexts.
+        """
         logger = SmartLoggingManager()
 
         with patch("smart_logging_manager.logging") as mock_logging:
@@ -206,7 +235,9 @@ class TestSmartLoggingManager:
             assert mock_logger.info.call_count >= 0 or mock_logger.log.call_count >= 0
 
     def test_error_handling_in_logging(self):
-        """Test error handling within logging system."""
+        """
+        Test error handling within logging system.
+        """
         logger = SmartLoggingManager()
 
         # Test logging when underlying logger fails
@@ -222,7 +253,9 @@ class TestSmartLoggingManager:
                 pytest.fail("SmartLoggingManager should handle internal errors gracefully")
 
     def test_performance_with_many_messages(self):
-        """Test performance with high volume of messages."""
+        """
+        Test performance with high volume of messages.
+        """
         logger = SmartLoggingManager()
 
         with patch("smart_logging_manager.logging") as mock_logging:
@@ -238,10 +271,14 @@ class TestSmartLoggingManager:
 
 
 class TestGetSmartLogger:
-    """Test the get_smart_logger singleton function."""
+    """
+    Test the get_smart_logger singleton function.
+    """
 
     def test_singleton_behavior(self):
-        """Test that get_smart_logger returns singleton instance."""
+        """
+        Test that get_smart_logger returns singleton instance.
+        """
         logger1 = get_smart_logger()
         logger2 = get_smart_logger()
 
@@ -249,7 +286,9 @@ class TestGetSmartLogger:
         assert logger1 is logger2
 
     def test_singleton_consistency(self):
-        """Test that singleton maintains state across calls."""
+        """
+        Test that singleton maintains state across calls.
+        """
         logger = get_smart_logger()
 
         # If logger has state, it should be consistent
@@ -265,7 +304,9 @@ class TestGetSmartLogger:
                     assert logger.current_phase == logger2.current_phase
 
     def test_singleton_thread_safety(self):
-        """Basic test for thread safety of singleton."""
+        """
+        Basic test for thread safety of singleton.
+        """
         # This is a basic test - comprehensive thread safety testing would require threading
         import threading
 
@@ -289,10 +330,14 @@ class TestGetSmartLogger:
 
 
 class TestSmartLoggingIntegration:
-    """Test integration scenarios for smart logging."""
+    """
+    Test integration scenarios for smart logging.
+    """
 
     def test_integration_with_real_logging(self):
-        """Test integration with actual Python logging system."""
+        """
+        Test integration with actual Python logging system.
+        """
         # Capture real log output
         log_capture = StringIO()
         handler = logging.StreamHandler(log_capture)
@@ -318,7 +363,9 @@ class TestSmartLoggingIntegration:
         assert len(log_output) >= 0 or smart_logger is not None
 
     def test_integration_with_phase_workflow(self):
-        """Test complete workflow with phases."""
+        """
+        Test complete workflow with phases.
+        """
         logger = get_smart_logger()
 
         # Simulate a complete analysis workflow
@@ -348,7 +395,9 @@ class TestSmartLoggingIntegration:
             assert mock_logger.info.call_count >= 0 or mock_logger.log.call_count >= 0
 
     def test_logging_configuration_formats(self):
-        """Test different logging configuration scenarios."""
+        """
+        Test different logging configuration scenarios.
+        """
         configs = [{"log_level": "DEBUG"}, {"log_level": "INFO"}, {"log_level": "WARNING"}, {"log_level": "ERROR"}]
 
         for config in configs:
@@ -360,7 +409,9 @@ class TestSmartLoggingIntegration:
                 pytest.fail(f"Failed with config {config}: {e}")
 
     def test_message_enhancement_features(self):
-        """Test message enhancement and formatting features."""
+        """
+        Test message enhancement and formatting features.
+        """
         logger = SmartLoggingManager()
 
         # Test various message types that might trigger enhancement
@@ -384,10 +435,14 @@ class TestSmartLoggingIntegration:
 
 
 class TestSmartLoggingErrorRecovery:
-    """Test error recovery and resilience in smart logging."""
+    """
+    Test error recovery and resilience in smart logging.
+    """
 
     def test_recovery_from_logger_initialization_failure(self):
-        """Test recovery when logger initialization fails."""
+        """
+        Test recovery when logger initialization fails.
+        """
         with patch("smart_logging_manager.logging.getLogger", side_effect=Exception("Logger init failed")):
             try:
                 logger = SmartLoggingManager()
@@ -398,7 +453,9 @@ class TestSmartLoggingErrorRecovery:
                 pass
 
     def test_recovery_from_individual_log_failures(self):
-        """Test recovery when individual log calls fail."""
+        """
+        Test recovery when individual log calls fail.
+        """
         logger = SmartLoggingManager()
 
         with patch("smart_logging_manager.logging") as mock_logging:
@@ -426,7 +483,9 @@ class TestSmartLoggingErrorRecovery:
             assert mock_logger.info.call_count >= 0
 
     def test_handling_of_none_messages(self):
-        """Test handling of None and empty messages."""
+        """
+        Test handling of None and empty messages.
+        """
         logger = SmartLoggingManager()
 
         with patch("smart_logging_manager.logging") as mock_logging:
@@ -443,7 +502,9 @@ class TestSmartLoggingErrorRecovery:
                     pytest.fail(f"Failed to handle edge case message {repr(message)}: {e}")
 
     def test_unicode_and_special_characters(self):
-        """Test handling of unicode and special characters."""
+        """
+        Test handling of unicode and special characters.
+        """
         logger = SmartLoggingManager()
 
         special_messages = [

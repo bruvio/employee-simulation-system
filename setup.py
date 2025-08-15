@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
-"""Setup script for Employee Simulation System."""
+"""
+Setup script for Employee Simulation System.
+"""
 
 import os
 
@@ -8,7 +10,7 @@ from setuptools import find_packages, setup
 
 # Read long description from README
 def read_long_description():
-    """"""
+    """ """
     readme_path = os.path.join(os.path.dirname(__file__), "README.md")
     if os.path.exists(readme_path):
         with open(readme_path, "r", encoding="utf-8") as f:
@@ -18,7 +20,7 @@ def read_long_description():
 
 # Read requirements from requirements.txt
 def read_requirements():
-    """"""
+    """ """
     requirements_path = os.path.join(os.path.dirname(__file__), "requirements.txt")
     if os.path.exists(requirements_path):
         with open(requirements_path, "r", encoding="utf-8") as f:

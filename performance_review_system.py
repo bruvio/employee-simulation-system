@@ -13,7 +13,8 @@ from logger import LOGGER
 
 
 class PerformanceReviewSystem:
-    """Performance review system implementing industry-standard 5-point rating scale with level-based distributions and
+    """
+    Performance review system implementing industry-standard 5-point rating scale with level-based distributions and
     salary uplift calculations.
 
     Args:
@@ -42,7 +43,8 @@ class PerformanceReviewSystem:
         LOGGER.info("Initialized PerformanceReviewSystem with level-based rating distributions")
 
     def assign_performance_ratings(self, employees):
-        """Assign performance ratings based on level-dependent distributions.
+        """
+        Assign performance ratings based on level-dependent distributions.
 
         Args:
           employees:
@@ -82,7 +84,8 @@ class PerformanceReviewSystem:
         return employees
 
     def calculate_salary_uplift(self, employee):
-        """Calculate salary uplift using provided matrix.
+        """
+        Calculate salary uplift using provided matrix.
 
         Args:
           employee:
@@ -118,7 +121,8 @@ class PerformanceReviewSystem:
         }
 
     def apply_annual_review(self, employees, review_year):
-        """Apply annual performance review and salary adjustments.
+        """
+        Apply annual performance review and salary adjustments.
 
         Args:
           employees:
@@ -174,7 +178,8 @@ class PerformanceReviewSystem:
         return review_results
 
     def _log_performance_distribution(self, performance_counts, level_breakdown, total_employees):
-        """Log performance rating distribution statistics.
+        """
+        Log performance rating distribution statistics.
 
         Args:
           performance_counts:
@@ -200,7 +205,8 @@ class PerformanceReviewSystem:
                     LOGGER.info(f"  {rating}: {count} ({percentage:.1f}%)")
 
     def validate_uplift_calculations(self, test_cases=None):
-        """Validate uplift calculations match the matrix exactly.
+        """
+        Validate uplift calculations match the matrix exactly.
 
         Args:
           test_cases:  (Default value = None)
@@ -282,7 +288,8 @@ class PerformanceReviewSystem:
         return validation_results, all_passed
 
     def save_review_results(self, review_results, filename_prefix="review_results"):
-        """Save review results following existing codebase patterns.
+        """
+        Save review results following existing codebase patterns.
 
         Args:
           review_results:
@@ -310,7 +317,9 @@ class PerformanceReviewSystem:
 
 
 def test_uplift_matrix_accuracy():
-    """Test function to validate uplift matrix calculations."""
+    """
+    Test function to validate uplift matrix calculations.
+    """
     LOGGER.info("Testing uplift matrix accuracy")
 
     # Create test system
@@ -328,7 +337,9 @@ def test_uplift_matrix_accuracy():
 
 
 def create_parser():
-    """Create command line argument parser."""
+    """
+    Create command line argument parser.
+    """
     parser = argparse.ArgumentParser(description="Performance review system for employee simulation")
     parser.add_argument("--test-uplift-calculation", action="store_true", help="Test uplift calculation accuracy")
     parser.add_argument("--apply-review", help="Apply review to population file (JSON format)")
@@ -339,7 +350,9 @@ def create_parser():
 
 
 def main():
-    """Main function for performance review system."""
+    """
+    Main function for performance review system.
+    """
     parser = create_parser()
     args = parser.parse_args()
 

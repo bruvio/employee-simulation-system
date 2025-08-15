@@ -9,6 +9,17 @@ from typing import Any, Dict, List
 import pandas as pd
 
 from advanced_story_export_system import AdvancedStoryExportSystem
+
+# Import centralized path management
+from app_paths import (
+    ARTIFACTS_DIR,
+    CHARTS_DIR,
+    RUN_DIR,
+    TABLES_DIR,
+    ensure_dirs,
+    get_artifact_path,
+    get_population_size,
+)
 from data_export_system import DataExportSystem
 
 # Import our simulation modules
@@ -19,9 +30,6 @@ from file_optimization_manager import FileOptimizationManager
 # Import GEL scenario modules
 from gel_output_manager import GELOutputManager
 from gel_policy_constraints import GELPolicyConstraints
-from report_builder_html import HTMLReportBuilder
-from report_builder_md import MarkdownReportBuilder
-from roles_config import RolesConfigLoader
 
 # Import advanced analysis modules
 from individual_progression_simulator import IndividualProgressionSimulator
@@ -30,24 +38,17 @@ from intervention_strategy_simulator import InterventionStrategySimulator
 from median_convergence_analyzer import MedianConvergenceAnalyzer
 from performance_optimization_manager import PerformanceOptimizationManager
 from performance_review_system import PerformanceReviewSystem
+from report_builder_html import HTMLReportBuilder
+from report_builder_md import MarkdownReportBuilder
 from review_cycle_simulator import ReviewCycleSimulator
+from roles_config import RolesConfigLoader
 from smart_logging_manager import SmartLoggingManager, get_smart_logger
 from visualization_generator import VisualizationGenerator
 
-# Import centralized path management
-from app_paths import (
-    ensure_dirs,
-    get_artifact_path,
-    get_population_size,
-    RUN_DIR,
-    ARTIFACTS_DIR,
-    CHARTS_DIR,
-    TABLES_DIR,
-)
-
 
 class EmployeeSimulationOrchestrator:
-    """Main orchestrator for the complete employee population simulation system.
+    """
+    Main orchestrator for the complete employee population simulation system.
 
     Coordinates all phases of the simulation pipeline.
 
@@ -119,7 +120,9 @@ class EmployeeSimulationOrchestrator:
         self.smart_logger.log_success(f"Initialized employee simulation orchestrator with timestamp: {self.timestamp}")
 
     def _load_config_with_fallback(self):
-        """Load configuration from config.json with fallback to defaults."""
+        """
+        Load configuration from config.json with fallback to defaults.
+        """
         try:
             from config_manager import ConfigurationManager
 
@@ -130,7 +133,9 @@ class EmployeeSimulationOrchestrator:
             return self._get_default_config()
 
     def _get_default_config(self):
-        """Get default simulation configuration."""
+        """
+        Get default simulation configuration.
+        """
         return {
             # Note: No default population_size - must be explicitly configured
             "random_seed": 42,
@@ -169,7 +174,8 @@ class EmployeeSimulationOrchestrator:
         }
 
     def run_complete_simulation(self):
-        """Run the complete end-to-end employee simulation pipeline.
+        """
+        Run the complete end-to-end employee simulation pipeline.
 
         Args:
 
@@ -373,7 +379,8 @@ class EmployeeSimulationOrchestrator:
             raise
 
     def run_quick_validation(self):
-        """Run a quick validation of all system components without full simulation.
+        """
+        Run a quick validation of all system components without full simulation.
 
         Args:
 
@@ -446,7 +453,8 @@ class EmployeeSimulationOrchestrator:
             return validation_results
 
     def _validate_population(self, population_data):
-        """Validate population meets all constraints.
+        """
+        Validate population meets all constraints.
 
         Args:
           population_data:
@@ -473,7 +481,8 @@ class EmployeeSimulationOrchestrator:
         }
 
     def _make_serializable(self, obj):
-        """Convert DataFrames and other non-serializable objects for JSON export.
+        """
+        Convert DataFrames and other non-serializable objects for JSON export.
 
         Args:
           obj:
@@ -502,7 +511,8 @@ class EmployeeSimulationOrchestrator:
             return obj
 
     def _generate_final_summary(self, results):
-        """Generate final summary of simulation results.
+        """
+        Generate final summary of simulation results.
 
         Args:
           results:
@@ -526,7 +536,8 @@ class EmployeeSimulationOrchestrator:
         }
 
     def _generate_comprehensive_summary(self, results):
-        """Generate comprehensive summary with file organization and progress tracking.
+        """
+        Generate comprehensive summary with file organization and progress tracking.
 
         Args:
           results:
@@ -559,7 +570,8 @@ class EmployeeSimulationOrchestrator:
             self.smart_logger.log_error("Failed to generate comprehensive summary", e)
 
     def run_with_story_tracking(self):
-        """Run simulation with employee story tracking enabled.
+        """
+        Run simulation with employee story tracking enabled.
 
         Args:
 
@@ -865,7 +877,8 @@ class EmployeeSimulationOrchestrator:
             raise
 
     def run_advanced_analysis(self, population_data: List[Dict] = None):
-        """Run advanced salary progression and intervention analysis.
+        """
+        Run advanced salary progression and intervention analysis.
 
         Args:
           population_data: Employee population data. If None, generates new population.
@@ -1163,7 +1176,8 @@ class EmployeeSimulationOrchestrator:
             raise
 
     def generate_story_report(self, employee_stories):
-        """Generate markdown report of employee stories.
+        """
+        Generate markdown report of employee stories.
 
         Args:
           employee_stories:
@@ -1217,7 +1231,8 @@ class EmployeeSimulationOrchestrator:
         return "\n".join(report_lines)
 
     def export_interactive_dashboard(self, output_path: str = None):
-        """Export interactive HTML dashboard.
+        """
+        Export interactive HTML dashboard.
 
         Args:
           output_path: str:  (Default value = None)
@@ -1240,14 +1255,17 @@ class EmployeeSimulationOrchestrator:
         return output_path
 
     def get_tracked_employee_summary(self):
-        """Get summary statistics of tracked employees."""
+        """
+        Get summary statistics of tracked employees.
+        """
         if not self.story_tracker:
             return {"error": "Story tracking not enabled"}
 
         return self.story_tracker.get_tracked_employee_summary()
 
     def _generate_individual_story_charts(self, employee_stories: Dict[str, List]) -> List[str]:
-        """Generate individual story charts for each category.
+        """
+        Generate individual story charts for each category.
 
         Args:
           employee_stories: Dict[str:
@@ -1287,7 +1305,8 @@ class EmployeeSimulationOrchestrator:
             return []
 
     def _select_sample_employees_for_analysis(self, population_data: List[Dict]) -> List[Dict]:
-        """Select representative sample of employees for individual progression analysis.
+        """
+        Select representative sample of employees for individual progression analysis.
 
         Args:
           population_data: List[Dict]:
@@ -1324,7 +1343,8 @@ class EmployeeSimulationOrchestrator:
         return sample_employees
 
     def _export_advanced_analysis_reports(self, analysis_results: Dict, population_data: List[Dict]) -> Dict[str, str]:
-        """Export advanced analysis results to various formats.
+        """
+        Export advanced analysis results to various formats.
 
         Args:
           analysis_results: Dict:
@@ -1402,7 +1422,8 @@ class EmployeeSimulationOrchestrator:
             return {}
 
     def _create_progression_summary_report(self, progression_data: Dict) -> str:
-        """Create summary report for individual progression analysis.
+        """
+        Create summary report for individual progression analysis.
 
         Args:
           progression_data: Dict:
@@ -1483,7 +1504,8 @@ class EmployeeSimulationOrchestrator:
         return "\n".join(lines)
 
     def _create_convergence_summary_report(self, convergence_data: Dict) -> str:
-        """Create summary report for median convergence analysis.
+        """
+        Create summary report for median convergence analysis.
 
         Args:
           convergence_data: Dict:
@@ -1575,7 +1597,8 @@ class EmployeeSimulationOrchestrator:
         return "\n".join(lines)
 
     def _create_intervention_summary_report(self, intervention_data: Dict) -> str:
-        """Create executive summary for intervention strategies.
+        """
+        Create executive summary for intervention strategies.
 
         Args:
           intervention_data: Dict:
@@ -1674,7 +1697,8 @@ class EmployeeSimulationOrchestrator:
         return "\n".join(lines)
 
     def _create_comprehensive_advanced_report(self, analysis_results: Dict, population_data: List[Dict]) -> str:
-        """Create comprehensive report combining all advanced analyses.
+        """
+        Create comprehensive report combining all advanced analyses.
 
         Args:
           analysis_results: Dict:
@@ -1802,7 +1826,8 @@ class EmployeeSimulationOrchestrator:
 
 
 def run_individual_employee_analysis(employee_data, config: Dict[str, Any]) -> None:
-    """Run analysis for a single individual employee.
+    """
+    Run analysis for a single individual employee.
 
     Args:
         employee_data: Parsed and validated EmployeeData instance
@@ -2033,7 +2058,8 @@ def run_individual_employee_analysis(employee_data, config: Dict[str, Any]) -> N
 
 
 def export_individual_analysis_results(employee_data, analysis_results: Dict[str, Any]) -> None:
-    """Export individual employee analysis results to file.
+    """
+    Export individual employee analysis results to file.
 
     Args:
         employee_data: EmployeeData instance
@@ -2096,7 +2122,8 @@ def export_individual_analysis_results(employee_data, analysis_results: Dict[str
 
 
 def run_gel_reporting(orchestrator, simulation_results, config):
-    """Run GEL scenario reporting with cohesive HTML and Markdown outputs.
+    """
+    Run GEL scenario reporting with cohesive HTML and Markdown outputs.
 
     Args:
         orchestrator: EmployeeSimulationOrchestrator instance
@@ -2262,7 +2289,9 @@ def run_gel_reporting(orchestrator, simulation_results, config):
 
 
 def main():
-    """Command-line interface for the simulation orchestrator."""
+    """
+    Command-line interface for the simulation orchestrator.
+    """
     parser = argparse.ArgumentParser(description="Employee Population Simulation Orchestrator")
     parser.add_argument(
         "--mode",

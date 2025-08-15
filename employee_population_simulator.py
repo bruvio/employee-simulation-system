@@ -31,7 +31,9 @@ LEVEL_MAPPING = {1: "competent", 2: "advanced", 3: "expert", 4: "competent", 5: 
 
 
 class EmployeeLevel(Enum):
-    """Employee level enumeration following existing codebase patterns."""
+    """
+    Employee level enumeration following existing codebase patterns.
+    """
 
     CORE_COMPETENT = 1
     CORE_ADVANCED = 2
@@ -42,7 +44,8 @@ class EmployeeLevel(Enum):
 
 
 class EmployeePopulationGenerator:
-    """Generate realistic employee population for tech company simulation.
+    """
+    Generate realistic employee population for tech company simulation.
 
     Implements salary constraints, level distributions, and inequality patterns.
 
@@ -114,7 +117,9 @@ class EmployeePopulationGenerator:
             LOGGER.info(f"Target gender pay gap: {self.gender_pay_gap_percent:.1f}%")
 
     def generate_population(self):
-        """Generate complete employee population with realistic distributions."""
+        """
+        Generate complete employee population with realistic distributions.
+        """
         LOGGER.info("Generating employee population with realistic distributions")
         # Level distribution using custom or default distribution
         levels = self.rng.choice([1, 2, 3, 4, 5, 6], size=self.population_size, p=self.level_distribution)
@@ -152,7 +157,8 @@ class EmployeePopulationGenerator:
         return employees
 
     def _generate_constrained_salaries(self, levels):
-        """Generate salaries with realistic constraints and negotiation dynamics.
+        """
+        Generate salaries with realistic constraints and negotiation dynamics.
 
         Args:
           levels:
@@ -242,7 +248,8 @@ class EmployeePopulationGenerator:
         return salaries
 
     def _generate_median_constrained(self, target_median, size, min_salary, max_salary):
-        """Generate distribution with exact median constraint.
+        """
+        Generate distribution with exact median constraint.
 
         Args:
           target_median:
@@ -289,7 +296,8 @@ class EmployeePopulationGenerator:
         return salaries
 
     def _ensure_senior_median_constraint(self, salaries, levels):
-        """Ensure senior median constraint is maintained after inequality adjustments.
+        """
+        Ensure senior median constraint is maintained after inequality adjustments.
 
         Args:
           salaries:
@@ -322,7 +330,8 @@ class EmployeePopulationGenerator:
         return salaries
 
     def _apply_inequality_patterns(self, salaries, genders, levels):
-        """Apply realistic gender and level-based inequality.
+        """
+        Apply realistic gender and level-based inequality.
 
         Args:
           salaries:
@@ -358,7 +367,8 @@ class EmployeePopulationGenerator:
         return adjusted_salaries
 
     def _apply_specific_gender_gap(self, salaries, genders, levels):
-        """Apply a specific gender pay gap percentage.
+        """
+        Apply a specific gender pay gap percentage.
 
         Args:
           salaries:
@@ -413,7 +423,8 @@ class EmployeePopulationGenerator:
         return adjusted_salaries
 
     def _add_level_exceptions(self, salaries, levels):
-        """Add realistic exceptions where level doesn't perfectly correlate with salary.
+        """
+        Add realistic exceptions where level doesn't perfectly correlate with salary.
 
         Args:
           salaries:
@@ -448,7 +459,8 @@ class EmployeePopulationGenerator:
         return salaries
 
     def _assign_initial_performance(self, level):
-        """Assign realistic initial performance rating based on level.
+        """
+        Assign realistic initial performance rating based on level.
 
         Args:
           level:
@@ -480,7 +492,9 @@ class EmployeePopulationGenerator:
         return self.rng.choice(ratings, p=probabilities)
 
     def _generate_hire_dates(self):
-        """Generate realistic hire dates spread over last 5 years."""
+        """
+        Generate realistic hire dates spread over last 5 years.
+        """
         start_date = datetime.now() - timedelta(days=5 * 365)
         end_date = datetime.now() - timedelta(days=30)  # No one hired in last month
 
@@ -495,7 +509,8 @@ class EmployeePopulationGenerator:
         return hire_dates
 
     def _log_population_statistics(self, employees):
-        """Log key population statistics for validation.
+        """
+        Log key population statistics for validation.
 
         Args:
           employees:
@@ -549,7 +564,8 @@ class EmployeePopulationGenerator:
             LOGGER.info(f"  Gap: {gap_percentage:.2f}%")
 
     def save_population_data(self, employees, filename_prefix="employee_population"):
-        """Save population data following existing codebase patterns.
+        """
+        Save population data following existing codebase patterns.
 
         Args:
           employees:
@@ -577,7 +593,8 @@ class EmployeePopulationGenerator:
 
 
 def validate_salary_constraints(employees):
-    """Validate that salary constraints are met.
+    """
+    Validate that salary constraints are met.
 
     Args:
       employees:
@@ -609,7 +626,9 @@ def validate_salary_constraints(employees):
 
 
 def create_parser():
-    """Create command line argument parser."""
+    """
+    Create command line argument parser.
+    """
     parser = argparse.ArgumentParser(description="Generate employee population simulation data")
     parser.add_argument("--generate", action="store_true", help="Generate new employee population")
     parser.add_argument("--size", type=int, default=1000, help="Population size (default: 1000)")
@@ -621,7 +640,9 @@ def create_parser():
 
 
 def main():
-    """Main function for employee population simulation."""
+    """
+    Main function for employee population simulation.
+    """
     parser = create_parser()
     args = parser.parse_args()
 

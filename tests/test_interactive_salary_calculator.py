@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
-"""Comprehensive tests for interactive_salary_calculator module.
+"""
+Comprehensive tests for interactive_salary_calculator module.
 
 Tests interactive salary calculation, widget functionality, and IPython integration.
 """
@@ -13,10 +14,14 @@ from interactive_salary_calculator import InteractiveSalaryCalculator
 
 
 class TestInteractiveSalaryCalculator:
-    """Test the InteractiveSalaryCalculator class."""
+    """
+    Test the InteractiveSalaryCalculator class.
+    """
 
     def test_initialization(self):
-        """Test calculator initialization."""
+        """
+        Test calculator initialization.
+        """
         calculator = InteractiveSalaryCalculator()
 
         assert calculator is not None
@@ -24,7 +29,9 @@ class TestInteractiveSalaryCalculator:
 
     @patch("interactive_salary_calculator.widgets")
     def test_create_widgets(self, mock_widgets):
-        """Test widget creation."""
+        """
+        Test widget creation.
+        """
         calculator = InteractiveSalaryCalculator()
 
         # Mock widget objects
@@ -39,7 +46,9 @@ class TestInteractiveSalaryCalculator:
             assert mock_widgets.IntSlider.called or mock_widgets.Dropdown.called
 
     def test_calculate_uplift_basic(self):
-        """Test basic uplift calculation."""
+        """
+        Test basic uplift calculation.
+        """
         calculator = InteractiveSalaryCalculator()
 
         # Test if calculate_uplift method exists
@@ -57,7 +66,9 @@ class TestInteractiveSalaryCalculator:
             assert result == 66000
 
     def test_calculate_uplift_different_levels(self):
-        """Test uplift calculation for different levels."""
+        """
+        Test uplift calculation for different levels.
+        """
         calculator = InteractiveSalaryCalculator()
 
         test_cases = [
@@ -75,7 +86,9 @@ class TestInteractiveSalaryCalculator:
                 assert result > 0
 
     def test_calculate_uplift_performance_ratings(self):
-        """Test uplift calculation for different performance ratings."""
+        """
+        Test uplift calculation for different performance ratings.
+        """
         calculator = InteractiveSalaryCalculator()
 
         performance_ratings = ["Under Performing", "Achieving", "High Performing", "Exceeding"]
@@ -95,7 +108,9 @@ class TestInteractiveSalaryCalculator:
 
     @patch("interactive_salary_calculator.display")
     def test_display_calculator(self, mock_display):
-        """Test calculator display functionality."""
+        """
+        Test calculator display functionality.
+        """
         calculator = InteractiveSalaryCalculator()
 
         # Test if display_calculator method exists
@@ -108,7 +123,9 @@ class TestInteractiveSalaryCalculator:
             assert calculator is not None
 
     def test_update_calculation(self):
-        """Test calculation update functionality."""
+        """
+        Test calculation update functionality.
+        """
         calculator = InteractiveSalaryCalculator()
 
         # Test if update_calculation method exists
@@ -121,7 +138,9 @@ class TestInteractiveSalaryCalculator:
 
     @patch("interactive_salary_calculator.widgets.VBox")
     def test_create_layout(self, mock_vbox):
-        """Test layout creation."""
+        """
+        Test layout creation.
+        """
         calculator = InteractiveSalaryCalculator()
 
         mock_vbox.return_value = MagicMock()
@@ -134,7 +153,9 @@ class TestInteractiveSalaryCalculator:
             assert calculator is not None
 
     def test_validate_inputs(self):
-        """Test input validation."""
+        """
+        Test input validation.
+        """
         calculator = InteractiveSalaryCalculator()
 
         # Test if validate_inputs method exists
@@ -152,10 +173,14 @@ class TestInteractiveSalaryCalculator:
 
 
 class TestCalculationLogic:
-    """Test calculation logic and algorithms."""
+    """
+    Test calculation logic and algorithms.
+    """
 
     def test_uplift_matrix_integration(self):
-        """Test integration with uplift matrix."""
+        """
+        Test integration with uplift matrix.
+        """
         calculator = InteractiveSalaryCalculator()
 
         # Test if get_uplift_factor method exists
@@ -171,7 +196,9 @@ class TestCalculationLogic:
             assert result == 1.1
 
     def test_salary_bounds_checking(self):
-        """Test salary bounds checking."""
+        """
+        Test salary bounds checking.
+        """
         calculator = InteractiveSalaryCalculator()
 
         # Test if check_salary_bounds method exists
@@ -185,7 +212,9 @@ class TestCalculationLogic:
             assert isinstance(outside_bounds, bool)
 
     def test_level_mapping_integration(self):
-        """Test integration with level mapping."""
+        """
+        Test integration with level mapping.
+        """
         calculator = InteractiveSalaryCalculator()
 
         # Test if get_level_info method exists
@@ -200,11 +229,15 @@ class TestCalculationLogic:
 
 
 class TestWidgetInteractions:
-    """Test widget interactions and event handling."""
+    """
+    Test widget interactions and event handling.
+    """
 
     @patch("interactive_salary_calculator.widgets")
     def test_salary_slider_interaction(self, mock_widgets):
-        """Test salary slider interaction."""
+        """
+        Test salary slider interaction.
+        """
         calculator = InteractiveSalaryCalculator()
 
         # Mock slider widget
@@ -220,7 +253,9 @@ class TestWidgetInteractions:
 
     @patch("interactive_salary_calculator.widgets")
     def test_performance_dropdown_interaction(self, mock_widgets):
-        """Test performance dropdown interaction."""
+        """
+        Test performance dropdown interaction.
+        """
         calculator = InteractiveSalaryCalculator()
 
         # Mock dropdown widget
@@ -236,7 +271,9 @@ class TestWidgetInteractions:
 
     @patch("interactive_salary_calculator.widgets")
     def test_level_selector_interaction(self, mock_widgets):
-        """Test level selector interaction."""
+        """
+        Test level selector interaction.
+        """
         calculator = InteractiveSalaryCalculator()
 
         # Mock selector widget
@@ -251,7 +288,9 @@ class TestWidgetInteractions:
             assert calculator is not None
 
     def test_calculate_button_interaction(self):
-        """Test calculate button interaction."""
+        """
+        Test calculate button interaction.
+        """
         calculator = InteractiveSalaryCalculator()
 
         # Test if on_calculate_button_click method exists
@@ -264,11 +303,15 @@ class TestWidgetInteractions:
 
 
 class TestResultsDisplay:
-    """Test results display functionality."""
+    """
+    Test results display functionality.
+    """
 
     @patch("interactive_salary_calculator.widgets.HTML")
     def test_display_results(self, mock_html):
-        """Test results display."""
+        """
+        Test results display.
+        """
         calculator = InteractiveSalaryCalculator()
 
         mock_html_widget = MagicMock()
@@ -287,7 +330,9 @@ class TestResultsDisplay:
             assert calculator is not None
 
     def test_format_currency_display(self):
-        """Test currency formatting for display."""
+        """
+        Test currency formatting for display.
+        """
         calculator = InteractiveSalaryCalculator()
 
         # Test if format_currency method exists
@@ -302,7 +347,9 @@ class TestResultsDisplay:
             assert formatted == "£65,000"
 
     def test_format_percentage_display(self):
-        """Test percentage formatting for display."""
+        """
+        Test percentage formatting for display.
+        """
         calculator = InteractiveSalaryCalculator()
 
         # Test if format_percentage method exists
@@ -318,10 +365,14 @@ class TestResultsDisplay:
 
 
 class TestErrorHandling:
-    """Test error handling and edge cases."""
+    """
+    Test error handling and edge cases.
+    """
 
     def test_invalid_salary_input(self):
-        """Test handling of invalid salary input."""
+        """
+        Test handling of invalid salary input.
+        """
         calculator = InteractiveSalaryCalculator()
 
         invalid_salaries = [-1000, 0, "not_a_number", None]
@@ -338,7 +389,9 @@ class TestErrorHandling:
                     pass  # Expected for invalid inputs
 
     def test_invalid_performance_rating(self):
-        """Test handling of invalid performance rating."""
+        """
+        Test handling of invalid performance rating.
+        """
         calculator = InteractiveSalaryCalculator()
 
         invalid_ratings = ["Invalid Rating", "", None, 123]
@@ -354,7 +407,9 @@ class TestErrorHandling:
                     pass  # Expected for invalid ratings
 
     def test_invalid_level_input(self):
-        """Test handling of invalid level input."""
+        """
+        Test handling of invalid level input.
+        """
         calculator = InteractiveSalaryCalculator()
 
         invalid_levels = [-1, 0, 10, "not_a_number", None]
@@ -371,12 +426,16 @@ class TestErrorHandling:
 
 
 class TestIntegrationScenarios:
-    """Test integration scenarios."""
+    """
+    Test integration scenarios.
+    """
 
     @patch("interactive_salary_calculator.clear_output")
     @patch("interactive_salary_calculator.display")
     def test_full_calculator_workflow(self, mock_display, mock_clear):
-        """Test complete calculator workflow."""
+        """
+        Test complete calculator workflow.
+        """
         calculator = InteractiveSalaryCalculator()
 
         # Test if run_calculator method exists
@@ -388,7 +447,9 @@ class TestIntegrationScenarios:
             assert calculator is not None
 
     def test_multiple_calculations(self):
-        """Test performing multiple calculations."""
+        """
+        Test performing multiple calculations.
+        """
         calculator = InteractiveSalaryCalculator()
 
         test_scenarios = [
@@ -410,7 +471,9 @@ class TestIntegrationScenarios:
                     pass  # Some scenarios might fail, which is acceptable
 
     def test_widget_state_management(self):
-        """Test widget state management."""
+        """
+        Test widget state management.
+        """
         calculator = InteractiveSalaryCalculator()
 
         # Test if reset_widgets method exists

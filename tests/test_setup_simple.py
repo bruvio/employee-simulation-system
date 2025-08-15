@@ -1,10 +1,13 @@
 #!/usr/bin/env python3
-"""Simple tests for setup module."""
-
+"""
+Simple tests for setup module.
+"""
 
 
 def test_setup_file_exists():
-    """Test that setup.py file exists."""
+    """
+    Test that setup.py file exists.
+    """
     import os
 
     setup_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), "setup.py")
@@ -12,7 +15,9 @@ def test_setup_file_exists():
 
 
 def test_setup_file_content():
-    """Test setup.py file has expected content."""
+    """
+    Test setup.py file has expected content.
+    """
     import os
 
     project_root = os.path.dirname(os.path.dirname(__file__))

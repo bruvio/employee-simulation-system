@@ -23,7 +23,8 @@ from logger import LOGGER
 
 
 def load_population_data(data_source: str) -> List[Dict]:
-    """Load population data from various sources.
+    """
+    Load population data from various sources.
 
     Args:
       data_source: Path to JSON/CSV file or 'generate' to create test data
@@ -52,7 +53,8 @@ def load_population_data(data_source: str) -> List[Dict]:
 
 
 def find_employee_by_id(population_data: List[Dict], employee_id: int) -> Optional[Dict]:
-    """Find employee by ID in population data.
+    """
+    Find employee by ID in population data.
 
     Args:
       population_data: List[Dict]:
@@ -67,7 +69,8 @@ def find_employee_by_id(population_data: List[Dict], employee_id: int) -> Option
 
 
 def create_progression_report(progression_result: Dict, output_format: str = "text") -> str:
-    """Create formatted progression analysis report.
+    """
+    Create formatted progression analysis report.
 
     Args:
       progression_result: Dict:
@@ -184,7 +187,8 @@ def create_progression_report(progression_result: Dict, output_format: str = "te
 
 
 def save_report(report_content: str, output_file: str, format_type: str):
-    """Save report to file.
+    """
+    Save report to file.
 
     Args:
       report_content: str:
@@ -204,7 +208,8 @@ def save_report(report_content: str, output_file: str, format_type: str):
 def analyze_multiple_employees(
     population_data: List[Dict], employee_ids: List[int], years: int, scenarios: List[str], output_format: str
 ) -> Dict:
-    """Analyze multiple employees and create summary report.
+    """
+    Analyze multiple employees and create summary report.
 
     Args:
       population_data: List[Dict]:
@@ -257,7 +262,8 @@ def analyze_multiple_employees(
 
 
 def create_multi_employee_summary(summary_data: List[Dict]) -> Dict:
-    """Create summary statistics for multiple employee analysis.
+    """
+    Create summary statistics for multiple employee analysis.
 
     Args:
       summary_data: List[Dict]:
@@ -284,7 +290,8 @@ def create_multi_employee_summary(summary_data: List[Dict]) -> Dict:
 
 
 def create_batch_report(multi_results: Dict, output_format: str = "text") -> str:
-    """Create batch analysis report.
+    """
+    Create batch analysis report.
 
     Args:
       multi_results: Dict:
@@ -354,7 +361,7 @@ def create_batch_report(multi_results: Dict, output_format: str = "text") -> str
 
 
 def main():
-    """"""
+    """ """
     parser = argparse.ArgumentParser(
         description="Analyze individual employee salary progression",
         formatter_class=argparse.RawDescriptionHelpFormatter,

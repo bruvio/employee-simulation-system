@@ -5,16 +5,18 @@ Simple integration test for the new path management system.
 
 
 def test_basic_imports():
-    """Test that all modules can be imported without errors."""
+    """
+    Test that all modules can be imported without errors.
+    """
     try:
         from app_paths import (
+            check_migration_needed,
             ensure_dirs,
             get_artifact_path,
             get_chart_path,
-            get_table_path,
             get_population_size,
+            get_table_path,
             validate_output_path,
-            check_migration_needed,
         )
 
         print("✅ app_paths imports successful")
@@ -42,7 +44,9 @@ def test_basic_imports():
 
 
 def test_population_size_enforcement():
-    """Test population size enforcement."""
+    """
+    Test population size enforcement.
+    """
     from app_paths import get_population_size
 
     # Test valid config
@@ -58,7 +62,9 @@ def test_population_size_enforcement():
 
 
 def test_path_functions():
-    """Test path generation functions."""
+    """
+    Test path generation functions.
+    """
     from app_paths import get_artifact_path, get_chart_path, get_table_path
 
     # Test path generation

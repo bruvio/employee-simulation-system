@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """
-Migration Helper for Employee Simulation System Path Consolidation
+Migration Helper for Employee Simulation System Path Consolidation.
 
-This utility helps users migrate from the old scattered output paths 
+This utility helps users migrate from the old scattered output paths
 to the new centralized results/run_YYYYMMDD_HHMMSS/ structure.
 
 Usage:
@@ -12,15 +12,17 @@ Usage:
 """
 
 import argparse
-import sys
 from pathlib import Path
+import sys
 
 # Import our migration functions
 from app_paths import check_migration_needed, create_migration_backup, print_migration_summary
 
 
 def main():
-    """Main migration helper interface."""
+    """
+    Main migration helper interface.
+    """
     parser = argparse.ArgumentParser(
         description="Migration Helper for Employee Simulation Path Consolidation",
         formatter_class=argparse.RawDescriptionHelpFormatter,
@@ -92,7 +94,9 @@ Examples:
 
 
 def show_migration_strategy():
-    """Show detailed migration strategy documentation."""
+    """
+    Show detailed migration strategy documentation.
+    """
     print(
         """
 📋 EMPLOYEE SIMULATION MIGRATION STRATEGY
@@ -146,7 +150,9 @@ SAFETY MEASURES:
 
 
 def clean_empty_directories(migration_info: dict, quiet: bool = False):
-    """Clean up empty legacy directories."""
+    """
+    Clean up empty legacy directories.
+    """
     if not migration_info["needs_attention"]:
         if not quiet:
             print("✅ No empty directories to clean")

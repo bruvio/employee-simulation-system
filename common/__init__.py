@@ -1,1 +1,3 @@
-"""Common utilities and shared functionality for the employee simulation system."""
+"""
+Common utilities and shared functionality for the employee simulation system.
+"""

@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
-"""Tests for individual_progression_simulator module."""
+"""
+Tests for individual_progression_simulator module.
+"""
 
 from unittest.mock import patch
 
@@ -10,10 +12,14 @@ from individual_progression_simulator import IndividualProgressionSimulator
 
 
 class TestIndividualProgressionSimulator:
-    """Test the IndividualProgressionSimulator class."""
+    """
+    Test the IndividualProgressionSimulator class.
+    """
 
     def setup_method(self):
-        """Setup test fixtures."""
+        """
+        Setup test fixtures.
+        """
         self.population_data = [
             {"employee_id": 1, "level": 3, "salary": 65000, "performance_rating": "High Performing"},
             {"employee_id": 2, "level": 4, "salary": 80000, "performance_rating": "Exceeding"},
@@ -23,7 +29,9 @@ class TestIndividualProgressionSimulator:
 
     @patch("individual_progression_simulator.LOGGER")
     def test_initialization(self, mock_logger):
-        """Test simulator initialization."""
+        """
+        Test simulator initialization.
+        """
         simulator = IndividualProgressionSimulator(self.population_data, self.config)
 
         assert len(simulator.population_data) == 2
@@ -31,7 +39,9 @@ class TestIndividualProgressionSimulator:
 
     @patch("individual_progression_simulator.LOGGER")
     def test_project_salary_progression(self, mock_logger):
-        """Test salary progression projection."""
+        """
+        Test salary progression projection.
+        """
         simulator = IndividualProgressionSimulator(self.population_data, self.config)
 
         employee_data = {"employee_id": 1, "level": 3, "salary": 65000, "performance_rating": "High Performing"}

@@ -1,18 +1,22 @@
 #!/usr/bin/env python3
-"""Simple tests for employee_simulation_orchestrator module."""
-
-
+"""
+Simple tests for employee_simulation_orchestrator module.
+"""
 
 
 def test_import_module():
-    """Test that the module can be imported."""
+    """
+    Test that the module can be imported.
+    """
     import employee_simulation_orchestrator
 
     assert hasattr(employee_simulation_orchestrator, "__file__")
 
 
 def test_orchestrator_class():
-    """Test orchestrator class exists."""
+    """
+    Test orchestrator class exists.
+    """
     import employee_simulation_orchestrator
 
     potential_classes = [
@@ -34,7 +38,9 @@ def test_orchestrator_class():
 
 
 def test_main_function_exists():
-    """Test main function exists."""
+    """
+    Test main function exists.
+    """
     import employee_simulation_orchestrator
 
     if hasattr(employee_simulation_orchestrator, "main"):
@@ -43,7 +49,9 @@ def test_main_function_exists():
 
 
 def test_basic_functions():
-    """Test basic orchestration functions."""
+    """
+    Test basic orchestration functions.
+    """
     import employee_simulation_orchestrator
 
     functions = ["run_simulation", "orchestrate_simulation", "execute_simulation"]

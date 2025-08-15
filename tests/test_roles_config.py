@@ -1,19 +1,24 @@
 #!/Users/brunoviola/bruvio-tools/.venv/bin/python3
 
 import json
-import pytest
-import tempfile
 from pathlib import Path
+import tempfile
+
+import pytest
 import yaml
 
-from roles_config import RolesConfig, RolesConfigLoader, Role, InterventionPolicy, create_example_config
+from roles_config import InterventionPolicy, Role, RolesConfig, RolesConfigLoader, create_example_config
 
 
 class TestRole:
-    """Test Role model validation."""
+    """
+    Test Role model validation.
+    """
 
     def test_valid_role(self):
-        """Test creating valid role."""
+        """
+        Test creating valid role.
+        """
         role = Role(title="Software Engineer", min_salaries=[65000], headcount_hint=5, notes="Entry level position")
 
         assert role.title == "Software Engineer"
@@ -22,67 +27,91 @@ class TestRole:
         assert role.notes == "Entry level position"
 
     def test_role_multiple_salaries(self):
-        """Test role with multiple salary bands."""
+        """
+        Test role with multiple salary bands.
+        """
         role = Role(title="Senior Engineer", min_salaries=[85000, 95000, 105000])
 
         # Should be sorted automatically
         assert role.min_salaries == [85000, 95000, 105000]
 
     def test_role_sorts_salaries(self):
-        """Test that salaries are sorted automatically."""
+        """
+        Test that salaries are sorted automatically.
+        """
         role = Role(title="Engineer", min_salaries=[95000, 85000, 105000])
 
         assert role.min_salaries == [85000, 95000, 105000]
 
     def test_role_validation_empty_salaries(self):
-        """Test validation fails with empty salaries."""
+        """
+        Test validation fails with empty salaries.
+        """
         with pytest.raises(ValueError, match="min_salaries cannot be empty"):
             Role(title="Engineer", min_salaries=[])
 
     def test_role_validation_negative_salary(self):
-        """Test validation fails with negative salary."""
+        """
+        Test validation fails with negative salary.
+        """
         with pytest.raises(ValueError, match="must be positive"):
             Role(title="Engineer", min_salaries=[-1000])
 
     def test_role_validation_unreasonable_salary(self):
-        """Test validation fails with unreasonably high salary."""
+        """
+        Test validation fails with unreasonably high salary.
+        """
         with pytest.raises(ValueError, match="unreasonably high"):
             Role(title="Engineer", min_salaries=[2000000])
 
 
 class TestInterventionPolicy:
-    """Test InterventionPolicy model."""
+    """
+    Test InterventionPolicy model.
+    """
 
     def test_default_policy(self):
-        """Test default intervention policy."""
+        """
+        Test default intervention policy.
+        """
         policy = InterventionPolicy()
 
         assert policy.max_direct_reports == 6
         assert policy.inequality_budget_percent == 0.5
 
     def test_custom_policy(self):
-        """Test custom intervention policy."""
+        """
+        Test custom intervention policy.
+        """
         policy = InterventionPolicy(max_direct_reports=8, inequality_budget_percent=1.0)
 
         assert policy.max_direct_reports == 8
         assert policy.inequality_budget_percent == 1.0
 
     def test_policy_validation_negative_reports(self):
-        """Test validation fails with invalid max reports."""
+        """
+        Test validation fails with invalid max reports.
+        """
         with pytest.raises(ValueError):
             InterventionPolicy(max_direct_reports=0)
 
     def test_policy_validation_excessive_budget(self):
-        """Test validation fails with excessive budget percent."""
+        """
+        Test validation fails with excessive budget percent.
+        """
         with pytest.raises(ValueError):
             InterventionPolicy(inequality_budget_percent=10.0)
 
 
 class TestRolesConfig:
-    """Test complete roles configuration."""
+    """
+    Test complete roles configuration.
+    """
 
     def test_valid_config(self):
-        """Test creating valid roles config."""
+        """
+        Test creating valid roles config.
+        """
         roles = [Role(title="Engineer", min_salaries=[65000]), Role(title="Senior Engineer", min_salaries=[85000])]
 
         config = RolesConfig(org="TestOrg", currency="USD", version=1, roles=roles)
@@ -92,7 +121,9 @@ class TestRolesConfig:
         assert len(config.roles) == 2
 
     def test_config_duplicate_roles(self):
-        """Test validation fails with duplicate role titles."""
+        """
+        Test validation fails with duplicate role titles.
+        """
         roles = [
             Role(title="Engineer", min_salaries=[65000]),
             Role(title="Engineer", min_salaries=[70000]),  # Duplicate
@@ -102,12 +133,16 @@ class TestRolesConfig:
             RolesConfig(org="TestOrg", roles=roles)
 
     def test_config_empty_roles(self):
-        """Test validation fails with empty roles list."""
+        """
+        Test validation fails with empty roles list.
+        """
         with pytest.raises(ValueError, match="roles list cannot be empty"):
             RolesConfig(org="TestOrg", roles=[])
 
     def test_config_invalid_currency(self):
-        """Test validation fails with invalid currency code."""
+        """
+        Test validation fails with invalid currency code.
+        """
         roles = [Role(title="Engineer", min_salaries=[65000])]
 
         with pytest.raises(ValueError):
@@ -115,10 +150,14 @@ class TestRolesConfig:
 
 
 class TestRolesConfigLoader:
-    """Test roles configuration loader."""
+    """
+    Test roles configuration loader.
+    """
 
     def setUp(self):
-        """Set up test fixtures."""
+        """
+        Set up test fixtures.
+        """
         self.loader = RolesConfigLoader()
         self.sample_config = {
             "org": "TestOrg",
@@ -132,7 +171,9 @@ class TestRolesConfigLoader:
         }
 
     def test_load_yaml_config(self):
-        """Test loading YAML configuration."""
+        """
+        Test loading YAML configuration.
+        """
         with tempfile.NamedTemporaryFile(mode="w", suffix=".yaml", delete=False) as f:
             yaml.dump(self.sample_config, f)
             temp_path = Path(f.name)
@@ -149,7 +190,9 @@ class TestRolesConfigLoader:
             temp_path.unlink()
 
     def test_load_json_config(self):
-        """Test loading JSON configuration."""
+        """
+        Test loading JSON configuration.
+        """
         with tempfile.NamedTemporaryFile(mode="w", suffix=".json", delete=False) as f:
             json.dump(self.sample_config, f)
             temp_path = Path(f.name)
@@ -163,12 +206,16 @@ class TestRolesConfigLoader:
             temp_path.unlink()
 
     def test_load_nonexistent_file(self):
-        """Test loading non-existent file fails."""
+        """
+        Test loading non-existent file fails.
+        """
         with pytest.raises(FileNotFoundError):
             self.loader.load_config("nonexistent.yaml")
 
     def test_load_invalid_yaml(self):
-        """Test loading invalid YAML fails."""
+        """
+        Test loading invalid YAML fails.
+        """
         with tempfile.NamedTemporaryFile(mode="w", suffix=".yaml", delete=False) as f:
             f.write("invalid: yaml: content:")
             temp_path = Path(f.name)
@@ -180,7 +227,9 @@ class TestRolesConfigLoader:
             temp_path.unlink()
 
     def test_load_unsupported_format(self):
-        """Test loading unsupported format fails."""
+        """
+        Test loading unsupported format fails.
+        """
         with tempfile.NamedTemporaryFile(mode="w", suffix=".txt", delete=False) as f:
             f.write("some text")
             temp_path = Path(f.name)
@@ -192,7 +241,9 @@ class TestRolesConfigLoader:
             temp_path.unlink()
 
     def test_get_minimum_for_role(self):
-        """Test getting minimum salary for role."""
+        """
+        Test getting minimum salary for role.
+        """
         config = RolesConfig(
             org="TestOrg",
             roles=[Role(title="Engineer", min_salaries=[65000, 75000]), Role(title="Manager", min_salaries=[95000])],
@@ -211,7 +262,9 @@ class TestRolesConfigLoader:
         assert self.loader.get_minimum_for_role(config, "NonExistent") is None
 
     def test_get_all_roles(self):
-        """Test getting all role titles."""
+        """
+        Test getting all role titles.
+        """
         config = RolesConfig(
             org="TestOrg",
             roles=[
@@ -229,7 +282,9 @@ class TestRolesConfigLoader:
         assert "Director" in roles
 
     def test_calculate_config_hash(self):
-        """Test configuration hash calculation."""
+        """
+        Test configuration hash calculation.
+        """
         config1 = RolesConfig(org="TestOrg", roles=[Role(title="Engineer", min_salaries=[65000])])
 
         config2 = RolesConfig(org="TestOrg", roles=[Role(title="Engineer", min_salaries=[65000])])
@@ -241,7 +296,9 @@ class TestRolesConfigLoader:
         assert len(hash1) == 64  # SHA256 hex length
 
     def test_validate_config_file_success(self):
-        """Test successful config file validation."""
+        """
+        Test successful config file validation.
+        """
         with tempfile.NamedTemporaryFile(mode="w", suffix=".yaml", delete=False) as f:
             yaml.dump(self.sample_config, f)
             temp_path = Path(f.name)
@@ -259,7 +316,9 @@ class TestRolesConfigLoader:
             temp_path.unlink()
 
     def test_validate_config_file_failure(self):
-        """Test config file validation failure."""
+        """
+        Test config file validation failure.
+        """
         invalid_config = {"invalid": "config"}
 
         with tempfile.NamedTemporaryFile(mode="w", suffix=".yaml", delete=False) as f:
@@ -276,10 +335,14 @@ class TestRolesConfigLoader:
 
 
 class TestCreateExampleConfig:
-    """Test example config creation."""
+    """
+    Test example config creation.
+    """
 
     def test_create_example_config(self):
-        """Test creating example configuration."""
+        """
+        Test creating example configuration.
+        """
         config = create_example_config()
 
         assert config.org == "ExampleOrg"
@@ -295,10 +358,14 @@ class TestCreateExampleConfig:
 
 # Integration test for the full workflow
 class TestFullWorkflow:
-    """Test complete workflow with real files."""
+    """
+    Test complete workflow with real files.
+    """
 
     def test_gel_config_workflow(self):
-        """Test complete workflow using GEL configuration."""
+        """
+        Test complete workflow using GEL configuration.
+        """
         # Use the actual GEL config file
         config_path = Path("config/orgs/GEL/roles.yaml")
 

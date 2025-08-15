@@ -1,14 +1,16 @@
 #!/Users/brunoviola/bruvio-tools/.venv/bin/python3
 
+from typing import Any, Dict, List, Optional, Tuple
+
 import numpy as np
 import pandas as pd
-from typing import Any, Dict, List, Optional, Tuple
 
 from logger import LOGGER
 
 
 class GELPolicyConstraints:
-    """Policy-constrained intervention logic for GEL scenario.
+    """
+    Policy-constrained intervention logic for GEL scenario.
 
     Implements manager-level constraints:
     - Maximum 6 direct reports per manager
@@ -30,7 +32,8 @@ class GELPolicyConstraints:
         self.logger.info(f"Initialized GEL policy constraints with {len(population_data)} employees")
 
     def identify_managers_and_teams(self) -> Dict[int, Dict[str, Any]]:
-        """Identify managers and their teams with policy compliance analysis.
+        """
+        Identify managers and their teams with policy compliance analysis.
 
         Returns:
             Dictionary mapping manager IDs to team information and constraints
@@ -85,7 +88,8 @@ class GELPolicyConstraints:
         return managers
 
     def prioritize_interventions(self, manager_teams: Dict[int, Dict]) -> Dict[int, List[Dict]]:
-        """Prioritize intervention opportunities for each manager's team.
+        """
+        Prioritize intervention opportunities for each manager's team.
 
         Priority order:
         1. Below-median AND high performer
@@ -157,7 +161,8 @@ class GELPolicyConstraints:
         return all_interventions
 
     def optimize_budget_allocation(self, manager_interventions: Dict[int, List[Dict]]) -> Dict[int, Dict[str, Any]]:
-        """Optimize budget allocation within manager constraints.
+        """
+        Optimize budget allocation within manager constraints.
 
         Args:
             manager_interventions: Prioritized interventions from prioritize_interventions
@@ -221,7 +226,9 @@ class GELPolicyConstraints:
         return optimized_allocations
 
     def _generate_synthetic_hierarchy(self) -> List[int]:
-        """Generate synthetic manager hierarchy for testing."""
+        """
+        Generate synthetic manager hierarchy for testing.
+        """
         # Simple algorithm: assign managers based on levels
         manager_ids = []
         next_manager_id = 1000  # Start manager IDs at 1000
@@ -244,7 +251,9 @@ class GELPolicyConstraints:
         return manager_ids
 
     def _calculate_level_gender_medians(self) -> Dict[Tuple[int, str], float]:
-        """Calculate median salaries by level and gender."""
+        """
+        Calculate median salaries by level and gender.
+        """
         medians = {}
 
         for (level, gender), group in self.population_df.groupby(["level", "gender"]):
@@ -253,7 +262,9 @@ class GELPolicyConstraints:
         return medians
 
     def _is_below_median(self, employee: pd.Series, medians: Dict[Tuple[int, str], float]) -> bool:
-        """Check if employee is below median for their level and gender."""
+        """
+        Check if employee is below median for their level and gender.
+        """
         level = employee.get("level", 1)
         gender = employee.get("gender", "Unknown")
         median_key = (level, gender)
@@ -272,7 +283,9 @@ class GELPolicyConstraints:
     def _calculate_intervention_potential(
         self, employee: pd.Series, medians: Dict[Tuple[int, str], float], available_budget: float
     ) -> Dict[str, Any]:
-        """Calculate intervention potential for an employee."""
+        """
+        Calculate intervention potential for an employee.
+        """
         level = employee.get("level", 1)
         gender = employee.get("gender", "Unknown")
         current_salary = employee["salary"]
@@ -322,7 +335,9 @@ class GELPolicyConstraints:
     def generate_policy_summary(
         self, manager_teams: Dict[int, Dict], optimized_allocations: Dict[int, Dict]
     ) -> Dict[str, Any]:
-        """Generate comprehensive policy compliance and impact summary."""
+        """
+        Generate comprehensive policy compliance and impact summary.
+        """
         # Manager compliance analysis
         total_managers = len(manager_teams)
         compliant_managers = sum(1 for team in manager_teams.values() if team["compliant_team_size"])
@@ -377,7 +392,9 @@ class GELPolicyConstraints:
     def _generate_policy_recommendations(
         self, manager_teams: Dict, optimized_allocations: Dict, total_managers: int, compliant_managers: int
     ) -> List[Dict[str, str]]:
-        """Generate policy recommendations based on analysis."""
+        """
+        Generate policy recommendations based on analysis.
+        """
         recommendations = []
 
         # Team size recommendations

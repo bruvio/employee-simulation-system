@@ -6,10 +6,14 @@ from gel_policy_constraints import GELPolicyConstraints
 
 
 class TestGELPolicyConstraints:
-    """Test GEL policy constraints functionality."""
+    """
+    Test GEL policy constraints functionality.
+    """
 
     def setUp(self):
-        """Set up test fixtures."""
+        """
+        Set up test fixtures.
+        """
         self.sample_population = [
             {
                 "employee_id": 1,
@@ -76,7 +80,9 @@ class TestGELPolicyConstraints:
         }
 
     def test_initialization(self):
-        """Test policy constraints initialization."""
+        """
+        Test policy constraints initialization.
+        """
         policy = GELPolicyConstraints(self.sample_population, self.config)
 
         assert policy.max_direct_reports == 6
@@ -85,7 +91,9 @@ class TestGELPolicyConstraints:
         assert len(policy.population_data) == 7
 
     def test_identify_managers_and_teams(self):
-        """Test identifying managers and their teams."""
+        """
+        Test identifying managers and their teams.
+        """
         policy = GELPolicyConstraints(self.sample_population, self.config)
 
         managers = policy.identify_managers_and_teams()
@@ -107,7 +115,9 @@ class TestGELPolicyConstraints:
         assert manager1002["compliant_team_size"] is True  # 3 <= 6
 
     def test_identify_managers_over_limit(self):
-        """Test identifying managers over the direct reports limit."""
+        """
+        Test identifying managers over the direct reports limit.
+        """
         # Create population with one manager having too many reports
         over_limit_population = []
         for i in range(8):  # 8 employees under one manager (over limit of 6)
@@ -133,7 +143,9 @@ class TestGELPolicyConstraints:
         assert manager["over_limit_by"] == 2  # 8 - 6
 
     def test_prioritize_interventions(self):
-        """Test intervention prioritization logic."""
+        """
+        Test intervention prioritization logic.
+        """
         policy = GELPolicyConstraints(self.sample_population, self.config)
 
         managers = policy.identify_managers_and_teams()
@@ -154,7 +166,9 @@ class TestGELPolicyConstraints:
                 assert "is_high_performer" in intervention
 
     def test_priority_assignment_logic(self):
-        """Test specific priority assignment logic."""
+        """
+        Test specific priority assignment logic.
+        """
         policy = GELPolicyConstraints(self.sample_population, self.config)
 
         managers = policy.identify_managers_and_teams()
@@ -174,7 +188,9 @@ class TestGELPolicyConstraints:
         # (This depends on the median calculation and performance ratings)
 
     def test_optimize_budget_allocation(self):
-        """Test budget optimization within constraints."""
+        """
+        Test budget optimization within constraints.
+        """
         policy = GELPolicyConstraints(self.sample_population, self.config)
 
         managers = policy.identify_managers_and_teams()
@@ -206,7 +222,9 @@ class TestGELPolicyConstraints:
             assert abs(allocation["budget_utilization"] - expected_utilization) < 0.001
 
     def test_budget_constraints_respected(self):
-        """Test that budget constraints are properly respected."""
+        """
+        Test that budget constraints are properly respected.
+        """
         policy = GELPolicyConstraints(self.sample_population, self.config)
 
         managers = policy.identify_managers_and_teams()
@@ -231,7 +249,9 @@ class TestGELPolicyConstraints:
                 assert adjustment >= 0
 
     def test_generate_policy_summary(self):
-        """Test policy summary generation."""
+        """
+        Test policy summary generation.
+        """
         policy = GELPolicyConstraints(self.sample_population, self.config)
 
         managers = policy.identify_managers_and_teams()
@@ -263,7 +283,9 @@ class TestGELPolicyConstraints:
         assert "priority_distribution" in impact
 
     def test_synthetic_hierarchy_generation(self):
-        """Test synthetic manager hierarchy generation."""
+        """
+        Test synthetic manager hierarchy generation.
+        """
         # Create population without manager_id
         no_manager_population = [
             {
@@ -286,7 +308,9 @@ class TestGELPolicyConstraints:
         assert len(managers) > 0
 
     def test_edge_cases(self):
-        """Test edge cases and error handling."""
+        """
+        Test edge cases and error handling.
+        """
         # Empty population
         empty_policy = GELPolicyConstraints([], self.config)
         managers = empty_policy.identify_managers_and_teams()
@@ -308,7 +332,9 @@ class TestGELPolicyConstraints:
         assert len(managers) == 1
 
     def test_performance_threshold_impact(self):
-        """Test impact of different performance thresholds."""
+        """
+        Test impact of different performance thresholds.
+        """
         # Test with lower threshold
         low_threshold_config = self.config.copy()
         low_threshold_config["high_performer_threshold"] = 3.5
@@ -345,7 +371,9 @@ class TestGELPolicyConstraints:
         assert total_high_performers_low >= total_high_performers_high
 
     def test_budget_percentage_impact(self):
-        """Test impact of different budget percentages."""
+        """
+        Test impact of different budget percentages.
+        """
         # Test with higher budget
         high_budget_config = self.config.copy()
         high_budget_config["inequality_budget_percent"] = 1.0  # 1.0%
@@ -370,7 +398,9 @@ class TestGELPolicyConstraints:
         assert total_interventions_high >= total_interventions_low
 
     def test_recommendations_generation(self):
-        """Test recommendation generation logic."""
+        """
+        Test recommendation generation logic.
+        """
         policy = GELPolicyConstraints(self.sample_population, self.config)
 
         managers = policy.identify_managers_and_teams()
@@ -393,10 +423,14 @@ class TestGELPolicyConstraints:
 
 
 class TestPolicyConstraintsIntegration:
-    """Integration tests for policy constraints with realistic scenarios."""
+    """
+    Integration tests for policy constraints with realistic scenarios.
+    """
 
     def test_large_organization_scenario(self):
-        """Test with larger, more realistic organization."""
+        """
+        Test with larger, more realistic organization.
+        """
         # Generate larger population
         large_population = []
         manager_id = 3001

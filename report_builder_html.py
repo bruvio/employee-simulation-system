@@ -10,10 +10,11 @@ from logger import LOGGER
 
 
 class HTMLReportBuilder:
-    """HTML report builder for GEL scenario single consolidated reports.
+    """
+    HTML report builder for GEL scenario single consolidated reports.
 
-    Creates self-contained HTML files with embedded charts, tables, and styling.
-    Follows the same narrative structure as the Markdown report.
+    Creates self-contained HTML files with embedded charts, tables, and styling. Follows the same narrative structure as
+    the Markdown report.
     """
 
     def __init__(self, output_dir: Union[str, Path] = "results"):
@@ -28,7 +29,8 @@ class HTMLReportBuilder:
         assets_dir: Optional[Path] = None,
         output_file: str = "index.html",
     ) -> Path:
-        """Build comprehensive GEL scenario HTML report with embedded charts.
+        """
+        Build comprehensive GEL scenario HTML report with embedded charts.
 
         Args:
             analysis_payload: Complete analysis results from orchestrator
@@ -58,9 +60,11 @@ class HTMLReportBuilder:
     def _build_html_structure(
         self, analysis_payload: Dict[str, Any], manifest: Dict[str, Any], charts: Dict[str, str]
     ) -> str:
-        """Build complete HTML document structure."""
+        """
+        Build complete HTML document structure.
+        """
         org = manifest.get("org", "Unknown")
-        timestamp = manifest.get("timestamp_utc", datetime.utcnow().isoformat())
+        manifest.get("timestamp_utc", datetime.utcnow().isoformat())
 
         return f"""<!DOCTYPE html>
 <html lang="en">
@@ -98,7 +102,9 @@ class HTMLReportBuilder:
 </html>"""
 
     def _get_css_styles(self) -> str:
-        """Generate embedded CSS styles."""
+        """
+        Generate embedded CSS styles.
+        """
         return """<style>
         :root {
             --primary-color: #2c5aa0;
@@ -342,7 +348,9 @@ class HTMLReportBuilder:
     </style>"""
 
     def _generate_html_header(self, manifest: Dict[str, Any]) -> str:
-        """Generate HTML header section."""
+        """
+        Generate HTML header section.
+        """
         org = manifest.get("org", "Unknown")
         timestamp = manifest.get("timestamp_utc", "Unknown")
         scenario = manifest.get("scenario", "GEL")
@@ -358,7 +366,9 @@ class HTMLReportBuilder:
     </div>"""
 
     def _generate_toc(self) -> str:
-        """Generate table of contents."""
+        """
+        Generate table of contents.
+        """
         return """
     <div class="toc">
         <h3>Table of Contents</h3>
@@ -375,7 +385,9 @@ class HTMLReportBuilder:
     </div>"""
 
     def _generate_overview_section(self, manifest: Dict[str, Any], analysis_payload: Dict[str, Any]) -> str:
-        """Generate overview and inputs section."""
+        """
+        Generate overview and inputs section.
+        """
         population = manifest.get("population", 0)
         median_salary = manifest.get("median_salary", 0)
         below_median_pct = manifest.get("below_median_pct", 0)
@@ -418,7 +430,9 @@ class HTMLReportBuilder:
     </div>"""
 
     def _generate_data_flow_section(self) -> str:
-        """Generate data flow section with Mermaid diagram."""
+        """
+        Generate data flow section with Mermaid diagram.
+        """
         return """
     <div class="section" id="dataflow">
         <h2>2. Data Flow Overview</h2>
@@ -452,7 +466,9 @@ class HTMLReportBuilder:
     </div>"""
 
     def _generate_population_section(self, analysis_payload: Dict[str, Any], charts: Dict[str, str]) -> str:
-        """Generate population stratification section."""
+        """
+        Generate population stratification section.
+        """
         stratification = analysis_payload.get("population_stratification", {})
 
         content = """
@@ -521,7 +537,9 @@ class HTMLReportBuilder:
     def _generate_inequality_section(
         self, analysis_payload: Dict[str, Any], manifest: Dict[str, Any], charts: Dict[str, str]
     ) -> str:
-        """Generate inequality and risk analysis section."""
+        """
+        Generate inequality and risk analysis section.
+        """
         inequality_data = analysis_payload.get("inequality_analysis", {})
         below_median_pct = manifest.get("below_median_pct", 0)
         gender_gap_pct = manifest.get("gender_gap_pct", 0)
@@ -608,7 +626,9 @@ class HTMLReportBuilder:
     def _generate_high_performers_section(
         self, analysis_payload: Dict[str, Any], manifest: Dict[str, Any], charts: Dict[str, str]
     ) -> str:
-        """Generate high performer recognition section."""
+        """
+        Generate high performer recognition section.
+        """
         high_performers = analysis_payload.get("high_performers", {})
         budget_pct = manifest.get("intervention_budget_pct", 0.5)
 
@@ -694,7 +714,9 @@ class HTMLReportBuilder:
         return content
 
     def _generate_budget_allocation_section(self, manifest: Dict[str, Any]) -> str:
-        """Generate budget allocation section with Mermaid diagram."""
+        """
+        Generate budget allocation section with Mermaid diagram.
+        """
         max_reports = manifest.get("max_direct_reports", 6)
         budget_pct = manifest.get("intervention_budget_pct", 0.5)
 
@@ -745,7 +767,9 @@ class HTMLReportBuilder:
     </div>"""
 
     def _generate_recommendations_section(self, analysis_payload: Dict[str, Any], manifest: Dict[str, Any]) -> str:
-        """Generate targeted recommendations section."""
+        """
+        Generate targeted recommendations section.
+        """
         recommendations = analysis_payload.get("recommendations", {})
 
         content = """
@@ -834,7 +858,9 @@ class HTMLReportBuilder:
         return content
 
     def _generate_appendix_section(self, manifest: Dict[str, Any], analysis_payload: Dict[str, Any]) -> str:
-        """Generate appendix section."""
+        """
+        Generate appendix section.
+        """
         config_hash = manifest.get("roles_config_sha256", "Unknown")
 
         content = f"""
@@ -909,7 +935,9 @@ class HTMLReportBuilder:
         return content
 
     def _generate_footer(self) -> str:
-        """Generate footer section."""
+        """
+        Generate footer section.
+        """
         return f"""
     <div class="footer">
         <p><em>Report generated by Employee Simulation Orchestrator - GEL Scenario</em></p>
@@ -919,7 +947,8 @@ class HTMLReportBuilder:
     def _generate_charts(
         self, analysis_payload: Dict[str, Any], manifest: Dict[str, Any], assets_dir: Optional[Path]
     ) -> Dict[str, str]:
-        """Generate embedded charts for the report.
+        """
+        Generate embedded charts for the report.
 
         Returns dictionary with chart HTML content or references.
         """

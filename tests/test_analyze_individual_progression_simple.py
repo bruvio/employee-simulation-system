@@ -1,19 +1,24 @@
 #!/usr/bin/env python3
-"""Simple tests for analyze_individual_progression module."""
+"""
+Simple tests for analyze_individual_progression module.
+"""
 
 from unittest.mock import patch
 
 
-
 def test_import_module():
-    """Test that the module can be imported."""
+    """
+    Test that the module can be imported.
+    """
     import analyze_individual_progression
 
     assert hasattr(analyze_individual_progression, "__file__")
 
 
 def test_main_function_exists():
-    """Test main function exists."""
+    """
+    Test main function exists.
+    """
     import analyze_individual_progression
 
     if hasattr(analyze_individual_progression, "main"):
@@ -23,7 +28,9 @@ def test_main_function_exists():
 
 @patch("builtins.print")
 def test_main_function_basic(mock_print):
-    """Test main function basic execution."""
+    """
+    Test main function basic execution.
+    """
     import analyze_individual_progression
 
     if hasattr(analyze_individual_progression, "main"):
@@ -36,7 +43,9 @@ def test_main_function_basic(mock_print):
 
 
 def test_analysis_functions():
-    """Test analysis functions exist."""
+    """
+    Test analysis functions exist.
+    """
     import analyze_individual_progression
 
     # Check for common analysis function names
@@ -61,7 +70,9 @@ def test_analysis_functions():
 
 
 def test_progression_classes():
-    """Test progression-related classes."""
+    """
+    Test progression-related classes.
+    """
     import analyze_individual_progression
 
     # Check for common progression class names
@@ -84,7 +95,9 @@ def test_progression_classes():
 
 
 def test_basic_analysis_workflow():
-    """Test basic analysis workflow if functions exist."""
+    """
+    Test basic analysis workflow if functions exist.
+    """
     import analyze_individual_progression
 
     # Test data
@@ -106,7 +119,9 @@ def test_basic_analysis_workflow():
 
 
 def test_utility_functions():
-    """Test utility functions."""
+    """
+    Test utility functions.
+    """
     import analyze_individual_progression
 
     # Check for utility functions

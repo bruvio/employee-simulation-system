@@ -1,25 +1,30 @@
 #!/usr/bin/env python3
-"""Comprehensive Dashboard Builder for Employee Simulation System.
+"""
+Comprehensive Dashboard Builder for Employee Simulation System.
 
-Creates a complete dashboard with scenario overview, all generated files, images,
-detailed explanations, and proper data source handling.
+Creates a complete dashboard with scenario overview, all generated files, images, detailed explanations, and proper data
+source handling.
 """
 
 from datetime import datetime
+import json
 from pathlib import Path
 from typing import Any, Dict, List
-import json
 from urllib.parse import quote
 
 import pandas as pd
+
 from smart_logging_manager import get_smart_logger
 
 
 class ComprehensiveDashboardBuilder:
-    """Builds comprehensive dashboard with all simulation results and explanations."""
+    """
+    Builds comprehensive dashboard with all simulation results and explanations.
+    """
 
     def __init__(self, config: Dict[str, Any], results_directory: str, scenario_name: str = "GEL"):
-        """Initialize comprehensive dashboard builder.
+        """
+        Initialize comprehensive dashboard builder.
 
         Args:
             config: Configuration settings
@@ -42,7 +47,8 @@ class ComprehensiveDashboardBuilder:
         self.logger.log_info(f"Initialized ComprehensiveDashboardBuilder for {scenario_name} scenario")
 
     def build_comprehensive_dashboard(self, output_dir: str) -> str:
-        """Build the complete comprehensive dashboard.
+        """
+        Build the complete comprehensive dashboard.
 
         Args:
             output_dir: Directory to save the dashboard
@@ -75,7 +81,8 @@ class ComprehensiveDashboardBuilder:
         return str(dashboard_file)
 
     def _discover_all_files(self) -> Dict[str, List[Dict[str, str]]]:
-        """Discover all generated files and categorize them.
+        """
+        Discover all generated files and categorize them.
 
         Returns:
             Dictionary with categorized file listings
@@ -96,7 +103,9 @@ class ComprehensiveDashboardBuilder:
         return file_categories
 
     def _scan_directory(self, directory: Path, file_categories: Dict[str, List]):
-        """Recursively scan directory for files."""
+        """
+        Recursively scan directory for files.
+        """
         try:
             for file_path in directory.rglob("*"):
                 if file_path.is_file():
@@ -127,7 +136,9 @@ class ComprehensiveDashboardBuilder:
             self.logger.log_warning(f"Error scanning directory {directory}: {e}")
 
     def _load_simulation_data(self) -> Dict[str, Any]:
-        """Load the latest simulation data."""
+        """
+        Load the latest simulation data.
+        """
         # Try to find the most recent simulation results
         simulation_files = list(self.results_directory.rglob("*simulation_results*.json"))
 
@@ -148,7 +159,8 @@ class ComprehensiveDashboardBuilder:
         return {}
 
     def _calculate_actual_gender_gap(self, simulation_data: Dict[str, Any]) -> float:
-        """Calculate actual gender pay gap from simulation data.
+        """
+        Calculate actual gender pay gap from simulation data.
 
         Args:
             simulation_data: Loaded simulation results
@@ -181,7 +193,8 @@ class ComprehensiveDashboardBuilder:
     def _generate_comprehensive_html(
         self, all_files: Dict[str, List], simulation_data: Dict[str, Any], actual_gender_gap: float
     ) -> str:
-        """Generate the comprehensive HTML dashboard.
+        """
+        Generate the comprehensive HTML dashboard.
 
         Args:
             all_files: Categorized file listings
@@ -555,7 +568,9 @@ class ComprehensiveDashboardBuilder:
         return html_content
 
     def _format_file_size(self, size_bytes: int) -> str:
-        """Format file size in human readable format."""
+        """
+        Format file size in human readable format.
+        """
         if size_bytes < 1024:
             return f"{size_bytes} B"
         elif size_bytes < 1024 * 1024:

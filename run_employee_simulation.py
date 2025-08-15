@@ -38,14 +38,13 @@ except ImportError:
 
 # Try to import the orchestrator and new analysis modules
 try:
+    # Import path management
+    from app_paths import override_output_base, validate_output_path
     from employee_simulation_orchestrator import EmployeeSimulationOrchestrator
     from individual_progression_simulator import IndividualProgressionSimulator
     from intervention_strategy_simulator import InterventionStrategySimulator
     from logger import LOGGER
     from median_convergence_analyzer import MedianConvergenceAnalyzer
-
-    # Import path management
-    from app_paths import override_output_base, validate_output_path
 except ImportError as e:
     print(f"❌ Could not import required modules: {e}")
     print("Make sure you're running from the correct directory")
@@ -53,7 +52,9 @@ except ImportError as e:
 
 
 class EmployeeStoryExplorer:
-    """Interactive employee story explorer with human-readable output."""
+    """
+    Interactive employee story explorer with human-readable output.
+    """
 
     def __init__(self):
         self.population_data = []
@@ -74,7 +75,8 @@ class EmployeeStoryExplorer:
         gender_pay_gap_percent=None,
         salary_constraints=None,
     ):
-        """Run employee simulation and return human-readable analysis.
+        """
+        Run employee simulation and return human-readable analysis.
 
         Args:
           population_size:  (Default value = 1000)
@@ -173,7 +175,8 @@ class EmployeeStoryExplorer:
             return False
 
     def _analyze_population(self, target_salary, target_level):
-        """Analyze the generated population with human narrative.
+        """
+        Analyze the generated population with human narrative.
 
         Args:
           target_salary:
@@ -258,7 +261,8 @@ class EmployeeStoryExplorer:
         print()
 
     def _is_employee_tracked(self, employee_id):
-        """Check if an employee is being tracked and return category.
+        """
+        Check if an employee is being tracked and return category.
 
         Args:
           employee_id:
@@ -273,7 +277,9 @@ class EmployeeStoryExplorer:
         return None
 
     def _analyze_tracked_stories(self):
-        """Analyze tracked employee stories with narrative."""
+        """
+        Analyze tracked employee stories with narrative.
+        """
 
         if not self.tracked_stories:
             print("📚 No employee stories tracked")
@@ -322,7 +328,9 @@ class EmployeeStoryExplorer:
             print()
 
     def _create_visualizations(self):
-        """Create population distribution visualizations."""
+        """
+        Create population distribution visualizations.
+        """
 
         if not self.population_data:
             print("📊 No data available for visualizations")
@@ -421,7 +429,9 @@ class EmployeeStoryExplorer:
             print(f"• Story tracking: {total_tracked} employees ({tracked_pct:.1f}%) identified as interesting cases")
 
     def _initialize_analysis_components(self):
-        """Initialize advanced analysis components with population data."""
+        """
+        Initialize advanced analysis components with population data.
+        """
         if not self.population_data:
             LOGGER.warning("No population data available for advanced analysis")
             return
@@ -437,7 +447,8 @@ class EmployeeStoryExplorer:
     def analyze_individual_progression(
         self, employee_id: int, years: int = 5, scenarios: List[str] = None
     ) -> Optional[Dict]:
-        """Analyze individual employee salary progression.
+        """
+        Analyze individual employee salary progression.
 
         Args:
           employee_id: int:
@@ -493,7 +504,8 @@ class EmployeeStoryExplorer:
             return None
 
     def analyze_median_convergence(self, min_gap_percent: float = 5.0) -> Optional[Dict]:
-        """Analyze median salary convergence for below-median employees.
+        """
+        Analyze median salary convergence for below-median employees.
 
         Args:
           min_gap_percent: float:  (Default value = 5.0)
@@ -545,7 +557,8 @@ class EmployeeStoryExplorer:
     def model_gender_gap_remediation(
         self, target_gap: float = 0.0, max_years: int = 3, budget_limit: float = 0.5
     ) -> Optional[Dict]:
-        """Model gender pay gap remediation strategies.
+        """
+        Model gender pay gap remediation strategies.
 
         Args:
           target_gap: float:  (Default value = 0.0)
@@ -601,7 +614,9 @@ class EmployeeStoryExplorer:
 
 
 def main():
-    """Main execution function with command-line interface."""
+    """
+    Main execution function with command-line interface.
+    """
     parser = argparse.ArgumentParser(
         description="Employee Simulation Explorer with Advanced Analysis",
         formatter_class=argparse.RawDescriptionHelpFormatter,
@@ -775,7 +790,9 @@ Examples:
 
 
 def run_example_scenarios():
-    """Run example scenarios for backwards compatibility."""
+    """
+    Run example scenarios for backwards compatibility.
+    """
     print("🏢 EMPLOYEE SIMULATION EXPLORER")
     print("=" * 60)
     print("Running example scenarios...")
@@ -830,7 +847,8 @@ def run_example_scenarios():
 
 
 def create_comprehensive_report(explorer, scenario, analysis_results):
-    """Create a comprehensive markdown report with all analysis results.
+    """
+    Create a comprehensive markdown report with all analysis results.
 
     Args:
       explorer:
@@ -910,7 +928,8 @@ def create_comprehensive_report(explorer, scenario, analysis_results):
 
 
 def create_markdown_report(explorer, scenario):
-    """Create a markdown report with narrative analysis.
+    """
+    Create a markdown report with narrative analysis.
 
     Args:
       explorer:

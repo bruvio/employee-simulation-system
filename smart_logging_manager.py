@@ -10,7 +10,9 @@ from typing import Any, Dict, Optional
 
 
 class LogLevel(Enum):
-    """Enhanced log levels with smart filtering."""
+    """
+    Enhanced log levels with smart filtering.
+    """
 
     ERROR = "ERROR"
     WARNING = "WARNING"
@@ -19,7 +21,8 @@ class LogLevel(Enum):
 
 
 class SmartLoggingManager:
-    """Smart logging manager with configurable levels and reduced noise.
+    """
+    Smart logging manager with configurable levels and reduced noise.
 
     Addresses the excessive DEBUG-level logging noted in the PRP requirements.
 
@@ -35,7 +38,8 @@ class SmartLoggingManager:
         log_file_path: Optional[str] = None,
         suppress_noisy_libraries: bool = True,
     ):
-        """Initialize smart logging manager.
+        """
+        Initialize smart logging manager.
 
         Args:
             log_level: Logging level (ERROR/WARNING/INFO/DEBUG)
@@ -68,7 +72,9 @@ class SmartLoggingManager:
         self.logger.info(f"SmartLoggingManager initialized with level: {self.log_level.value}")
 
     def _setup_logging(self):
-        """Configure logging with smart filtering."""
+        """
+        Configure logging with smart filtering.
+        """
         # Clear existing handlers
         root_logger = logging.getLogger()
         root_logger.handlers.clear()
@@ -119,7 +125,9 @@ class SmartLoggingManager:
             self._suppress_noisy_loggers()
 
     def _suppress_noisy_loggers(self):
-        """Suppress debug logs from noisy third-party libraries."""
+        """
+        Suppress debug logs from noisy third-party libraries.
+        """
         noisy_loggers = [
             "matplotlib",
             "matplotlib.pyplot",
@@ -152,7 +160,8 @@ class SmartLoggingManager:
             self.logger.debug(f"Suppressed {len(noisy_loggers)} noisy loggers to {suppress_level}")
 
     def start_phase(self, phase_name: str, total_operations: int = 0):
-        """Start a new execution phase with progress tracking.
+        """
+        Start a new execution phase with progress tracking.
 
         Args:
           phase_name: str:
@@ -176,7 +185,8 @@ class SmartLoggingManager:
         self.logger.info(f"Phase started: {phase_name}")
 
     def update_progress(self, operation_name: str, completed_count: int = 1):
-        """Update progress for the current phase.
+        """
+        Update progress for the current phase.
 
         Args:
           operation_name: str:
@@ -199,7 +209,8 @@ class SmartLoggingManager:
                 print(f"   ✓ {operation_name}")
 
     def complete_phase(self, phase_name: str = None):
-        """Complete the current phase.
+        """
+        Complete the current phase.
 
         Args:
           phase_name: str:  (Default value = None)
@@ -228,7 +239,8 @@ class SmartLoggingManager:
             self.current_phase = ""
 
     def log_warning(self, message: str, **kwargs):
-        """Log warning with enhanced tracking.
+        """
+        Log warning with enhanced tracking.
 
         Args:
           message: str:
@@ -243,7 +255,8 @@ class SmartLoggingManager:
             print(f"⚠️  {message}")
 
     def log_error(self, message: str, exception: Exception = None, **kwargs):
-        """Log error with enhanced tracking.
+        """
+        Log error with enhanced tracking.
 
         Args:
           message: str:
@@ -265,7 +278,8 @@ class SmartLoggingManager:
             print(f"❌ {message}")
 
     def log_info(self, message: str, **kwargs):
-        """Log info message.
+        """
+        Log info message.
 
         Args:
           message: str:
@@ -276,7 +290,8 @@ class SmartLoggingManager:
         self.logger.info(message, **kwargs)
 
     def log_debug(self, message: str, **kwargs):
-        """Log debug message (only in DEBUG mode)
+        """
+        Log debug message (only in DEBUG mode)
 
         Args:
           message: str:
@@ -288,7 +303,8 @@ class SmartLoggingManager:
             self.logger.debug(message, **kwargs)
 
     def log_success(self, message: str, **kwargs):
-        """Log success message with visual indicator.
+        """
+        Log success message with visual indicator.
 
         Args:
           message: str:
@@ -302,7 +318,9 @@ class SmartLoggingManager:
             print(f"✅ {message}")
 
     def generate_execution_summary(self) -> Dict[str, Any]:
-        """Generate comprehensive execution summary."""
+        """
+        Generate comprehensive execution summary.
+        """
         end_time = datetime.now()
         total_duration = end_time - self.execution_stats["start_time"]
 
@@ -346,7 +364,9 @@ class SmartLoggingManager:
         return summary
 
     def _calculate_success_rate(self) -> float:
-        """Calculate overall success rate based on errors vs operations."""
+        """
+        Calculate overall success rate based on errors vs operations.
+        """
         if self.execution_stats["total_operations"] == 0:
             return 1.0
 
@@ -354,7 +374,9 @@ class SmartLoggingManager:
         return max(0.0, 1.0 - error_rate)
 
     def print_execution_summary(self):
-        """Print formatted execution summary."""
+        """
+        Print formatted execution summary.
+        """
         summary = self.generate_execution_summary()
         exec_summary = summary["execution_summary"]
 
@@ -387,7 +409,8 @@ class SmartLoggingManager:
         print("=" * 60)
 
     def export_summary(self, output_path: str):
-        """Export execution summary to JSON file.
+        """
+        Export execution summary to JSON file.
 
         Args:
           output_path: str:
@@ -411,7 +434,8 @@ class SmartLoggingManager:
             return False
 
     def get_logger(self, name: str = None) -> logging.Logger:
-        """Get a configured logger instance.
+        """
+        Get a configured logger instance.
 
         Args:
           name: str:  (Default value = None)
@@ -427,7 +451,8 @@ _smart_logger_instance = None
 
 
 def get_smart_logger(log_level: str = "INFO", **kwargs) -> SmartLoggingManager:
-    """Get or create global SmartLoggingManager instance.
+    """
+    Get or create global SmartLoggingManager instance.
 
     Args:
       log_level: str:  (Default value = "INFO")
@@ -444,7 +469,8 @@ def get_smart_logger(log_level: str = "INFO", **kwargs) -> SmartLoggingManager:
 
 
 def configure_smart_logging(log_level: str = "INFO", **kwargs):
-    """Configure global smart logging.
+    """
+    Configure global smart logging.
 
     Args:
       log_level: str:  (Default value = "INFO")

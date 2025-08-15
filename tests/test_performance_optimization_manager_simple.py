@@ -1,18 +1,22 @@
 #!/usr/bin/env python3
-"""Simple tests for performance_optimization_manager module."""
-
-
+"""
+Simple tests for performance_optimization_manager module.
+"""
 
 
 def test_import_module():
-    """Test that the module can be imported."""
+    """
+    Test that the module can be imported.
+    """
     import performance_optimization_manager
 
     assert hasattr(performance_optimization_manager, "__file__")
 
 
 def test_optimization_manager_class():
-    """Test optimization manager class exists."""
+    """
+    Test optimization manager class exists.
+    """
     import performance_optimization_manager
 
     potential_classes = [
@@ -35,7 +39,9 @@ def test_optimization_manager_class():
 
 
 def test_optimization_functions():
-    """Test optimization functions."""
+    """
+    Test optimization functions.
+    """
     import performance_optimization_manager
 
     functions = ["optimize_performance", "analyze_performance", "run_optimization"]
@@ -46,7 +52,9 @@ def test_optimization_functions():
 
 
 def test_basic_optimization():
-    """Test basic optimization functionality."""
+    """
+    Test basic optimization functionality.
+    """
     import performance_optimization_manager
 
     test_data = [{"employee_id": 1, "performance": 0.8}]

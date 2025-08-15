@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
-"""Comprehensive tests for management_dashboard_generator module.
+"""
+Comprehensive tests for management_dashboard_generator module.
 
 Tests dashboard generation, visualization creation, and executive reporting functionality.
 """
@@ -14,10 +15,14 @@ from management_dashboard_generator import ManagementDashboardGenerator
 
 
 class TestManagementDashboardGenerator:
-    """Test the ManagementDashboardGenerator class."""
+    """
+    Test the ManagementDashboardGenerator class.
+    """
 
     def setup_method(self):
-        """Setup test fixtures."""
+        """
+        Setup test fixtures.
+        """
         self.analysis_results = {
             "analysis_results": {
                 "intervention_strategies": {
@@ -62,7 +67,9 @@ class TestManagementDashboardGenerator:
         }
 
     def test_initialization(self):
-        """Test dashboard generator initialization."""
+        """
+        Test dashboard generator initialization.
+        """
         generator = ManagementDashboardGenerator(self.analysis_results, self.population_data, self.config)
 
         assert generator is not None
@@ -70,7 +77,9 @@ class TestManagementDashboardGenerator:
 
     @patch("management_dashboard_generator.get_smart_logger")
     def test_initialization_with_logger(self, mock_logger):
-        """Test initialization with logger setup."""
+        """
+        Test initialization with logger setup.
+        """
         mock_logger_instance = MagicMock()
         mock_logger.return_value = mock_logger_instance
 
@@ -78,7 +87,9 @@ class TestManagementDashboardGenerator:
         assert generator is not None
 
     def test_generate_dashboard_basic(self):
-        """Test basic dashboard generation."""
+        """
+        Test basic dashboard generation.
+        """
         generator = ManagementDashboardGenerator(self.analysis_results, self.population_data, self.config)
 
         # Test if generate_dashboard method exists
@@ -94,7 +105,9 @@ class TestManagementDashboardGenerator:
             assert generator is not None
 
     def test_create_executive_summary(self):
-        """Test executive summary creation."""
+        """
+        Test executive summary creation.
+        """
         generator = ManagementDashboardGenerator(self.analysis_results, self.population_data, self.config)
 
         # Test if create_executive_summary method exists
@@ -107,7 +120,9 @@ class TestManagementDashboardGenerator:
 
     @patch("management_dashboard_generator.go.Figure")
     def test_create_gender_gap_visualization(self, mock_figure):
-        """Test gender gap visualization creation."""
+        """
+        Test gender gap visualization creation.
+        """
         generator = ManagementDashboardGenerator(self.analysis_results, self.population_data, self.config)
         mock_fig = MagicMock()
         mock_figure.return_value = mock_fig
@@ -121,7 +136,9 @@ class TestManagementDashboardGenerator:
 
     @patch("management_dashboard_generator.go.Bar")
     def test_create_salary_distribution_chart(self, mock_bar):
-        """Test salary distribution chart creation."""
+        """
+        Test salary distribution chart creation.
+        """
         generator = ManagementDashboardGenerator(self.analysis_results, self.population_data, self.config)
         mock_bar_trace = MagicMock()
         mock_bar.return_value = mock_bar_trace
@@ -134,7 +151,9 @@ class TestManagementDashboardGenerator:
             assert generator is not None
 
     def test_create_intervention_priority_matrix(self):
-        """Test intervention priority matrix creation."""
+        """
+        Test intervention priority matrix creation.
+        """
         generator = ManagementDashboardGenerator(self.analysis_results, self.population_data, self.config)
 
         # Test if create_intervention_priority_matrix method exists
@@ -146,7 +165,9 @@ class TestManagementDashboardGenerator:
 
     @patch("management_dashboard_generator.pyo.plot")
     def test_generate_html_report(self, mock_plot):
-        """Test HTML report generation."""
+        """
+        Test HTML report generation.
+        """
         generator = ManagementDashboardGenerator(self.analysis_results, self.population_data, self.config)
 
         # Test if generate_html_report method exists
@@ -158,7 +179,9 @@ class TestManagementDashboardGenerator:
             assert generator is not None
 
     def test_calculate_kpis(self):
-        """Test KPI calculation functionality."""
+        """
+        Test KPI calculation functionality.
+        """
         generator = ManagementDashboardGenerator(self.analysis_results, self.population_data, self.config)
 
         # Test if calculate_kpis method exists
@@ -171,7 +194,9 @@ class TestManagementDashboardGenerator:
             assert total_employees == 1000
 
     def test_format_currency_values(self):
-        """Test currency formatting in dashboard."""
+        """
+        Test currency formatting in dashboard.
+        """
         generator = ManagementDashboardGenerator(self.analysis_results, self.population_data, self.config)
 
         # Test if format_currency method exists
@@ -187,7 +212,9 @@ class TestManagementDashboardGenerator:
 
     @patch("management_dashboard_generator.webbrowser.open")
     def test_open_dashboard_in_browser(self, mock_browser):
-        """Test opening dashboard in browser."""
+        """
+        Test opening dashboard in browser.
+        """
         generator = ManagementDashboardGenerator(self.analysis_results, self.population_data, self.config)
 
         # Test if open_in_browser method exists
@@ -203,10 +230,14 @@ class TestManagementDashboardGenerator:
 
 
 class TestDashboardDataProcessing:
-    """Test data processing functionality."""
+    """
+    Test data processing functionality.
+    """
 
     def setup_method(self):
-        """Setup test fixtures."""
+        """
+        Setup test fixtures.
+        """
         self.analysis_results = {"analysis_results": {"intervention_strategies": {}}}
         self.population_data = [{"employee_id": 1, "level": 3, "salary": 60000, "gender": "Female"}]
         self.config = {"dashboard_theme": "executive"}
@@ -222,7 +253,9 @@ class TestDashboardDataProcessing:
         }
 
     def test_process_raw_data(self):
-        """Test processing raw analysis data for dashboard."""
+        """
+        Test processing raw analysis data for dashboard.
+        """
         generator = ManagementDashboardGenerator(self.analysis_results, self.population_data, self.config)
 
         # Test if process_data method exists
@@ -235,7 +268,9 @@ class TestDashboardDataProcessing:
             assert len(employees) == 3
 
     def test_aggregate_statistics(self):
-        """Test statistical aggregation for dashboard."""
+        """
+        Test statistical aggregation for dashboard.
+        """
         generator = ManagementDashboardGenerator(self.analysis_results, self.population_data, self.config)
 
         # Test if aggregate_stats method exists
@@ -251,7 +286,9 @@ class TestDashboardDataProcessing:
             assert avg_salary == 70000
 
     def test_create_trend_analysis(self):
-        """Test trend analysis creation."""
+        """
+        Test trend analysis creation.
+        """
         generator = ManagementDashboardGenerator(self.analysis_results, self.population_data, self.config)
 
         # Test if create_trends method exists
@@ -263,10 +300,14 @@ class TestDashboardDataProcessing:
 
 
 class TestVisualizationComponents:
-    """Test individual visualization components."""
+    """
+    Test individual visualization components.
+    """
 
     def setup_method(self):
-        """Setup test fixtures."""
+        """
+        Setup test fixtures.
+        """
         self.analysis_results = {"analysis_results": {"intervention_strategies": {}}}
         self.population_data = [{"employee_id": 1, "level": 3, "salary": 60000, "gender": "Female"}]
         self.config = {"dashboard_theme": "executive"}
@@ -279,7 +320,9 @@ class TestVisualizationComponents:
 
     @patch("management_dashboard_generator.go.Figure")
     def test_create_bar_chart(self, mock_figure):
-        """Test bar chart creation."""
+        """
+        Test bar chart creation.
+        """
         generator = ManagementDashboardGenerator(self.analysis_results, self.population_data, self.config)
         mock_fig = MagicMock()
         mock_figure.return_value = mock_fig
@@ -294,7 +337,9 @@ class TestVisualizationComponents:
 
     @patch("management_dashboard_generator.go.Pie")
     def test_create_pie_chart(self, mock_pie):
-        """Test pie chart creation."""
+        """
+        Test pie chart creation.
+        """
         generator = ManagementDashboardGenerator(self.analysis_results, self.population_data, self.config)
         mock_pie_trace = MagicMock()
         mock_pie.return_value = mock_pie_trace
@@ -308,7 +353,9 @@ class TestVisualizationComponents:
 
     @patch("management_dashboard_generator.go.Scatter")
     def test_create_scatter_plot(self, mock_scatter):
-        """Test scatter plot creation."""
+        """
+        Test scatter plot creation.
+        """
         generator = ManagementDashboardGenerator(self.analysis_results, self.population_data, self.config)
         mock_scatter_trace = MagicMock()
         mock_scatter.return_value = mock_scatter_trace
@@ -322,10 +369,14 @@ class TestVisualizationComponents:
 
 
 class TestReportGeneration:
-    """Test report generation functionality."""
+    """
+    Test report generation functionality.
+    """
 
     def setup_method(self):
-        """Setup test fixtures."""
+        """
+        Setup test fixtures.
+        """
         self.analysis_results = {"analysis_results": {"intervention_strategies": {}}}
         self.population_data = [{"employee_id": 1, "level": 3, "salary": 60000, "gender": "Female"}]
         self.config = {"dashboard_theme": "executive"}
@@ -344,7 +395,9 @@ class TestReportGeneration:
     def test_generate_pdf_report(
         self,
     ):
-        """Test PDF report generation."""
+        """
+        Test PDF report generation.
+        """
         generator = ManagementDashboardGenerator(self.analysis_results, self.population_data, self.config)
 
         # Test if generate_pdf method exists
@@ -356,7 +409,9 @@ class TestReportGeneration:
 
     @patch("builtins.open", mock_open())
     def test_generate_powerpoint_slides(self):
-        """Test PowerPoint slide generation."""
+        """
+        Test PowerPoint slide generation.
+        """
         generator = ManagementDashboardGenerator(self.analysis_results, self.population_data, self.config)
 
         # Test if generate_pptx method exists
@@ -367,7 +422,9 @@ class TestReportGeneration:
             assert generator is not None
 
     def test_export_dashboard_config(self):
-        """Test dashboard configuration export."""
+        """
+        Test dashboard configuration export.
+        """
         generator = ManagementDashboardGenerator(self.analysis_results, self.population_data, self.config)
 
         # Test if export_config method exists
@@ -381,10 +438,14 @@ class TestReportGeneration:
 
 
 class TestIntegrationScenarios:
-    """Test integration and end-to-end scenarios."""
+    """
+    Test integration and end-to-end scenarios.
+    """
 
     def setup_method(self):
-        """Setup test fixtures."""
+        """
+        Setup test fixtures.
+        """
         self.analysis_results = {"analysis_results": {"intervention_strategies": {}}}
         self.population_data = [{"employee_id": 1, "level": 3, "salary": 60000, "gender": "Female"}]
         self.config = {"dashboard_theme": "executive"}
@@ -403,7 +464,9 @@ class TestIntegrationScenarios:
         }
 
     def test_full_dashboard_generation_workflow(self):
-        """Test complete dashboard generation workflow."""
+        """
+        Test complete dashboard generation workflow.
+        """
         generator = ManagementDashboardGenerator(self.analysis_results, self.population_data, self.config)
 
         with patch("management_dashboard_generator.pyo.plot") as mock_plot:
@@ -417,7 +480,9 @@ class TestIntegrationScenarios:
                     assert len(self.full_analysis_results["findings"]) > 0
 
     def test_error_handling_in_dashboard_generation(self):
-        """Test error handling during dashboard generation."""
+        """
+        Test error handling during dashboard generation.
+        """
         generator = ManagementDashboardGenerator(self.analysis_results, self.population_data, self.config)
 
         # Test with malformed data
@@ -433,7 +498,9 @@ class TestIntegrationScenarios:
             pass
 
     def test_dashboard_customization(self):
-        """Test dashboard customization options."""
+        """
+        Test dashboard customization options.
+        """
         generator = ManagementDashboardGenerator(self.analysis_results, self.population_data, self.config)
 
         # Test if customization methods exist
@@ -447,7 +514,9 @@ class TestIntegrationScenarios:
         assert generator is not None
 
     def test_multi_format_export(self):
-        """Test exporting dashboard in multiple formats."""
+        """
+        Test exporting dashboard in multiple formats.
+        """
         generator = ManagementDashboardGenerator(self.analysis_results, self.population_data, self.config)
 
         formats = ["html", "pdf", "png"]

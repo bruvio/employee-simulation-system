@@ -1,18 +1,22 @@
 #!/usr/bin/env python3
-"""Simple tests for interactive_dashboard_generator module."""
-
-
+"""
+Simple tests for interactive_dashboard_generator module.
+"""
 
 
 def test_import_module():
-    """Test that the module can be imported."""
+    """
+    Test that the module can be imported.
+    """
     import interactive_dashboard_generator
 
     assert hasattr(interactive_dashboard_generator, "__file__")
 
 
 def test_dashboard_generator_class():
-    """Test dashboard generator class exists."""
+    """
+    Test dashboard generator class exists.
+    """
     import interactive_dashboard_generator
 
     potential_classes = ["InteractiveDashboardGenerator", "DashboardGenerator", "InteractiveDashboard"]
@@ -30,7 +34,9 @@ def test_dashboard_generator_class():
 
 
 def test_dashboard_functions():
-    """Test dashboard functions."""
+    """
+    Test dashboard functions.
+    """
     import interactive_dashboard_generator
 
     functions = ["generate_dashboard", "create_interactive_dashboard", "build_dashboard"]
@@ -41,7 +47,9 @@ def test_dashboard_functions():
 
 
 def test_basic_dashboard_creation():
-    """Test basic dashboard creation."""
+    """
+    Test basic dashboard creation.
+    """
     import interactive_dashboard_generator
 
     test_data = [{"metric": "test", "value": 100}]

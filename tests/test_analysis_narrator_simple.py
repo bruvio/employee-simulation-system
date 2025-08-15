@@ -1,18 +1,22 @@
 #!/usr/bin/env python3
-"""Simple tests for analysis_narrator module."""
-
-
+"""
+Simple tests for analysis_narrator module.
+"""
 
 
 def test_import_module():
-    """Test that the module can be imported."""
+    """
+    Test that the module can be imported.
+    """
     import analysis_narrator
 
     assert hasattr(analysis_narrator, "__file__")
 
 
 def test_analysis_narrator_class():
-    """Test AnalysisNarrator class exists and can be instantiated."""
+    """
+    Test AnalysisNarrator class exists and can be instantiated.
+    """
     import analysis_narrator
 
     # Check for common narrator class names
@@ -42,7 +46,9 @@ def test_analysis_narrator_class():
 
 
 def test_narrative_functions():
-    """Test narrative generation functions exist."""
+    """
+    Test narrative generation functions exist.
+    """
     import analysis_narrator
 
     # Check for common narrative function names
@@ -67,7 +73,9 @@ def test_narrative_functions():
 
 
 def test_basic_narrative_generation():
-    """Test basic narrative generation if functions exist."""
+    """
+    Test basic narrative generation if functions exist.
+    """
     import analysis_narrator
 
     # Test data
@@ -89,7 +97,9 @@ def test_basic_narrative_generation():
 
 
 def test_story_templates():
-    """Test story template functionality."""
+    """
+    Test story template functionality.
+    """
     import analysis_narrator
 
     # Check for template-related functions or constants
@@ -110,7 +120,9 @@ def test_story_templates():
 
 
 def test_text_formatting():
-    """Test text formatting utilities."""
+    """
+    Test text formatting utilities.
+    """
     import analysis_narrator
 
     # Check for formatting functions

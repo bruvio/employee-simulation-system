@@ -24,7 +24,8 @@ from median_convergence_analyzer import MedianConvergenceAnalyzer
 
 
 def load_population_data(data_source: str) -> List[Dict]:
-    """Load population data from various sources.
+    """
+    Load population data from various sources.
 
     Args:
       data_source: str:
@@ -51,7 +52,8 @@ def load_population_data(data_source: str) -> List[Dict]:
 
 
 def create_gender_gap_report(remediation_result: Dict, output_format: str = "text") -> str:
-    """Create formatted gender gap remediation report.
+    """
+    Create formatted gender gap remediation report.
 
     Args:
       remediation_result: Dict:
@@ -192,7 +194,8 @@ def create_gender_gap_report(remediation_result: Dict, output_format: str = "tex
 
 
 def create_median_convergence_report(convergence_result: Dict, output_format: str = "text") -> str:
-    """Create formatted median convergence analysis report.
+    """
+    Create formatted median convergence analysis report.
 
     Args:
       convergence_result: Dict:
@@ -261,7 +264,8 @@ def create_median_convergence_report(convergence_result: Dict, output_format: st
 
 
 def save_report(report_content: str, output_file: str, format_type: str):
-    """Save report to file.
+    """
+    Save report to file.
 
     Args:
       report_content: str:
@@ -279,7 +283,8 @@ def save_report(report_content: str, output_file: str, format_type: str):
 
 
 def run_gender_gap_analysis(population_data: List[Dict], args) -> Dict:
-    """Run gender gap remediation analysis.
+    """
+    Run gender gap remediation analysis.
 
     Args:
       population_data: List[Dict]:
@@ -299,7 +304,8 @@ def run_gender_gap_analysis(population_data: List[Dict], args) -> Dict:
 
 
 def run_median_convergence_analysis(population_data: List[Dict], args) -> Dict:
-    """Run median convergence analysis.
+    """
+    Run median convergence analysis.
 
     Args:
       population_data: List[Dict]:
@@ -323,7 +329,8 @@ def run_median_convergence_analysis(population_data: List[Dict], args) -> Dict:
 
 
 def run_equity_analysis(population_data: List[Dict], args) -> Dict:
-    """Run comprehensive salary equity analysis.
+    """
+    Run comprehensive salary equity analysis.
 
     Args:
       population_data: List[Dict]:
@@ -344,7 +351,8 @@ def run_equity_analysis(population_data: List[Dict], args) -> Dict:
 
 
 def create_equity_report(equity_result: Dict, output_format: str = "text") -> str:
-    """Create formatted equity analysis report.
+    """
+    Create formatted equity analysis report.
 
     Args:
       equity_result: Dict:
@@ -443,7 +451,7 @@ def create_equity_report(equity_result: Dict, output_format: str = "text") -> st
 
 
 def main():
-    """"""
+    """ """
     parser = argparse.ArgumentParser(
         description="Model management intervention strategies for salary equity",
         formatter_class=argparse.RawDescriptionHelpFormatter,

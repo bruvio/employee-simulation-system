@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
-"""Tests for visualization_generator module."""
+"""
+Tests for visualization_generator module.
+"""
 
 from unittest.mock import MagicMock, patch
 
@@ -10,10 +12,14 @@ from visualization_generator import VisualizationGenerator
 
 
 class TestVisualizationGenerator:
-    """Test the VisualizationGenerator class."""
+    """
+    Test the VisualizationGenerator class.
+    """
 
     def setup_method(self):
-        """Setup test fixtures."""
+        """
+        Setup test fixtures.
+        """
         self.population_data = [
             {
                 "employee_id": 1,
@@ -27,7 +33,9 @@ class TestVisualizationGenerator:
 
     @patch("visualization_generator.LOGGER")
     def test_initialization(self, mock_logger):
-        """Test generator initialization."""
+        """
+        Test generator initialization.
+        """
         generator = VisualizationGenerator(population_data=self.population_data)
 
         assert generator.population == self.population_data
@@ -35,12 +43,16 @@ class TestVisualizationGenerator:
 
     @patch("visualization_generator.LOGGER")
     def test_initialization_with_empty_data(self, mock_logger):
-        """Test generator with empty data."""
+        """
+        Test generator with empty data.
+        """
         generator = VisualizationGenerator(population_data=[])
         assert generator.population == []
 
     def test_setup_plotting_style(self):
-        """Test plotting style setup."""
+        """
+        Test plotting style setup.
+        """
         generator = VisualizationGenerator(population_data=self.population_data)
 
         # Should have setup_plotting_style method
@@ -51,7 +63,9 @@ class TestVisualizationGenerator:
         assert generator is not None
 
     def test_generate_salary_distribution(self):
-        """Test salary distribution visualization."""
+        """
+        Test salary distribution visualization.
+        """
         generator = VisualizationGenerator(population_data=self.population_data)
 
         # Test if create_salary_distribution method exists
@@ -63,7 +77,9 @@ class TestVisualizationGenerator:
             assert generator is not None
 
     def test_generate_level_distribution(self):
-        """Test level distribution visualization."""
+        """
+        Test level distribution visualization.
+        """
         generator = VisualizationGenerator(population_data=self.population_data)
 
         # Test if create_level_distribution method exists
@@ -75,7 +91,9 @@ class TestVisualizationGenerator:
             assert generator is not None
 
     def test_generate_gender_analysis(self):
-        """Test gender analysis visualization."""
+        """
+        Test gender analysis visualization.
+        """
         generator = VisualizationGenerator(population_data=self.population_data)
 
         # Test if create_gender_analysis method exists
@@ -87,7 +105,9 @@ class TestVisualizationGenerator:
 
     @patch("visualization_generator.go.Figure")
     def test_create_interactive_plots(self, mock_figure):
-        """Test interactive plot creation."""
+        """
+        Test interactive plot creation.
+        """
         generator = VisualizationGenerator(population_data=self.population_data)
         mock_fig = MagicMock()
         mock_figure.return_value = mock_fig
@@ -121,7 +141,9 @@ class TestVisualizationGenerator:
             assert generator is not None
 
     def test_create_summary_statistics(self):
-        """Test summary statistics visualization."""
+        """
+        Test summary statistics visualization.
+        """
         generator = VisualizationGenerator(population_data=self.population_data)
 
         # Test if create_summary_stats method exists
@@ -133,7 +155,9 @@ class TestVisualizationGenerator:
 
     @patch("visualization_generator.pd.DataFrame")
     def test_data_processing(self, mock_dataframe):
-        """Test data processing functionality."""
+        """
+        Test data processing functionality.
+        """
         generator = VisualizationGenerator(population_data=self.population_data)
         mock_df = MagicMock()
         mock_dataframe.return_value = mock_df
@@ -145,7 +169,9 @@ class TestVisualizationGenerator:
             assert generator is not None
 
     def test_with_story_tracker(self):
-        """Test initialization with story tracker."""
+        """
+        Test initialization with story tracker.
+        """
         mock_story_tracker = MagicMock()
         mock_story_tracker.tracked_categories = {"high_performers": [1, 2]}
 
@@ -157,10 +183,14 @@ class TestVisualizationGenerator:
 
 
 class TestVisualizationMethods:
-    """Test specific visualization methods."""
+    """
+    Test specific visualization methods.
+    """
 
     def setup_method(self):
-        """Setup test fixtures."""
+        """
+        Setup test fixtures.
+        """
         self.population_data = [
             {
                 "employee_id": i,
@@ -175,7 +205,9 @@ class TestVisualizationMethods:
 
     @patch("visualization_generator.plt")
     def test_create_histogram(self, mock_plt):
-        """Test histogram creation."""
+        """
+        Test histogram creation.
+        """
         if hasattr(self.generator, "create_histogram"):
             data = [emp["salary"] for emp in self.population_data]
             self.generator.create_histogram(data, "Salary Distribution")
@@ -185,7 +217,9 @@ class TestVisualizationMethods:
 
     @patch("visualization_generator.plt")
     def test_create_boxplot(self, mock_plt):
-        """Test boxplot creation."""
+        """
+        Test boxplot creation.
+        """
         if hasattr(self.generator, "create_boxplot"):
             self.generator.create_boxplot()
             mock_plt.boxplot.assert_called()
@@ -193,7 +227,9 @@ class TestVisualizationMethods:
             assert self.generator is not None
 
     def test_calculate_statistics(self):
-        """Test statistical calculations."""
+        """
+        Test statistical calculations.
+        """
         if hasattr(self.generator, "calculate_stats"):
             stats = self.generator.calculate_stats()
             assert isinstance(stats, dict)

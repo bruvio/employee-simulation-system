@@ -1,18 +1,19 @@
 """
 Centralized path authority for the Employee Simulation System.
 
-This module provides a single source of truth for all output paths,
-ensuring consistent and deterministic run directories.
+This module provides a single source of truth for all output paths, ensuring consistent and deterministic run
+directories.
 """
 
-import os
 from datetime import datetime
+import os
 from pathlib import Path
 from typing import Optional
 
 
 def repo_root(p: Optional[Path] = None) -> Path:
-    """Find the repository root directory.
+    """
+    Find the repository root directory.
 
     Args:
         p: Starting path (defaults to this file's location)
@@ -38,7 +39,8 @@ TABLES_DIR = RUN_DIR / "assets" / "tables"
 
 
 def get_population_size(cfg: dict, cli_value: Optional[int] = None) -> tuple[int, str]:
-    """Get population size with strict enforcement and source tracking.
+    """
+    Get population size with strict enforcement and source tracking.
 
     Args:
         cfg: Configuration dictionary
@@ -69,13 +71,16 @@ def get_population_size(cfg: dict, cli_value: Optional[int] = None) -> tuple[int
 
 
 def ensure_dirs() -> None:
-    """Create all required output directories."""
+    """
+    Create all required output directories.
+    """
     for d in (ARTIFACTS_DIR, CHARTS_DIR, TABLES_DIR):
         d.mkdir(parents=True, exist_ok=True)
 
 
 def get_artifact_path(filename: str) -> Path:
-    """Get path for artifact files (JSON, etc.).
+    """
+    Get path for artifact files (JSON, etc.).
 
     Args:
         filename: Name of the artifact file
@@ -87,7 +92,8 @@ def get_artifact_path(filename: str) -> Path:
 
 
 def get_chart_path(filename: str) -> Path:
-    """Get path for chart files (PNG, SVG, etc.).
+    """
+    Get path for chart files (PNG, SVG, etc.).
 
     Args:
         filename: Name of the chart file
@@ -99,7 +105,8 @@ def get_chart_path(filename: str) -> Path:
 
 
 def get_table_path(filename: str) -> Path:
-    """Get path for table files (CSV, Excel, etc.).
+    """
+    Get path for table files (CSV, Excel, etc.).
 
     Args:
         filename: Name of the table file
@@ -111,7 +118,8 @@ def get_table_path(filename: str) -> Path:
 
 
 def validate_output_path(path: Path) -> None:
-    """Validate that output path is writable with comprehensive checks.
+    """
+    Validate that output path is writable with comprehensive checks.
 
     Performs multiple validation steps:
     1. Checks if path exists and is accessible
@@ -166,7 +174,8 @@ def validate_output_path(path: Path) -> None:
 
 
 def override_output_base(new_base: str) -> None:
-    """Override the base output directory (for CLI --out flag).
+    """
+    Override the base output directory (for CLI --out flag).
 
     PRECEDENCE RULES (highest to lowest):
     1. CLI --out flag (this function) - overrides everything
@@ -210,7 +219,8 @@ def override_output_base(new_base: str) -> None:
 
 
 def check_migration_needed() -> dict:
-    """Check for existing data that may need migration and provide archival strategy.
+    """
+    Check for existing data that may need migration and provide archival strategy.
 
     MIGRATION STRATEGY:
     1. ASSESSMENT: Scan for legacy directories with data
@@ -317,7 +327,8 @@ def check_migration_needed() -> dict:
 
 
 def create_migration_backup(migration_info: dict) -> bool:
-    """Create backup archives of existing data before migration.
+    """
+    Create backup archives of existing data before migration.
 
     Args:
         migration_info: Information from check_migration_needed()
@@ -325,8 +336,8 @@ def create_migration_backup(migration_info: dict) -> bool:
     Returns:
         bool: True if backup was successful, False otherwise
     """
-    import subprocess
     from datetime import datetime
+    import subprocess
 
     if not migration_info.get("has_data"):
         return True  # No data to backup
@@ -358,7 +369,8 @@ def create_migration_backup(migration_info: dict) -> bool:
 
 
 def print_migration_summary(migration_info: dict) -> None:
-    """Print a user-friendly migration summary.
+    """
+    Print a user-friendly migration summary.
 
     Args:
         migration_info: Information from check_migration_needed()

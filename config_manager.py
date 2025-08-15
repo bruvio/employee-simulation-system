@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
-"""Configuration Manager for Employee Simulation System.
+"""
+Configuration Manager for Employee Simulation System.
 
 Handles loading, merging, and managing configuration files and user scenarios.
 """
@@ -12,10 +13,13 @@ from typing import Any, Dict, List, Optional
 
 
 class ConfigurationManager:
-    """Manages configuration loading and scenario application for the simulation system."""
+    """
+    Manages configuration loading and scenario application for the simulation system.
+    """
 
     def __init__(self, config_path: str = "config.json"):
-        """Initialize configuration manager.
+        """
+        Initialize configuration manager.
 
         Args:
             config_path: Path to the main configuration file
@@ -24,7 +28,9 @@ class ConfigurationManager:
         self.base_config = self._load_base_config()
 
     def _load_base_config(self) -> Dict[str, Any]:
-        """Load the base configuration file."""
+        """
+        Load the base configuration file.
+        """
         try:
             if self.config_path.exists():
                 with open(self.config_path, "r") as f:
@@ -36,7 +42,9 @@ class ConfigurationManager:
             return self._get_fallback_config()
 
     def _get_fallback_config(self) -> Dict[str, Any]:
-        """Provide fallback configuration if file loading fails."""
+        """
+        Provide fallback configuration if file loading fails.
+        """
         return {
             "population": {"population_size": 1000, "random_seed": 42},
             "simulation": {"max_cycles": 15, "convergence_threshold": 0.001},
@@ -49,7 +57,8 @@ class ConfigurationManager:
     def get_orchestrator_config(
         self, scenario: Optional[str] = None, overrides: Optional[Dict[str, Any]] = None
     ) -> Dict[str, Any]:
-        """Get configuration formatted for EmployeeSimulationOrchestrator.
+        """
+        Get configuration formatted for EmployeeSimulationOrchestrator.
 
         Args:
             scenario: Name of predefined scenario to apply
@@ -79,7 +88,8 @@ class ConfigurationManager:
         return config
 
     def _flatten_config(self, nested_config: Dict[str, Any]) -> Dict[str, Any]:
-        """Flatten nested configuration into format expected by orchestrator.
+        """
+        Flatten nested configuration into format expected by orchestrator.
 
         Args:
             nested_config: Nested configuration dictionary
@@ -181,7 +191,8 @@ class ConfigurationManager:
         return flat_config
 
     def get_scenario_config(self, scenario_name: str) -> Optional[Dict[str, Any]]:
-        """Get configuration for a specific scenario.
+        """
+        Get configuration for a specific scenario.
 
         Args:
             scenario_name: Name of the scenario
@@ -207,7 +218,9 @@ class ConfigurationManager:
         return None
 
     def list_scenarios(self) -> List[str]:
-        """Get list of available scenario names."""
+        """
+        Get list of available scenario names.
+        """
         # Get scenarios from new structure
         scenarios = list(self.base_config.get("scenarios", {}).keys())
 
@@ -220,7 +233,8 @@ class ConfigurationManager:
         return list(set(all_scenarios))
 
     def save_scenario(self, scenario_name: str, config: Dict[str, Any]) -> None:
-        """Save a new scenario to the configuration file.
+        """
+        Save a new scenario to the configuration file.
 
         Args:
             scenario_name: Name for the new scenario
@@ -238,7 +252,9 @@ class ConfigurationManager:
             json.dump(self.base_config, f, indent=2)
 
     def print_scenario_info(self, scenario_name: str) -> None:
-        """Print detailed information about a scenario."""
+        """
+        Print detailed information about a scenario.
+        """
         scenario_config = self.get_scenario_config(scenario_name)
         if not scenario_config:
             print(f"Scenario '{scenario_name}' not found.")
@@ -254,7 +270,8 @@ class ConfigurationManager:
     def create_config_file(
         self, output_path: str, scenario: Optional[str] = None, overrides: Optional[Dict[str, Any]] = None
     ) -> None:
-        """Create a standalone configuration file.
+        """
+        Create a standalone configuration file.
 
         Args:
             output_path: Path where to save the configuration file
@@ -270,7 +287,9 @@ class ConfigurationManager:
 
 
 def main():
-    """Command-line interface for configuration management."""
+    """
+    Command-line interface for configuration management.
+    """
     parser = argparse.ArgumentParser(description="Employee Simulation Configuration Manager")
     parser.add_argument("--config", default="config.json", help="Path to configuration file")
 

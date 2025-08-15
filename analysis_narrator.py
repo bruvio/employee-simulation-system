@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
-"""Analysis Narrator for Employee Simulation System.
+"""
+Analysis Narrator for Employee Simulation System.
 
-Transforms technical analysis progress into user-friendly, business-oriented narratives.
+Transforms technical analysis progress into user-friendly, business- oriented narratives.
 """
 
 
@@ -12,14 +13,16 @@ from typing import Any, Dict
 
 
 class AnalysisNarrator:
-    """Converts technical analysis steps into user-friendly business narratives.
+    """
+    Converts technical analysis steps into user-friendly business narratives.
 
     Replaces overwhelming technical logs with accessible progress updates that help non-technical stakeholders
     understand what the system is doing and why.
     """
 
     def __init__(self, scenario_config: Dict[str, Any], smart_logger=None):
-        """Initialize analysis narrator.
+        """
+        Initialize analysis narrator.
 
         Args:
             scenario_config: Configuration for current analysis scenario
@@ -38,7 +41,9 @@ class AnalysisNarrator:
         }
 
     def _extract_company_context(self) -> Dict[str, Any]:
-        """Extract relevant company context from configuration."""
+        """
+        Extract relevant company context from configuration.
+        """
         context = {
             "population_size": self.config.get("population_size", 200),
             "has_salary_constraints": bool(self.config.get("salary_constraints")),
@@ -49,7 +54,9 @@ class AnalysisNarrator:
         return context
 
     def _format_salary_structure(self) -> Dict[str, str]:
-        """Format salary constraints into user-friendly ranges."""
+        """
+        Format salary constraints into user-friendly ranges.
+        """
         salary_constraints = self.config.get("salary_constraints")
         if not salary_constraints:
             return {}
@@ -73,7 +80,9 @@ class AnalysisNarrator:
         return formatted
 
     def start_analysis_narrative(self) -> str:
-        """Generate opening narrative for analysis session."""
+        """
+        Generate opening narrative for analysis session.
+        """
         context = self.company_context
 
         salary_structure_text = ""
@@ -94,7 +103,9 @@ class AnalysisNarrator:
         return narrative
 
     def narrate_population_generation(self, population_stats: Dict[str, Any]) -> str:
-        """Generate narrative for population generation phase."""
+        """
+        Generate narrative for population generation phase.
+        """
 
         total_employees = population_stats.get("total_employees", 0)
         gender_gap = population_stats.get("gender_gap_percent", 0)
@@ -121,7 +132,9 @@ class AnalysisNarrator:
         return narrative
 
     def narrate_convergence_analysis(self, analysis_results: Dict[str, Any]) -> str:
-        """Generate narrative for median convergence analysis."""
+        """
+        Generate narrative for median convergence analysis.
+        """
 
         below_median_count = analysis_results.get("below_median_count", 0)
         total_employees = analysis_results.get("total_employees", 200)
@@ -166,7 +179,9 @@ class AnalysisNarrator:
         return narrative
 
     def narrate_intervention_analysis(self, intervention_results: Dict[str, Any]) -> str:
-        """Generate narrative for intervention strategy analysis."""
+        """
+        Generate narrative for intervention strategy analysis.
+        """
 
         gender_gap_data = intervention_results.get("gender_gap_remediation", {})
         equity_analysis = intervention_results.get("equity_analysis", {})
@@ -215,7 +230,9 @@ class AnalysisNarrator:
         return narrative
 
     def narrate_dashboard_generation(self, dashboard_results: Dict[str, Any]) -> str:
-        """Generate narrative for dashboard generation phase."""
+        """
+        Generate narrative for dashboard generation phase.
+        """
 
         components_count = dashboard_results.get("components_generated", 0)
         dashboard_path = dashboard_results.get("main_dashboard", "")
@@ -249,7 +266,9 @@ class AnalysisNarrator:
         return narrative
 
     def _get_population_narrative_templates(self) -> Dict[str, str]:
-        """Get narrative templates for population generation."""
+        """
+        Get narrative templates for population generation.
+        """
         return {
             "start": "Generating realistic employee population based on your organization's structure...",
             "salary_generation": "Creating salary distributions that reflect real-world negotiation patterns...",
@@ -258,7 +277,9 @@ class AnalysisNarrator:
         }
 
     def _get_convergence_narrative_templates(self) -> Dict[str, str]:
-        """Get narrative templates for convergence analysis."""
+        """
+        Get narrative templates for convergence analysis.
+        """
         return {
             "start": "Analyzing salary equity patterns across all employee levels...",
             "median_calculation": "Calculating fair salary benchmarks for each position level...",
@@ -268,7 +289,9 @@ class AnalysisNarrator:
         }
 
     def _get_intervention_narrative_templates(self) -> Dict[str, str]:
-        """Get narrative templates for intervention analysis."""
+        """
+        Get narrative templates for intervention analysis.
+        """
         return {
             "start": "Evaluating management intervention strategies and costs...",
             "cost_analysis": "Calculating budget requirements for different remediation approaches...",
@@ -278,7 +301,9 @@ class AnalysisNarrator:
         }
 
     def _get_dashboard_narrative_templates(self) -> Dict[str, str]:
-        """Get narrative templates for dashboard generation."""
+        """
+        Get narrative templates for dashboard generation.
+        """
         return {
             "start": "Creating management dashboard with executive-friendly visualizations...",
             "component_generation": "Building interactive charts for salary equity analysis...",
@@ -288,7 +313,8 @@ class AnalysisNarrator:
         }
 
     def narrate_visualization_generation(self, viz_data: Dict[str, Any]) -> str:
-        """Create user-friendly narrative for visualization generation.
+        """
+        Create user-friendly narrative for visualization generation.
 
         Args:
             viz_data: Visualization generation data including charts_generated, types, location
@@ -317,7 +343,8 @@ class AnalysisNarrator:
 ➡️ **Next**: Assembling comprehensive management dashboard..."""
 
     def get_progress_narrative(self, step_name: str, step_data: Dict[str, Any]) -> str:
-        """Get user-friendly narrative for any analysis step.
+        """
+        Get user-friendly narrative for any analysis step.
 
         Args:
             step_name: Name of the analysis step
@@ -348,7 +375,9 @@ class AnalysisNarrator:
             return self._get_generic_narrative(step_name, step_data)
 
     def _get_generic_narrative(self, step_name: str, step_data: Dict[str, Any]) -> str:
-        """Generate generic user-friendly narrative for unknown steps."""
+        """
+        Generate generic user-friendly narrative for unknown steps.
+        """
 
         friendly_name = step_name.replace("_", " ").title()
 
@@ -364,7 +393,9 @@ This analysis will contribute to the overall salary equity assessment.
         return generic_narrative
 
     def create_completion_summary(self, results: Dict[str, Any]) -> str:
-        """Create final completion summary with key takeaways."""
+        """
+        Create final completion summary with key takeaways.
+        """
 
         # Extract key metrics from results
         population_size = results.get("population_size", 200)

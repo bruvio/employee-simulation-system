@@ -1,4 +1,6 @@
-"""Centralized constants for the employee simulation system."""
+"""
+Centralized constants for the employee simulation system.
+"""
 
 # Population Configuration
 DEFAULT_POPULATION_SIZE = 1000

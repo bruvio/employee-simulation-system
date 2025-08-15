@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
-"""Comprehensive tests for employee_simulation_orchestrator module.
+"""
+Comprehensive tests for employee_simulation_orchestrator module.
 
 Tests the main orchestration functionality, CLI interface, and integration workflows.
 """
@@ -14,10 +15,14 @@ from individual_employee_parser import EmployeeData, parse_employee_data_string
 
 
 class TestIndividualEmployeeAnalysis:
-    """Test individual employee analysis functionality."""
+    """
+    Test individual employee analysis functionality.
+    """
 
     def setup_method(self):
-        """Setup test fixtures."""
+        """
+        Setup test fixtures.
+        """
         self.employee_data = EmployeeData(
             employee_id=1,
             name="Test Employee",
@@ -41,7 +46,9 @@ class TestIndividualEmployeeAnalysis:
     @patch("individual_progression_simulator.IndividualProgressionSimulator")
     @patch("median_convergence_analyzer.MedianConvergenceAnalyzer")
     def test_run_individual_employee_analysis_basic(self, mock_convergence, mock_simulator, mock_logger):
-        """Test basic individual employee analysis workflow."""
+        """
+        Test basic individual employee analysis workflow.
+        """
         # Setup mocks
         mock_logger_instance = MagicMock()
         mock_logger.return_value = mock_logger_instance
@@ -75,7 +82,9 @@ class TestIndividualEmployeeAnalysis:
 
     @patch("employee_simulation_orchestrator.get_smart_logger")
     def test_run_individual_employee_analysis_custom_years(self, mock_logger):
-        """Test individual analysis with custom analysis years."""
+        """
+        Test individual analysis with custom analysis years.
+        """
         custom_config = self.config.copy()
         custom_config["progression_analysis_years"] = 3
 
@@ -104,7 +113,9 @@ class TestIndividualEmployeeAnalysis:
     @patch("employee_simulation_orchestrator.get_smart_logger")
     @patch("builtins.print")
     def test_run_individual_employee_analysis_error_handling(self, mock_print, mock_logger):
-        """Test error handling in individual employee analysis."""
+        """
+        Test error handling in individual employee analysis.
+        """
         mock_logger_instance = MagicMock()
         mock_logger.return_value = mock_logger_instance
 
@@ -125,7 +136,9 @@ class TestIndividualEmployeeAnalysis:
 
     @patch("employee_simulation_orchestrator.get_smart_logger")
     def test_run_individual_employee_analysis_no_visualizations(self, mock_logger):
-        """Test individual analysis with visualizations disabled."""
+        """
+        Test individual analysis with visualizations disabled.
+        """
         config_no_viz = self.config.copy()
         config_no_viz["generate_visualizations"] = False
 
@@ -144,10 +157,14 @@ class TestIndividualEmployeeAnalysis:
 
 
 class TestExportFunctionality:
-    """Test data export functionality."""
+    """
+    Test data export functionality.
+    """
 
     def setup_method(self):
-        """Setup test fixtures."""
+        """
+        Setup test fixtures.
+        """
         self.employee_data = EmployeeData(
             employee_id=42, name="Export Test Employee", level=4, salary=75000, performance_rating="Exceeding"
         )
@@ -161,7 +178,9 @@ class TestExportFunctionality:
     @patch("builtins.open", new_callable=mock_open)
     @patch("pathlib.Path")
     def test_export_individual_analysis_results(self, mock_path_class, mock_file):
-        """Test exporting individual analysis results to JSON."""
+        """
+        Test exporting individual analysis results to JSON.
+        """
         # Setup path mocking
         mock_output_dir = MagicMock()
         mock_path_class.return_value = mock_output_dir
@@ -188,7 +207,9 @@ class TestExportFunctionality:
     @patch("builtins.open", new_callable=mock_open)
     @patch("json.dump")
     def test_export_analysis_results_data_structure(self, mock_json_dump, mock_file, mock_path_class):
-        """Test that export creates correct data structure."""
+        """
+        Test that export creates correct data structure.
+        """
         # Mock the Path class and its methods
         mock_dir = MagicMock()
         mock_file_path = MagicMock()
@@ -221,11 +242,15 @@ class TestExportFunctionality:
 
 
 class TestConfigurationHandling:
-    """Test configuration loading and processing."""
+    """
+    Test configuration loading and processing.
+    """
 
     @patch("employee_simulation_orchestrator.get_smart_logger")
     def test_basic_config_structure(self, mock_logger):
-        """Test basic configuration structure creation."""
+        """
+        Test basic configuration structure creation.
+        """
         basic_config = {"population_size": 100, "max_cycles": 15, "random_seed": 42, "progression_analysis_years": 5}
 
         # Test that config is processed correctly
@@ -233,7 +258,9 @@ class TestConfigurationHandling:
         assert basic_config["progression_analysis_years"] == 5
 
     def test_config_override_logic(self):
-        """Test command-line argument override logic."""
+        """
+        Test command-line argument override logic.
+        """
         # This tests the logic that was fixed in the analysis_years bug
         base_config = {"progression_analysis_years": 5}
 
@@ -246,12 +273,16 @@ class TestConfigurationHandling:
 
 
 class TestMainEntryPoint:
-    """Test main entry point and CLI functionality."""
+    """
+    Test main entry point and CLI functionality.
+    """
 
     @patch("employee_simulation_orchestrator.get_smart_logger")
     @patch("sys.argv")
     def test_main_individual_scenario_success(self, mock_argv, mock_logger):
-        """Test main function with individual scenario."""
+        """
+        Test main function with individual scenario.
+        """
         mock_argv.__getitem__.side_effect = lambda x: [
             "employee_simulation_orchestrator.py",
             "--scenario",
@@ -295,7 +326,9 @@ class TestMainEntryPoint:
 
     @patch("sys.argv")
     def test_main_invalid_employee_data(self, mock_argv):
-        """Test main function with invalid employee data."""
+        """
+        Test main function with invalid employee data.
+        """
         mock_argv.__getitem__.side_effect = lambda x: [
             "employee_simulation_orchestrator.py",
             "--scenario",
@@ -329,10 +362,14 @@ class TestMainEntryPoint:
 
 
 class TestIntegrationWorkflows:
-    """Test end-to-end integration workflows."""
+    """
+    Test end-to-end integration workflows.
+    """
 
     def test_full_individual_analysis_workflow(self):
-        """Test complete individual analysis workflow."""
+        """
+        Test complete individual analysis workflow.
+        """
         # Parse employee data
         employee_data = parse_employee_data_string("level:3,salary:65000,performance:High Performing")
 
@@ -380,7 +417,9 @@ class TestIntegrationWorkflows:
                 mock_conv_instance.analyze_convergence_timeline.assert_called_once()
 
     def test_error_recovery_workflow(self):
-        """Test error recovery in workflows."""
+        """
+        Test error recovery in workflows.
+        """
         employee_data = parse_employee_data_string("level:5,salary:80000,performance:Exceeding")
         config = {"progression_analysis_years": 5}
 
@@ -402,10 +441,14 @@ class TestIntegrationWorkflows:
 
 
 class TestParameterValidation:
-    """Test parameter validation and edge cases."""
+    """
+    Test parameter validation and edge cases.
+    """
 
     def test_analysis_years_parameter_handling(self):
-        """Test analysis_years parameter is handled correctly."""
+        """
+        Test analysis_years parameter is handled correctly.
+        """
         # This specifically tests the bug fix for --analysis-years
         base_config = {"progression_analysis_years": 5}
 
@@ -428,7 +471,9 @@ class TestParameterValidation:
         assert result["progression_analysis_years"] == 7
 
     def test_configuration_merge_logic(self):
-        """Test configuration merging and override logic."""
+        """
+        Test configuration merging and override logic.
+        """
         scenario_config = {"progression_analysis_years": 5, "population_size": 100, "generate_visualizations": True}
 
         # Simulate command-line overrides
@@ -444,7 +489,9 @@ class TestParameterValidation:
         assert scenario_config["generate_visualizations"] == True  # Unchanged
 
     def test_employee_data_validation_integration(self):
-        """Test integration between employee data validation and analysis."""
+        """
+        Test integration between employee data validation and analysis.
+        """
         # Test with valid data
         valid_data = "level:4,salary:75000,performance:High Performing,gender:Male,tenure:3"
         employee = parse_employee_data_string(valid_data)

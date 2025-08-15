@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 """
-Professional Dashboard Builder for Employee Simulation System
+Professional Dashboard Builder for Employee Simulation System.
 
-Creates comprehensive, interactive dashboards with scenario overview,
-KPIs, visualizations, and file browser for all generated outputs.
+Creates comprehensive, interactive dashboards with scenario overview, KPIs, visualizations, and file browser for all
+generated outputs.
 """
 
 from datetime import datetime
@@ -11,15 +11,17 @@ from pathlib import Path
 from typing import Any, Dict, List, Union
 
 import pandas as pd
-import plotly.graph_objects as go
 import plotly.express as px
+import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 
 from logger import LOGGER
 
 
 class ProfessionalDashboardBuilder:
-    """Creates professional, comprehensive dashboards for simulation results."""
+    """
+    Creates professional, comprehensive dashboards for simulation results.
+    """
 
     def __init__(self, output_dir: Union[str, Path] = "results"):
         self.output_dir = Path(output_dir)
@@ -34,7 +36,8 @@ class ProfessionalDashboardBuilder:
         scenario_config: Dict[str, Any],
         output_file: str = "professional_dashboard.html",
     ) -> Path:
-        """Build comprehensive professional dashboard.
+        """
+        Build comprehensive professional dashboard.
 
         Args:
             analysis_payload: Complete analysis results from orchestrator
@@ -71,7 +74,9 @@ class ProfessionalDashboardBuilder:
         return dashboard_path
 
     def _discover_generated_files(self, run_directory: Path) -> Dict[str, List[Dict[str, Any]]]:
-        """Discover all generated files and organize by type."""
+        """
+        Discover all generated files and organize by type.
+        """
         files = {"visualizations": [], "data_exports": [], "reports": [], "analysis": [], "other": []}
 
         for file_path in run_directory.rglob("*"):
@@ -103,7 +108,9 @@ class ProfessionalDashboardBuilder:
         return files
 
     def _extract_key_metrics(self, analysis_payload: Dict[str, Any], manifest: Dict[str, Any]) -> Dict[str, Any]:
-        """Extract key performance indicators and metrics."""
+        """
+        Extract key performance indicators and metrics.
+        """
         population_data = analysis_payload.get("population_data", [])
 
         metrics = {
@@ -148,7 +155,9 @@ class ProfessionalDashboardBuilder:
     def _generate_interactive_charts(
         self, analysis_payload: Dict[str, Any], generated_files: Dict[str, List]
     ) -> Dict[str, str]:
-        """Generate interactive Plotly charts."""
+        """
+        Generate interactive Plotly charts.
+        """
         charts = {}
         population_data = analysis_payload.get("population_data", [])
 
@@ -224,12 +233,12 @@ class ProfessionalDashboardBuilder:
         charts: Dict[str, str],
         generated_files: Dict[str, List],
     ) -> str:
-        """Build the complete HTML dashboard."""
+        """
+        Build the complete HTML dashboard.
+        """
         org = key_metrics.get("org", "Unknown")
         scenario = key_metrics.get("scenario", "Unknown")
-        timestamp = datetime.fromisoformat(
-            key_metrics.get("timestamp", datetime.utcnow().isoformat()).replace("Z", "+00:00")
-        )
+        datetime.fromisoformat(key_metrics.get("timestamp", datetime.utcnow().isoformat()).replace("Z", "+00:00"))
 
         return f"""<!DOCTYPE html>
 <html lang="en">
@@ -276,7 +285,9 @@ class ProfessionalDashboardBuilder:
 </html>"""
 
     def _get_dashboard_styles(self) -> str:
-        """Get custom CSS styles for the dashboard."""
+        """
+        Get custom CSS styles for the dashboard.
+        """
         return """
     <style>
         .metric-card {
@@ -361,7 +372,9 @@ class ProfessionalDashboardBuilder:
     </style>"""
 
     def _build_scenario_overview(self, key_metrics: Dict[str, Any], scenario_config: Dict[str, Any]) -> str:
-        """Build scenario overview section."""
+        """
+        Build scenario overview section.
+        """
         org = key_metrics.get("org", "Unknown")
         scenario = key_metrics.get("scenario", "Unknown")
         timestamp = key_metrics.get("timestamp", "")
@@ -397,7 +410,9 @@ class ProfessionalDashboardBuilder:
         </div>"""
 
     def _build_kpi_cards(self, key_metrics: Dict[str, Any]) -> str:
-        """Build KPI cards section."""
+        """
+        Build KPI cards section.
+        """
         currency = key_metrics.get("currency", "GBP")
         currency_symbol = "£" if currency == "GBP" else "$"
 
@@ -459,7 +474,9 @@ class ProfessionalDashboardBuilder:
         </div>"""
 
     def _build_charts_section(self, charts: Dict[str, str]) -> str:
-        """Build interactive charts section."""
+        """
+        Build interactive charts section.
+        """
         if not charts:
             return "<div class='alert alert-info'>No charts available for this analysis.</div>"
 
@@ -483,7 +500,9 @@ class ProfessionalDashboardBuilder:
         return section
 
     def _build_file_browser(self, generated_files: Dict[str, List]) -> str:
-        """Build file browser section."""
+        """
+        Build file browser section.
+        """
 
         def format_file_size(size_bytes):
             if size_bytes < 1024:
@@ -566,7 +585,9 @@ class ProfessionalDashboardBuilder:
         return section
 
     def _build_analysis_summary(self, analysis_payload: Dict[str, Any], key_metrics: Dict[str, Any]) -> str:
-        """Build analysis summary section."""
+        """
+        Build analysis summary section.
+        """
         return f"""
         <div class="row">
             <div class="col-12">
@@ -618,7 +639,9 @@ class ProfessionalDashboardBuilder:
         </div>"""
 
     def _get_dashboard_scripts(self) -> str:
-        """Get JavaScript for dashboard interactivity."""
+        """
+        Get JavaScript for dashboard interactivity.
+        """
         return """
     <script>
         // Add smooth scrolling

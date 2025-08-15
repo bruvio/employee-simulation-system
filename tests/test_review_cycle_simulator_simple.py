@@ -1,18 +1,22 @@
 #!/usr/bin/env python3
-"""Simple tests for review_cycle_simulator module."""
-
-
+"""
+Simple tests for review_cycle_simulator module.
+"""
 
 
 def test_import_module():
-    """Test that the module can be imported."""
+    """
+    Test that the module can be imported.
+    """
     import review_cycle_simulator
 
     assert hasattr(review_cycle_simulator, "__file__")
 
 
 def test_review_cycle_simulator_class():
-    """Test review cycle simulator class exists."""
+    """
+    Test review cycle simulator class exists.
+    """
     import review_cycle_simulator
 
     potential_classes = ["ReviewCycleSimulator", "CycleSimulator", "ReviewSimulator", "PerformanceReviewSimulator"]
@@ -30,7 +34,9 @@ def test_review_cycle_simulator_class():
 
 
 def test_simulation_functions():
-    """Test simulation functions."""
+    """
+    Test simulation functions.
+    """
     import review_cycle_simulator
 
     functions = ["simulate_review_cycle", "run_review_simulation", "execute_review_cycle"]
@@ -41,7 +47,9 @@ def test_simulation_functions():
 
 
 def test_basic_simulation():
-    """Test basic simulation functionality."""
+    """
+    Test basic simulation functionality.
+    """
     import review_cycle_simulator
 
     test_employees = [{"employee_id": 1, "performance": 0.8}]

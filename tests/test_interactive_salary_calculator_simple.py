@@ -1,19 +1,24 @@
 #!/usr/bin/env python3
-"""Simple tests for interactive_salary_calculator module."""
+"""
+Simple tests for interactive_salary_calculator module.
+"""
 
 from unittest.mock import patch
 
 
-
 def test_import_module():
-    """Test that the module can be imported."""
+    """
+    Test that the module can be imported.
+    """
     import interactive_salary_calculator
 
     assert hasattr(interactive_salary_calculator, "__file__")
 
 
 def test_main_function_exists():
-    """Test main function exists."""
+    """
+    Test main function exists.
+    """
     import interactive_salary_calculator
 
     if hasattr(interactive_salary_calculator, "main"):
@@ -24,7 +29,9 @@ def test_main_function_exists():
 @patch("builtins.input")
 @patch("builtins.print")
 def test_main_function_basic(mock_print, mock_input):
-    """Test basic main function execution."""
+    """
+    Test basic main function execution.
+    """
     import interactive_salary_calculator
 
     mock_input.side_effect = ["q", "quit", "exit"]
@@ -38,7 +45,9 @@ def test_main_function_basic(mock_print, mock_input):
 
 
 def test_calculator_functions():
-    """Test calculator functions."""
+    """
+    Test calculator functions.
+    """
     import interactive_salary_calculator
 
     functions = ["calculate_salary", "run_calculator", "salary_calculator"]
@@ -49,7 +58,9 @@ def test_calculator_functions():
 
 
 def test_calculator_classes():
-    """Test calculator classes."""
+    """
+    Test calculator classes.
+    """
     import interactive_salary_calculator
 
     classes = ["SalaryCalculator", "InteractiveSalaryCalculator"]

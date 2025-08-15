@@ -1,18 +1,24 @@
 #!/usr/bin/env python3
-"""Simple tests for model_interventions module."""
+"""
+Simple tests for model_interventions module.
+"""
 
 from unittest.mock import patch
 
 
 def test_import_module():
-    """Test that the module can be imported."""
+    """
+    Test that the module can be imported.
+    """
     import model_interventions
 
     assert hasattr(model_interventions, "__file__")
 
 
 def test_basic_classes_exist():
-    """Test basic classes exist."""
+    """
+    Test basic classes exist.
+    """
     import model_interventions
 
     # Check for common class names in intervention models
@@ -37,7 +43,9 @@ def test_basic_classes_exist():
 
 @patch("builtins.print")
 def test_main_function_if_exists(mock_print):
-    """Test main function if it exists."""
+    """
+    Test main function if it exists.
+    """
     import model_interventions
 
     if hasattr(model_interventions, "main"):
@@ -51,7 +59,9 @@ def test_main_function_if_exists(mock_print):
 
 
 def test_basic_functions_exist():
-    """Test basic functions exist."""
+    """
+    Test basic functions exist.
+    """
     import model_interventions
 
     # Check for common function names
@@ -75,7 +85,9 @@ def test_basic_functions_exist():
 
 
 def test_module_attributes():
-    """Test module has basic attributes."""
+    """
+    Test module has basic attributes.
+    """
     import model_interventions
 
     # Should have basic module attributes

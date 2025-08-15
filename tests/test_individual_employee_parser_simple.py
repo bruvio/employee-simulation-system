@@ -1,18 +1,22 @@
 #!/usr/bin/env python3
-"""Simple tests for individual_employee_parser module."""
-
-
+"""
+Simple tests for individual_employee_parser module.
+"""
 
 
 def test_import_module():
-    """Test that the module can be imported."""
+    """
+    Test that the module can be imported.
+    """
     import individual_employee_parser
 
     assert hasattr(individual_employee_parser, "__file__")
 
 
 def test_basic_functions_exist():
-    """Test basic parsing functions exist."""
+    """
+    Test basic parsing functions exist.
+    """
     import individual_employee_parser
 
     # Check for common parsing function names
@@ -37,7 +41,9 @@ def test_basic_functions_exist():
 
 
 def test_parsing_function_basic():
-    """Test basic parsing function if it exists."""
+    """
+    Test basic parsing function if it exists.
+    """
     import individual_employee_parser
 
     # Try common parsing function names
@@ -59,7 +65,9 @@ def test_parsing_function_basic():
 
 
 def test_employee_classes():
-    """Test employee-related classes."""
+    """
+    Test employee-related classes.
+    """
     import individual_employee_parser
 
     # Check for common employee class names
@@ -78,7 +86,9 @@ def test_employee_classes():
 
 
 def test_module_level_constants():
-    """Test module level constants if they exist."""
+    """
+    Test module level constants if they exist.
+    """
     import individual_employee_parser
 
     # Common constant names
