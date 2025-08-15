@@ -842,8 +842,8 @@ class VisualizationGenerator:
 
             # Save as HTML
             timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-            html_path = f"images/employee_simulation_interactive_dashboard_{timestamp}.html"
-            fig.write_html(html_path)
+            html_path = get_chart_path(f"employee_simulation_interactive_dashboard_{timestamp}.html")
+            fig.write_html(str(html_path))
 
             LOGGER.info(f"Interactive dashboard saved to: {html_path}")
             return html_path

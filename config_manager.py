@@ -89,8 +89,11 @@ class ConfigurationManager:
         """
         flat_config = {}
 
-        # Population settings
-        pop_config = nested_config.get("population", {})
+        # Handle new config structure with defaults section
+        defaults = nested_config.get("defaults", {})
+        
+        # Population settings - check defaults first, then direct keys for backwards compatibility
+        pop_config = defaults if defaults else nested_config.get("population", {})
 
         # Convert salary constraints string keys to integers if present
         salary_constraints = pop_config.get("salary_constraints")
@@ -107,8 +110,8 @@ class ConfigurationManager:
             }
         )
 
-        # Simulation settings
-        sim_config = nested_config.get("simulation", {})
+        # Simulation settings - check defaults.simulation first, then direct simulation key
+        sim_config = defaults.get("simulation", {}) if defaults else nested_config.get("simulation", {})
         flat_config.update(
             {
                 "max_cycles": sim_config.get("max_cycles", 15),
@@ -116,8 +119,8 @@ class ConfigurationManager:
             }
         )
 
-        # Export settings
-        export_config = nested_config.get("export", {})
+        # Export settings - check defaults.export first, then direct export key
+        export_config = defaults.get("export", {}) if defaults else nested_config.get("export", {})
         flat_config.update(
             {
                 "export_formats": export_config.get("export_formats", ["csv", "json"]),
@@ -127,8 +130,8 @@ class ConfigurationManager:
             }
         )
 
-        # Story tracking settings
-        story_config = nested_config.get("story_tracking", {})
+        # Story tracking settings - check defaults.story_tracking first, then direct story_tracking key
+        story_config = defaults.get("story_tracking", {}) if defaults else nested_config.get("story_tracking", {})
         flat_config.update(
             {
                 "enable_story_tracking": story_config.get("enable_story_tracking", False),
@@ -143,8 +146,8 @@ class ConfigurationManager:
             }
         )
 
-        # Logging settings
-        log_config = nested_config.get("logging", {})
+        # Logging settings - check defaults.logging first, then direct logging key
+        log_config = defaults.get("logging", {}) if defaults else nested_config.get("logging", {})
         flat_config.update(
             {
                 "log_level": log_config.get("log_level", "INFO"),
@@ -154,8 +157,8 @@ class ConfigurationManager:
             }
         )
 
-        # Advanced analysis settings
-        analysis_config = nested_config.get("advanced_analysis", {})
+        # Advanced analysis settings - check defaults.advanced_analysis first, then direct advanced_analysis key
+        analysis_config = defaults.get("advanced_analysis", {}) if defaults else nested_config.get("advanced_analysis", {})
         flat_config.update(
             {
                 "enable_advanced_analysis": analysis_config.get("enable_advanced_analysis", False),
@@ -184,9 +187,15 @@ class ConfigurationManager:
         Returns:
             Configuration dictionary for the scenario, or None if not found
         """
-        scenarios = self.base_config.get("user_stories", {}).get("scenarios", {})
+        # Check scenarios section first (new structure)
+        scenarios = self.base_config.get("scenarios", {})
         if scenario_name in scenarios:
             return scenarios[scenario_name]
+        
+        # Also check legacy locations for backwards compatibility
+        legacy_scenarios = self.base_config.get("user_stories", {}).get("scenarios", {})
+        if scenario_name in legacy_scenarios:
+            return legacy_scenarios[scenario_name]
 
         # Also check customization examples
         examples = self.base_config.get("customization_examples", {})
@@ -197,9 +206,16 @@ class ConfigurationManager:
 
     def list_scenarios(self) -> List[str]:
         """Get list of available scenario names."""
-        scenarios = list(self.base_config.get("user_stories", {}).get("scenarios", {}).keys())
+        # Get scenarios from new structure
+        scenarios = list(self.base_config.get("scenarios", {}).keys())
+        
+        # Also get from legacy locations
+        legacy_scenarios = list(self.base_config.get("user_stories", {}).get("scenarios", {}).keys())
         examples = list(self.base_config.get("customization_examples", {}).keys())
-        return scenarios + [name for name in examples if name != "description"]
+        
+        # Combine all scenarios and remove duplicates
+        all_scenarios = scenarios + legacy_scenarios + [name for name in examples if name != "description"]
+        return list(set(all_scenarios))
 
     def save_scenario(self, scenario_name: str, config: Dict[str, Any]) -> None:
         """Save a new scenario to the configuration file.

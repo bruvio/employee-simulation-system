@@ -386,7 +386,8 @@ class EmployeeStoryExplorer:
         plt.tight_layout()
 
         # Save the plot
-        plot_path = Path("employee_population_analysis.png")
+        from app_paths import get_chart_path
+        plot_path = get_chart_path("employee_population_analysis.png")
         plt.savefig(plot_path, dpi=300, bbox_inches="tight")
         plt.show()
 

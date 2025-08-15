@@ -182,6 +182,13 @@ class EmployeeSimulationOrchestrator:
             "summary_metrics": {},
         }
 
+        # Initialize run directories for organized output
+        enable_story_tracking = self.config.get("enable_story_tracking", False)
+        self.run_directories = self.file_manager.create_run_directory(
+            run_id=self.timestamp, enable_story_tracking=enable_story_tracking
+        )
+        self.smart_logger.log_info(f"Created run directory: {self.run_directories['run_root']}")
+
         try:
             # Phase 1: Generate Employee Population
             self.smart_logger.start_phase("Phase 1: Generate Employee Population", 4)
@@ -570,6 +577,13 @@ class EmployeeSimulationOrchestrator:
             "employee_stories": {},
         }
 
+        # Initialize run directories for organized output
+        enable_story_tracking = self.config.get("enable_story_tracking", False)
+        self.run_directories = self.file_manager.create_run_directory(
+            run_id=self.timestamp, enable_story_tracking=enable_story_tracking
+        )
+        self.smart_logger.log_info(f"Created run directory: {self.run_directories['run_root']}")
+
         try:
             # Phase 1: Generate Employee Population
             self.smart_logger.log_info("Phase 1: Generating employee population")
@@ -587,10 +601,7 @@ class EmployeeSimulationOrchestrator:
             self.story_tracker.add_cycle_data(0, population_data)
 
             # Save population data
-            if hasattr(self, "run_output_dir"):
-                population_filepath = self.run_output_dir / "population_data" / "employee_population.json"
-            else:
-                population_filepath = self.artifacts_dir / f"employee_population_{self.timestamp}.json"
+            population_filepath = self.run_directories["population_data"] / "employee_population.json"
 
             with open(population_filepath, "w") as f:
                 json.dump(population_data, f, indent=2, default=str)
