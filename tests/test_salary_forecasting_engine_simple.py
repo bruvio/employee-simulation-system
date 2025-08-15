@@ -1,22 +1,16 @@
 #!/usr/bin/env python3
-"""
-Simple tests for salary_forecasting_engine module.
-"""
+"""Simple tests for salary_forecasting_engine module."""
 
 
 def test_import_module():
-    """
-    Test that the module can be imported.
-    """
+    """Test that the module can be imported."""
     import salary_forecasting_engine
 
     assert hasattr(salary_forecasting_engine, "__file__")
 
 
 def test_forecasting_engine_class():
-    """
-    Test forecasting engine class exists.
-    """
+    """Test forecasting engine class exists."""
     import salary_forecasting_engine
 
     potential_classes = ["SalaryForecastingEngine", "ForecastingEngine", "SalaryForecaster"]

@@ -41,9 +41,7 @@ class AnalysisNarrator:
         }
 
     def _extract_company_context(self) -> Dict[str, Any]:
-        """
-        Extract relevant company context from configuration.
-        """
+        """Extract relevant company context from configuration."""
         context = {
             "population_size": self.config.get("population_size", 200),
             "has_salary_constraints": bool(self.config.get("salary_constraints")),
@@ -54,9 +52,7 @@ class AnalysisNarrator:
         return context
 
     def _format_salary_structure(self) -> Dict[str, str]:
-        """
-        Format salary constraints into user-friendly ranges.
-        """
+        """Format salary constraints into user-friendly ranges."""
         salary_constraints = self.config.get("salary_constraints")
         if not salary_constraints:
             return {}
@@ -80,9 +76,7 @@ class AnalysisNarrator:
         return formatted
 
     def start_analysis_narrative(self) -> str:
-        """
-        Generate opening narrative for analysis session.
-        """
+        """Generate opening narrative for analysis session."""
         context = self.company_context
 
         salary_structure_text = ""

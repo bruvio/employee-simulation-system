@@ -1,8 +1,6 @@
 #!/usr/bin/env python3
 
-"""
-Debug SmartLoggingManager.
-"""
+"""Debug SmartLoggingManager."""
 
 from smart_logging_manager import SmartLoggingManager
 

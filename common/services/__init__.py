@@ -1,3 +1,1 @@
-"""
-Services layer for business logic and shared functionality.
-"""
+"""Services layer for business logic and shared functionality."""

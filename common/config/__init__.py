@@ -1,3 +1,1 @@
-"""
-Configuration management and constants.
-"""
+"""Configuration management and constants."""

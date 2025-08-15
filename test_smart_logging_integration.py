@@ -1,16 +1,12 @@
 #!/usr/bin/env python3
 
-"""
-Quick test to verify SmartLoggingManager integration works.
-"""
+"""Quick test to verify SmartLoggingManager integration works."""
 
 import sys
 
 
 def test_smart_logging_integration():
-    """
-    Test that SmartLoggingManager integration works in orchestrator.
-    """
+    """Test that SmartLoggingManager integration works in orchestrator."""
 
     try:
         # Import the orchestrator with SmartLoggingManager
