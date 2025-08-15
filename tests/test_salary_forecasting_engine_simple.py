@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 """Simple tests for salary_forecasting_engine module."""
 
-from unittest.mock import MagicMock, patch
 
 
 def test_import_module():

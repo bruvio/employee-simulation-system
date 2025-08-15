@@ -1043,7 +1043,7 @@ def main():
             print(json_str)
         else:
             # Summary output
-            print(f"\n📊 Median Convergence Analysis")
+            print("\n📊 Median Convergence Analysis")
             print(f"{'='*50}")
             print(f"Total employees analyzed: {below_median_analysis['total_employees']}")
             print(
@@ -1058,7 +1058,7 @@ def main():
 
                 if "gender_analysis" in below_median_analysis:
                     gender_analysis = below_median_analysis["gender_analysis"]
-                    print(f"\n👥 Gender Analysis:")
+                    print("\n👥 Gender Analysis:")
                     for gender, data in gender_analysis.items():
                         if gender not in ["gender_disparity", "disparity_significant"]:
                             print(
@@ -1078,7 +1078,7 @@ def main():
                 )
                 print(f"Recommended action: {convergence_analysis['recommended_action']}")
 
-                print(f"\n💡 Intervention Recommendations:")
+                print("\n💡 Intervention Recommendations:")
                 rec = intervention_recommendations["recommended_strategy"]
                 print(f"Primary strategy: {rec['primary_strategy']}")
                 print(f"Budget required: £{rec['total_budget_required']:,.2f}")

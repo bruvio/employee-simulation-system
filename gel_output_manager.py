@@ -1,7 +1,6 @@
 #!/Users/brunoviola/bruvio-tools/.venv/bin/python3
 
 import json
-import os
 import shutil
 from datetime import datetime
 from pathlib import Path
@@ -413,7 +412,7 @@ if __name__ == "__main__":
     timestamp = datetime.utcnow()
     directories = manager.create_gel_run_directory(timestamp=timestamp)
 
-    print(f"Created directories:")
+    print("Created directories:")
     for name, path in directories.items():
         print(f"  {name}: {path}")
 

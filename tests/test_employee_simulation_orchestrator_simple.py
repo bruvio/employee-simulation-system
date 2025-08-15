@@ -1,9 +1,7 @@
 #!/usr/bin/env python3
 """Simple tests for employee_simulation_orchestrator module."""
 
-from unittest.mock import MagicMock, patch
 
-import pytest
 
 
 def test_import_module():

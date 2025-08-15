@@ -682,7 +682,7 @@ Examples:
             override_output_base(args.out)
             print(f"✅ Output directory set to: {args.out}")
             print(f"    → All simulation outputs will be saved to: {args.out}/run_YYYYMMDD_HHMMSS/")
-            print(f"    → This overrides SIM_OUTPUT_DIR environment variable")
+            print("    → This overrides SIM_OUTPUT_DIR environment variable")
         except (PermissionError, OSError, ValueError) as e:
             print(f"❌ Error with output directory '{args.out}': {e}")
             print("💡 Tips:")
@@ -873,7 +873,7 @@ def create_comprehensive_report(explorer, scenario, analysis_results):
             f.write("## Key Findings\n\n")
 
             # Population overview
-            f.write(f"### Population Overview\n")
+            f.write("### Population Overview\n")
             f.write(f"- **Total Employees**: {len(df):,}\n")
             f.write(f"- **Organizational Levels**: {df['level'].nunique()}\n")
             f.write(f"- **Salary Range**: £{df['salary'].min():,.0f} - £{df['salary'].max():,.0f}\n")
@@ -893,7 +893,7 @@ def create_comprehensive_report(explorer, scenario, analysis_results):
 
                 # Performance breakdown
                 perf_dist = target_employees["performance_rating"].value_counts()
-                f.write(f"- **Performance Distribution**:\n")
+                f.write("- **Performance Distribution**:\n")
                 for perf, count in perf_dist.items():
                     pct = (count / len(target_employees)) * 100
                     f.write(f"  - {perf}: {count} employees ({pct:.1f}%)\n")
@@ -937,7 +937,7 @@ def create_markdown_report(explorer, scenario):
             f.write("## Key Findings\n\n")
 
             # Population overview
-            f.write(f"### Population Overview\n")
+            f.write("### Population Overview\n")
             f.write(f"- **Total Employees**: {len(df):,}\n")
             f.write(f"- **Organizational Levels**: {df['level'].nunique()}\n")
             f.write(f"- **Salary Range**: £{df['salary'].min():,.0f} - £{df['salary'].max():,.0f}\n")
@@ -957,7 +957,7 @@ def create_markdown_report(explorer, scenario):
 
                 # Performance breakdown
                 perf_dist = target_employees["performance_rating"].value_counts()
-                f.write(f"- **Performance Distribution**:\n")
+                f.write("- **Performance Distribution**:\n")
                 for perf, count in perf_dist.items():
                     pct = (count / len(target_employees)) * 100
                     f.write(f"  - {perf}: {count} employees ({pct:.1f}%)\n")

@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 """Simple tests for setup module."""
 
-import pytest
 
 
 def test_setup_file_exists():

@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Comprehensive simple tests for all major modules to boost coverage rapidly."""
 
-from unittest.mock import MagicMock, patch
+from unittest.mock import patch
 
 
 def test_import_all_major_modules():

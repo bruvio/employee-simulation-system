@@ -571,7 +571,7 @@ Examples:
                 print(f"Gap Reduction: {format_percentage(recommended['gap_reduction_percent'])}")
                 print(f"Affected Employees: {recommended['affected_employees']}")
 
-            print(f"\nFull analysis available. Use without --dry-run to see complete report.")
+            print("\nFull analysis available. Use without --dry-run to see complete report.")
             return
 
         # Output handling

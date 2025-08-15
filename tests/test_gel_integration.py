@@ -1,6 +1,5 @@
 #!/Users/brunoviola/bruvio-tools/.venv/bin/python3
 
-import json
 import pytest
 import tempfile
 import shutil

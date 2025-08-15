@@ -3,9 +3,8 @@
 import argparse
 from datetime import datetime
 import json
-from pathlib import Path
 import sys
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List
 
 import pandas as pd
 
@@ -39,8 +38,6 @@ from visualization_generator import VisualizationGenerator
 from app_paths import (
     ensure_dirs,
     get_artifact_path,
-    get_chart_path,
-    get_table_path,
     get_population_size,
     RUN_DIR,
     ARTIFACTS_DIR,
@@ -1820,7 +1817,7 @@ def run_individual_employee_analysis(employee_data, config: Dict[str, Any]) -> N
     logger = get_smart_logger()
 
     # Display employee information
-    print(f"\n🧑‍💼 Individual Employee Analysis")
+    print("\n🧑‍💼 Individual Employee Analysis")
     print(f"{'='*50}")
     print(f"Employee: {employee_data.name}")
     print(f"Level: {employee_data.level}")
@@ -1889,7 +1886,7 @@ def run_individual_employee_analysis(employee_data, config: Dict[str, Any]) -> N
             1 / analysis_years
         ) - 1
 
-        print(f"\n💰 Financial Impact (Realistic Scenario):")
+        print("\n💰 Financial Impact (Realistic Scenario):")
         print(f"├─ Current Salary: £{current_salary:,.0f}")
         print(f"├─ Future Salary:  £{realistic_projection['expected_final_salary']:,.0f}")
         print(f"├─ Total Increase: £{realistic_increase:,.0f}")
@@ -1914,7 +1911,7 @@ def run_individual_employee_analysis(employee_data, config: Dict[str, Any]) -> N
             convergence_analysis = convergence_analyzer.analyze_convergence_timeline(employee_dict)
 
             if convergence_analysis.get("below_median", False):
-                print(f"\n⚠️  Below Median Analysis:")
+                print("\n⚠️  Below Median Analysis:")
                 print(f"├─ Current gap: {convergence_analysis.get('gap_percent', 0):.1%} below level median")
                 print(f"├─ Natural convergence: {convergence_analysis.get('natural_convergence_years', 'N/A')} years")
                 print(
@@ -1927,7 +1924,7 @@ def run_individual_employee_analysis(employee_data, config: Dict[str, Any]) -> N
             logger.log_warning(f"Could not perform median convergence analysis: {e}")
 
         # Performance path analysis
-        print(f"\n🎯 Performance Path Analysis:")
+        print("\n🎯 Performance Path Analysis:")
         performance_path = realistic_projection.get("performance_path", [])
         if performance_path:
             print(f"Expected performance trajectory over {analysis_years} years:")
@@ -1935,7 +1932,7 @@ def run_individual_employee_analysis(employee_data, config: Dict[str, Any]) -> N
                 print(f"Year {i}: {rating}")
 
         # Recommendations
-        print(f"\n💡 Recommendations:")
+        print("\n💡 Recommendations:")
         if employee_data.performance_rating in ["High Performing", "Exceeding"]:
             print("├─ Consider for accelerated development programs")
             print("├─ Evaluate for promotion opportunities")
@@ -2005,7 +2002,7 @@ def run_individual_employee_analysis(employee_data, config: Dict[str, Any]) -> N
                 chart_file = viz_dir / f"salary_projection_{employee_data.employee_id}_{timestamp}.html"
                 pyo.plot(fig, filename=str(chart_file), auto_open=False)
 
-                print(f"\n📈 Visualizations generated:")
+                print("\n📈 Visualizations generated:")
                 print(f"├─ {chart_file}")
                 logger.log_info(f"Generated salary projection chart: {chart_file}")
 
@@ -2024,7 +2021,7 @@ def run_individual_employee_analysis(employee_data, config: Dict[str, Any]) -> N
                 },
             )
 
-        print(f"\n✅ Individual analysis completed successfully")
+        print("\n✅ Individual analysis completed successfully")
 
     except Exception as e:
         logger.log_error(f"Individual employee analysis failed: {e}")
@@ -2508,13 +2505,13 @@ def main():
                 # Display dashboard information
                 if advanced_results.get("dashboard_files"):
                     dashboard_info = advanced_results["dashboard_files"]
-                    print(f"\n🎯 Management Dashboard: Generated")
+                    print("\n🎯 Management Dashboard: Generated")
                     print(f"  📊 Main Dashboard: {dashboard_info.get('main_dashboard', 'N/A')}")
                     print(f"  📈 Components: {dashboard_info.get('components_generated', 0)} interactive charts")
 
                     # Notify user about auto-opened dashboard
                     if orchestrator.config.get("auto_open_dashboard", True):
-                        print(f"  🌐 Dashboard automatically opened in browser")
+                        print("  🌐 Dashboard automatically opened in browser")
                     else:
                         print(f"  💡 Open dashboard manually: file://{dashboard_info.get('main_dashboard', '')}")
 

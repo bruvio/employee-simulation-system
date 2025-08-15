@@ -378,7 +378,7 @@ class SmartLoggingManager:
 
         # Phase breakdown
         if summary["phase_details"]:
-            print(f"\n📋 Phase Breakdown:")
+            print("\n📋 Phase Breakdown:")
             for phase_name, phase_info in summary["phase_details"].items():
                 status_icon = "✅" if phase_info["status"] == "completed" else "🔄"
                 duration = f"{phase_info['duration_seconds']:.1f}s" if phase_info["duration_seconds"] else "ongoing"

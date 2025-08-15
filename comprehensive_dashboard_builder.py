@@ -7,9 +7,8 @@ detailed explanations, and proper data source handling.
 
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List
 import json
-import os
 from urllib.parse import quote
 
 import pandas as pd

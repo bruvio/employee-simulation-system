@@ -6,13 +6,9 @@ Creates comprehensive, interactive dashboards with scenario overview,
 KPIs, visualizations, and file browser for all generated outputs.
 """
 
-import base64
-import json
-import os
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Union
-import mimetypes
+from typing import Any, Dict, List, Union
 
 import pandas as pd
 import plotly.graph_objects as go

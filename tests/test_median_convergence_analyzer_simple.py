@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 """Simple tests for median_convergence_analyzer module."""
 
-from unittest.mock import MagicMock, patch
 
 
 def test_import_module():

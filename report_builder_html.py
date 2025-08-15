@@ -1,17 +1,10 @@
 #!/Users/brunoviola/bruvio-tools/.venv/bin/python3
 
-import base64
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Union
-import json
+from typing import Any, Dict, Optional, Union
 
-import matplotlib.pyplot as plt
-import numpy as np
-import pandas as pd
 import plotly.graph_objects as go
-import plotly.offline as offline
-from plotly.subplots import make_subplots
 
 from logger import LOGGER
 
@@ -950,7 +943,7 @@ class HTMLReportBuilder:
                     margin=dict(l=50, r=50, t=50, b=50),
                 )
 
-                charts["population_chart"] = f'<div id="population-chart"></div>'
+                charts["population_chart"] = '<div id="population-chart"></div>'
                 charts[
                     "plotly_init"
                 ] = f"""

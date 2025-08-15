@@ -1,9 +1,8 @@
 #!/usr/bin/env python3
 """Simple tests for file_optimization_manager module."""
 
-from unittest.mock import MagicMock, patch
+from unittest.mock import patch
 
-import pytest
 
 
 def test_import_module():

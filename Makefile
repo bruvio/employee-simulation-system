@@ -10,12 +10,21 @@ help:
 	@echo "  black               - Format code with black"
 	@echo "  black-check         - Check code formatting with black"
 	@echo "  flake               - Run flake8 linting"
-	@echo "  test                - Run unit tests"
+	@echo "  pytest              - Run unit tests (verbose)"
 	@echo "  pip-compile         - Compile requirements"
 	@echo "  pip-upgrade         - Upgrade requirements"
 	@echo "  run                 - Run the application"
 	@echo "  analyze-individual  - Run individual employee analysis (set EMPLOYEE_DATA)"
 	@echo "  clean               - Clean temporary files"
+	@echo "  coverage            - Coverage report"
+	@echo "  unit                - Run all tests and generate coverage"
+	@echo "  lint-fix            - Auto-fix lint issues (ruff+isort+docformatter+black) then run flake8"
+	@echo "  format              - Apply isort+docformatter+black (no linting)"
+	@echo "  ruff                - Run ruff checks"
+	@echo "  isort               - Sort imports"
+	@echo "  docformat           - Format docstrings with docformatter"
+	@echo "  autoflake-fix       - Remove unused imports/vars with autoflake (optional)"
+	@echo "  tools-install       - Install dev lint/format tools (ruff, isort, docformatter, black, autoflake)"
 
 .PHONY: black
 black:
@@ -27,7 +36,7 @@ black-check:
 
 .PHONY: flake
 flake:
-	flake8 . 
+	flake8 .
 
 .PHONY: pytest
 pytest:
@@ -69,5 +78,50 @@ coverage:  ## coverage report
 
 .PHONY: unit
 unit: | pytest coverage  ## run all tests and test coverage
+
+# ---- Auto-remediation & formatting helpers ----
+.PHONY: lint-fix
+lint-fix:
+	# 1) Broad lint autofix (unused imports/vars, pycodestyle fixes)
+	ruff check . --fix --line-length 120
+	# 2) Canonicalize imports (fixes I101 and friends)
+	isort .
+	# 3) Docstrings (fix D200 and other simple docstring issues)
+	docformatter -r -i .
+	# 4) Final formatting pass (also cleans trailing whitespace)
+	black --line-length=120 .
+	# 5) Verify with your existing flake8 config
+	flake8 .
+
+.PHONY: format
+format:
+	isort .
+	docformatter -r -i .
+	black --line-length=120 .
+
+.PHONY: ruff
+ruff:
+	ruff check . --line-length 120
+
+.PHONY: isort
+isort:
+	isort .
+
+.PHONY: docformat
+docformat:
+	docformatter -r -i .
+
+.PHONY: autoflake-fix
+autoflake-fix:
+	autoflake -r -i \
+	  --remove-all-unused-imports \
+	  --remove-unused-variables \
+	  --expand-star-imports \
+	  --ignore-init-module-imports \
+	  .
+
+.PHONY: tools-install
+tools-install:
+	pip install --upgrade ruff isort docformatter black autoflake
 
 .DEFAULT_GOAL := help

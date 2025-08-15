@@ -1,9 +1,7 @@
 #!/usr/bin/env python3
 """Simple tests for analysis_narrator module."""
 
-from unittest.mock import MagicMock, patch
 
-import pytest
 
 
 def test_import_module():

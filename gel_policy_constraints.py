@@ -211,7 +211,7 @@ class GELPolicyConstraints:
                 else 0,
             }
 
-        self.logger.info(f"Budget optimization complete:")
+        self.logger.info("Budget optimization complete:")
         self.logger.info(f"  Total employees affected: {total_employees_affected}")
         self.logger.info(f"  Total intervention cost: £{total_cost:,.2f}")
         self.logger.info(

@@ -3,7 +3,6 @@
 import argparse
 from datetime import datetime
 import json
-from pathlib import Path
 
 from openpyxl.styles import Alignment, Font, PatternFill
 import pandas as pd

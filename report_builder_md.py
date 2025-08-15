@@ -2,7 +2,7 @@
 
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Union
+from typing import Any, Dict, Union
 
 from logger import LOGGER
 
@@ -203,7 +203,7 @@ graph TD
         """Generate inequality and risk analysis section."""
         inequality_data = analysis_payload.get("inequality_analysis", {})
 
-        content = f"""## 4. Inequality & Risk Analysis {{#inequality}}
+        content = """## 4. Inequality & Risk Analysis {#inequality}
 
 ### Key Findings
 

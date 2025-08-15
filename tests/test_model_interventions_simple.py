@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Simple tests for model_interventions module."""
 
-from unittest.mock import MagicMock, patch
+from unittest.mock import patch
 
 
 def test_import_module():

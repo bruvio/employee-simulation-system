@@ -1207,7 +1207,7 @@ def main():
             print(json.dumps(remediation_result, indent=2, default=str))
         else:
             # Summary output
-            print(f"\n💼 Gender Pay Gap Remediation Analysis")
+            print("\n💼 Gender Pay Gap Remediation Analysis")
             print(f"{'='*60}")
 
             current = remediation_result["current_state"]
@@ -1219,7 +1219,7 @@ def main():
             print(f"  Total payroll: £{current['total_payroll']:,.0f}")
 
             target = remediation_result["target_state"]
-            print(f"\nTarget State:")
+            print("\nTarget State:")
             print(f"  Target gap: {target['target_gap_percent']:.1f}%")
             print(
                 f"  Budget limit: £{target['budget_constraint_amount']:,.0f} ({target['budget_constraint_percent']:.1%})"
@@ -1237,7 +1237,7 @@ def main():
             print(f"  Final gap: {recommended['projected_final_gap']:.1f}%")
             print(f"  Feasibility: {recommended['feasibility']}")
 
-            print(f"\n📊 Strategy Comparison:")
+            print("\n📊 Strategy Comparison:")
             for strategy_name, strategy in remediation_result["available_strategies"].items():
                 if strategy.get("applicable", True):
                     print(

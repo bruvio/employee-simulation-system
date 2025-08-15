@@ -1,8 +1,6 @@
 #!/Users/brunoviola/bruvio-tools/.venv/bin/python3
 
 import pytest
-import pandas as pd
-from unittest.mock import patch, MagicMock
 
 from gel_policy_constraints import GELPolicyConstraints
 

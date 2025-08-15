@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 """Simple tests for debug_smart_logger module."""
 
-import pytest
 
 
 def test_import_module():
