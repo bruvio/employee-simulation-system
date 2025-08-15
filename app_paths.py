@@ -71,9 +71,7 @@ def get_population_size(cfg: dict, cli_value: Optional[int] = None) -> tuple[int
 
 
 def ensure_dirs() -> None:
-    """
-    Create all required output directories.
-    """
+    """Create all required output directories."""
     for d in (ARTIFACTS_DIR, CHARTS_DIR, TABLES_DIR):
         d.mkdir(parents=True, exist_ok=True)
 

@@ -226,9 +226,7 @@ class GELPolicyConstraints:
         return optimized_allocations
 
     def _generate_synthetic_hierarchy(self) -> List[int]:
-        """
-        Generate synthetic manager hierarchy for testing.
-        """
+        """Generate synthetic manager hierarchy for testing."""
         # Simple algorithm: assign managers based on levels
         manager_ids = []
         next_manager_id = 1000  # Start manager IDs at 1000
@@ -251,9 +249,7 @@ class GELPolicyConstraints:
         return manager_ids
 
     def _calculate_level_gender_medians(self) -> Dict[Tuple[int, str], float]:
-        """
-        Calculate median salaries by level and gender.
-        """
+        """Calculate median salaries by level and gender."""
         medians = {}
 
         for (level, gender), group in self.population_df.groupby(["level", "gender"]):
@@ -262,9 +258,7 @@ class GELPolicyConstraints:
         return medians
 
     def _is_below_median(self, employee: pd.Series, medians: Dict[Tuple[int, str], float]) -> bool:
-        """
-        Check if employee is below median for their level and gender.
-        """
+        """Check if employee is below median for their level and gender."""
         level = employee.get("level", 1)
         gender = employee.get("gender", "Unknown")
         median_key = (level, gender)
@@ -283,9 +277,7 @@ class GELPolicyConstraints:
     def _calculate_intervention_potential(
         self, employee: pd.Series, medians: Dict[Tuple[int, str], float], available_budget: float
     ) -> Dict[str, Any]:
-        """
-        Calculate intervention potential for an employee.
-        """
+        """Calculate intervention potential for an employee."""
         level = employee.get("level", 1)
         gender = employee.get("gender", "Unknown")
         current_salary = employee["salary"]

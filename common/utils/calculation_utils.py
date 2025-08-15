@@ -1,6 +1,4 @@
-"""
-Centralized calculation utilities for the employee simulation system.
-"""
+"""Centralized calculation utilities for the employee simulation system."""
 
 from datetime import datetime
 import math
