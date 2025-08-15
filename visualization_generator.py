@@ -1,5 +1,8 @@
 #!/Users/brunoviola/bruvio-tools/.venv/bin/python3
 
+# Import centralized path management
+from app_paths import get_chart_path
+
 import argparse
 from datetime import datetime
 import json
@@ -863,12 +866,12 @@ class VisualizationGenerator:
 
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
 
-        # Save as PNG
-        png_filepath = f"/Users/brunoviola/bruvio-tools/images/employee_simulation_{filename}_{timestamp}.png"
+        # Save as PNG using centralized path
+        png_filepath = get_chart_path(f"employee_simulation_{filename}_{timestamp}.png")
         fig.savefig(png_filepath, dpi=300, bbox_inches="tight", facecolor="white", edgecolor="none")
 
         # Also save as HTML using plotly for interactivity (if possible)
-        html_filepath = f"/Users/brunoviola/bruvio-tools/images/employee_simulation_{filename}_{timestamp}.html"
+        html_filepath = get_chart_path(f"employee_simulation_{filename}_{timestamp}.html")
 
         try:
             # Convert matplotlib to plotly for interactivity
@@ -940,7 +943,7 @@ class VisualizationGenerator:
 
         # Save interactive dashboard
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-        dashboard_filepath = f"/Users/brunoviola/bruvio-tools/images/employee_simulation_dashboard_{timestamp}.html"
+        dashboard_filepath = get_chart_path(f"employee_simulation_dashboard_{timestamp}.html")
         fig.write_html(dashboard_filepath)
 
         LOGGER.info(f"Interactive dashboard saved: {dashboard_filepath}")
@@ -953,7 +956,7 @@ def create_parser():
     parser.add_argument("--population-file", help="JSON file with population data")
     parser.add_argument("--inequality-file", help="CSV file with inequality progression data")
     parser.add_argument(
-        "--output-dir", default="/Users/brunoviola/bruvio-tools/images/", help="Output directory for visualizations"
+        "--output-dir", default=None, help="Output directory for visualizations (uses centralized paths if not specified)"
     )
     parser.add_argument("--interactive", action="store_true", help="Create interactive dashboard")
 

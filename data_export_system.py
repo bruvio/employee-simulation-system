@@ -9,6 +9,7 @@ from openpyxl.styles import Alignment, Font, PatternFill
 import pandas as pd
 
 from logger import LOGGER
+from app_paths import get_artifact_path, get_table_path
 
 
 class DataExportSystem:
@@ -17,11 +18,10 @@ class DataExportSystem:
     Supports CSV, Excel, and JSON formats with enhanced formatting.
     """
 
-    def __init__(self, output_dir="artifacts"):
-        self.output_dir = Path(output_dir)
-        self.output_dir.mkdir(exist_ok=True)
+    def __init__(self, output_dir=None):
+        # Use centralized paths instead of hardcoded directory
         self.timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-        LOGGER.info(f"Initialized data export system with output directory: {self.output_dir}")
+        LOGGER.info("Initialized data export system with centralized paths")
 
     def export_employee_population(self, population_data, format_types=None):
         """Export employee population data in multiple formats.
@@ -49,21 +49,21 @@ class DataExportSystem:
 
         # CSV Export
         if "csv" in format_types:
-            csv_path = self.output_dir / f"{base_filename}.csv"
+            csv_path = get_table_path(f"{base_filename}.csv")
             df.to_csv(csv_path, index=False)
             exported_files["csv"] = csv_path
             LOGGER.info(f"CSV export completed: {csv_path}")
 
         # Excel Export with enhanced formatting
         if "excel" in format_types:
-            excel_path = self.output_dir / f"{base_filename}.xlsx"
+            excel_path = get_table_path(f"{base_filename}.xlsx")
             self._export_excel_population(df, excel_path)
             exported_files["excel"] = excel_path
             LOGGER.info(f"Excel export completed: {excel_path}")
 
         # JSON Export with metadata
         if "json" in format_types:
-            json_path = self.output_dir / f"{base_filename}.json"
+            json_path = get_artifact_path(f"{base_filename}.json")
             self._export_json_population(df, json_path)
             exported_files["json"] = json_path
             LOGGER.info(f"JSON export completed: {json_path}")
@@ -100,21 +100,21 @@ class DataExportSystem:
 
         # CSV Export
         if "csv" in format_types:
-            csv_path = self.output_dir / f"{base_filename}_inequality.csv"
+            csv_path = get_table_path(f"{base_filename}_inequality.csv")
             df.to_csv(csv_path, index=False)
             exported_files["csv"] = csv_path
             LOGGER.info(f"Simulation CSV export completed: {csv_path}")
 
         # Excel Export with multiple sheets
         if "excel" in format_types:
-            excel_path = self.output_dir / f"{base_filename}.xlsx"
+            excel_path = get_table_path(f"{base_filename}.xlsx")
             self._export_excel_simulation(simulation_data, excel_path)
             exported_files["excel"] = excel_path
             LOGGER.info(f"Simulation Excel export completed: {excel_path}")
 
         # JSON Export
         if "json" in format_types:
-            json_path = self.output_dir / f"{base_filename}.json"
+            json_path = get_artifact_path(f"{base_filename}.json")
             self._export_json_simulation(simulation_data, json_path)
             exported_files["json"] = json_path
             LOGGER.info(f"Simulation JSON export completed: {json_path}")
@@ -145,14 +145,14 @@ class DataExportSystem:
 
         # Excel Export with comprehensive dashboard
         if "excel" in format_types:
-            excel_path = self.output_dir / f"{base_filename}.xlsx"
+            excel_path = get_table_path(f"{base_filename}.xlsx")
             self._export_excel_analysis(population_data, simulation_results, analysis_summary, excel_path)
             exported_files["excel"] = excel_path
             LOGGER.info(f"Analysis Excel report completed: {excel_path}")
 
         # JSON Export with nested structure
         if "json" in format_types:
-            json_path = self.output_dir / f"{base_filename}.json"
+            json_path = get_artifact_path(f"{base_filename}.json")
             self._export_json_analysis(population_data, simulation_results, analysis_summary, json_path)
             exported_files["json"] = json_path
             LOGGER.info(f"Analysis JSON report completed: {json_path}")

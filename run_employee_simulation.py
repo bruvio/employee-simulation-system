@@ -43,6 +43,8 @@ try:
     from intervention_strategy_simulator import InterventionStrategySimulator
     from logger import LOGGER
     from median_convergence_analyzer import MedianConvergenceAnalyzer
+    # Import path management
+    from app_paths import override_output_base, validate_output_path
 except ImportError as e:
     print(f"❌ Could not import required modules: {e}")
     print("Make sure you're running from the correct directory")
@@ -121,7 +123,7 @@ class EmployeeStoryExplorer:
 
         try:
             print("🔄 Generating employee population and running simulation...")
-            orchestrator = EmployeeSimulationOrchestrator(config=config)
+            orchestrator = EmployeeSimulationOrchestrator(config=config, cli_population_size=population_size)
 
             # Get results - handle the orchestrator's return format
             raw_results = orchestrator.run_with_story_tracking()
@@ -620,7 +622,8 @@ Examples:
     )
 
     # Population generation parameters
-    parser.add_argument("--population-size", type=int, default=1000, help="Population size to generate (default: 1000)")
+    parser.add_argument("--population-size", type=int, help="Population size to generate (required)")
+    parser.add_argument("--out", help="Output directory for all simulation results")
     parser.add_argument(
         "--random-seed", type=int, default=42, help="Random seed for reproducible results (default: 42)"
     )
@@ -668,6 +671,22 @@ Examples:
         return
 
     args = parser.parse_args()
+
+    # Handle output directory override
+    if args.out:
+        try:
+            validate_output_path(Path(args.out))
+            override_output_base(args.out)
+            print(f"✅ Output directory set to: {args.out}")
+        except (PermissionError, OSError) as e:
+            print(f"❌ Error with output directory: {e}")
+            sys.exit(1)
+
+    # Validate population size requirement
+    if not args.population_size:
+        print("❌ Error: --population-size is required")
+        parser.print_help()
+        sys.exit(1)
 
     explorer = EmployeeStoryExplorer()
 

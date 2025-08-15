@@ -5,7 +5,7 @@ from datetime import datetime
 import json
 from pathlib import Path
 import sys
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Optional
 
 import pandas as pd
 
@@ -35,6 +35,12 @@ from review_cycle_simulator import ReviewCycleSimulator
 from smart_logging_manager import SmartLoggingManager, get_smart_logger
 from visualization_generator import VisualizationGenerator
 
+# Import centralized path management
+from app_paths import (
+    ensure_dirs, get_artifact_path, get_chart_path, get_table_path,
+    get_population_size, RUN_DIR, ARTIFACTS_DIR, CHARTS_DIR, TABLES_DIR
+)
+
 
 class EmployeeSimulationOrchestrator:
     """Main orchestrator for the complete employee population simulation system.
@@ -46,40 +52,54 @@ class EmployeeSimulationOrchestrator:
     Returns:
     """
 
-    def __init__(self, config=None):
+    def __init__(self, config=None, cli_population_size=None):
         self.config = config or self._load_config_with_fallback()
         self.timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-        self.artifacts_dir = Path("artifacts")
-        self.images_dir = Path("images")
+        
+        # Ensure output directories exist
+        ensure_dirs()
+        
+        # Set up centralized paths
+        self.artifacts_dir = ARTIFACTS_DIR
+        self.charts_dir = CHARTS_DIR
+        self.tables_dir = TABLES_DIR
 
-        # Initialize smart logging manager
+        # Initialize smart logging manager with centralized paths
         log_level = self.config.get("log_level", "INFO")
         enable_progress = self.config.get("enable_progress_bar", True)
         self.smart_logger = SmartLoggingManager(
             log_level=log_level,
             enable_progress_indicators=enable_progress,
             log_file_path=(
-                f"artifacts/simulation_log_{self.timestamp}.log"
+                str(get_artifact_path(f"simulation_log_{self.timestamp}.log"))
                 if self.config.get("enable_file_logging", False)
                 else None
             ),
             suppress_noisy_libraries=True,
         )
         self.logger = self.smart_logger.get_logger("EmployeeSimulationOrchestrator")
+        
+        # Enforce and log population size
+        try:
+            population_size, source = get_population_size(self.config, cli_population_size)
+            self.population_size = population_size
+            self.logger.info(f"Effective population size: {population_size:,} (source: {source})")
+        except (KeyError, ValueError) as e:
+            self.logger.error(f"Population size configuration error: {e}")
+            raise
 
         # Initialize performance optimization manager
         self.performance_manager = PerformanceOptimizationManager(smart_logger=self.smart_logger)
 
         # Apply performance optimizations based on population size
-        population_size = self.config.get("population_size", 1000)
         enable_story_tracking = self.config.get("enable_story_tracking", False)
         self.performance_optimizations = self.performance_manager.apply_performance_optimizations(
             population_size=population_size, enable_story_tracking=enable_story_tracking
         )
 
-        # Initialize file optimization manager
+        # Initialize file optimization manager with centralized paths
         self.file_manager = FileOptimizationManager(
-            base_output_dir=str(self.artifacts_dir), base_images_dir=str(self.images_dir)
+            base_output_dir=str(self.artifacts_dir), base_images_dir=str(self.charts_dir)
         )
 
         # Initialize story tracker if enabled
@@ -88,14 +108,9 @@ class EmployeeSimulationOrchestrator:
             self.story_tracker = EmployeeStoryTracker()
             self.smart_logger.log_info("Story tracking enabled")
 
-        # Create structured run directory
-        self.run_directories = self.file_manager.create_run_directory(
-            run_id=self.timestamp, enable_story_tracking=self.config.get("enable_story_tracking", False)
-        )
-
-        # Set convenience references for backward compatibility
-        self.run_output_dir = self.run_directories["run_root"]
-        self.run_images_dir = self.run_directories["images_root"]
+        # Set convenience references using centralized paths
+        self.run_output_dir = RUN_DIR
+        self.run_images_dir = self.charts_dir
 
         self.smart_logger.log_success(f"Initialized employee simulation orchestrator with timestamp: {self.timestamp}")
 
@@ -113,7 +128,7 @@ class EmployeeSimulationOrchestrator:
     def _get_default_config(self):
         """Get default simulation configuration."""
         return {
-            "population_size": 1000,
+            # Note: No default population_size - must be explicitly configured
             "random_seed": 42,
             "max_cycles": 15,
             "convergence_threshold": 0.001,
@@ -171,7 +186,7 @@ class EmployeeSimulationOrchestrator:
             # Phase 1: Generate Employee Population
             self.smart_logger.start_phase("Phase 1: Generate Employee Population", 4)
             population_generator = EmployeePopulationGenerator(
-                population_size=self.config["population_size"],
+                population_size=self.population_size,
                 random_seed=self.config["random_seed"],
                 level_distribution=self.config.get("level_distribution"),
                 gender_pay_gap_percent=self.config.get("gender_pay_gap_percent"),
@@ -180,7 +195,7 @@ class EmployeeSimulationOrchestrator:
 
             population_data = population_generator.generate_population()
             population_filename = f"employee_population_{self.timestamp}.json"
-            population_filepath = self.artifacts_dir / population_filename
+            population_filepath = get_artifact_path(population_filename)
 
             # Save population data
             with open(population_filepath, "w") as f:
@@ -220,7 +235,7 @@ class EmployeeSimulationOrchestrator:
                 "converged": len(inequality_progression) < self.config["max_cycles"] + 1,
             }
             simulation_filename = f"simulation_results_{self.timestamp}.json"
-            simulation_filepath = self.artifacts_dir / simulation_filename
+            simulation_filepath = get_artifact_path(simulation_filename)
 
             # Save simulation results (with DataFrame conversion)
             serializable_results = self._make_serializable(simulation_results)
@@ -559,7 +574,7 @@ class EmployeeSimulationOrchestrator:
             # Phase 1: Generate Employee Population
             self.smart_logger.log_info("Phase 1: Generating employee population")
             population_generator = EmployeePopulationGenerator(
-                population_size=self.config["population_size"],
+                population_size=self.population_size,
                 random_seed=self.config["random_seed"],
                 level_distribution=self.config.get("level_distribution"),
                 gender_pay_gap_percent=self.config.get("gender_pay_gap_percent"),
@@ -697,7 +712,7 @@ class EmployeeSimulationOrchestrator:
             }
 
             simulation_filename = f"simulation_results_{self.timestamp}.json"
-            simulation_filepath = self.artifacts_dir / simulation_filename
+            simulation_filepath = get_artifact_path(simulation_filename)
 
             serializable_results = self._make_serializable(simulation_results)
             with open(simulation_filepath, "w") as f:
@@ -869,7 +884,7 @@ class EmployeeSimulationOrchestrator:
         if population_data is None:
             self.smart_logger.log_info("Generating population for advanced analysis")
             population_generator = EmployeePopulationGenerator(
-                population_size=self.config["population_size"],
+                population_size=self.population_size,
                 random_seed=self.config["random_seed"],
                 level_distribution=self.config.get("level_distribution"),
                 gender_pay_gap_percent=self.config.get("gender_pay_gap_percent"),
