@@ -909,9 +909,14 @@ class HTMLReportBuilder:
             <tbody>"""
 
             for role in roles[:10]:  # Show first 10 roles
-                title = role.get("title", "Unknown")
-                min_salary = min(role.get("min_salaries", [0]))
-                notes = role.get("notes", "")
+                title = getattr(role, "title", "Unknown") if hasattr(role, "title") else role.get("title", "Unknown")
+                min_salaries = (
+                    getattr(role, "min_salaries", [0])
+                    if hasattr(role, "min_salaries")
+                    else role.get("min_salaries", [0])
+                )
+                min_salary = min(min_salaries)
+                notes = getattr(role, "notes", "") if hasattr(role, "notes") else role.get("notes", "")
                 content += f"""
                 <tr>
                     <td>{title}</td>

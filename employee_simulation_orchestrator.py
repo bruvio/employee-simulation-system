@@ -2240,7 +2240,9 @@ def run_gel_reporting(orchestrator, simulation_results, config):
 
         # Create temporary files first
         temp_md = md_builder.build_gel_report(analysis_payload, manifest_data, "report.md")
-        temp_html = html_builder.build_gel_report(analysis_payload, manifest_data, run_dirs["assets"], "index.html")
+        temp_html = html_builder.build_gel_report(
+            analysis_payload, manifest_data, assets_dir=run_dirs["assets"], output_file="index.html"
+        )
 
         # Generate professional dashboard
         from professional_dashboard_builder import ProfessionalDashboardBuilder
