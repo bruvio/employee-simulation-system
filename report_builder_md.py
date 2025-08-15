@@ -1,4 +1,4 @@
-#!/Users/brunoviola/bruvio-tools/.venv/bin/python3
+#!/usr/bin/env python3
 
 from datetime import datetime
 from pathlib import Path
@@ -124,7 +124,7 @@ flowchart LR
     
     subgraph "Analysis Modules"
         D1[Median Convergence]
-        D2[Gender Gap Analysis] 
+        D2[Gender Gap Analysis]
         D3[High Performer Identification]
         D4[Intervention Modeling]
     end
@@ -189,7 +189,7 @@ graph TD
     A --> C[Managers]
     
     B --> B1[Junior Levels 1-2]
-    B --> B2[Mid Levels 3-4] 
+    B --> B2[Mid Levels 3-4]
     B --> B3[Senior Levels 5-6]
     
     C --> C1[Team Leads]

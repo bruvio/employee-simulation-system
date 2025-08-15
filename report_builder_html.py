@@ -1,4 +1,4 @@
-#!/Users/brunoviola/bruvio-tools/.venv/bin/python3
+#!/usr/bin/env python3
 
 from datetime import datetime
 from pathlib import Path
@@ -452,7 +452,7 @@ class HTMLReportBuilder:
                 
                 subgraph "Analysis Modules"
                     D1[Median Convergence]
-                    D2[Gender Gap Analysis] 
+                    D2[Gender Gap Analysis]
                     D3[High Performer Identification]
                     D4[Intervention Modeling]
                 end
