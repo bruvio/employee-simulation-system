@@ -175,13 +175,11 @@ class TestGELPolicyConstraints:
         interventions = policy.prioritize_interventions(managers)
 
         # Find high performer below median (should be priority 1)
-        priority_1_found = False
         for manager_interventions in interventions.values():
             for intervention in manager_interventions:
                 if intervention["priority"] == 1:
                     assert intervention["is_below_median"] is True
                     assert intervention["is_high_performer"] is True
-                    priority_1_found = True
                     break
 
         # Should find at least one priority 1 intervention
