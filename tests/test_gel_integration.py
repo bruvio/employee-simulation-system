@@ -19,7 +19,7 @@ class TestGELIntegration:
     Integration tests for complete GEL workflow.
     """
 
-    def setUp(self):
+    def setup_method(self):
         """
         Set up test fixtures.
         """
@@ -41,7 +41,7 @@ class TestGELIntegration:
         }
         self.sample_payload = create_sample_analysis_payload()
 
-    def tearDown(self):
+    def teardown_method(self):
         """
         Clean up test fixtures.
         """

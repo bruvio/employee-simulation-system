@@ -10,7 +10,7 @@ class TestGELPolicyConstraints:
     Test GEL policy constraints functionality.
     """
 
-    def setUp(self):
+    def setup_method(self):
         """
         Set up test fixtures.
         """

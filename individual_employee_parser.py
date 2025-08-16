@@ -19,7 +19,7 @@ Date: 2025-08-11
 
 from typing import Any, Dict
 
-from pydantic import BaseModel, Field, ValidationError, validator
+from pydantic import BaseModel, Field, ValidationError, field_validator
 
 
 class EmployeeData(BaseModel):
@@ -46,7 +46,8 @@ class EmployeeData(BaseModel):
     tenure_years: int = Field(default=1, ge=0, description="Years of service")
     department: str = Field(default="Engineering", description="Department name")
 
-    @validator("performance_rating")
+    @field_validator("performance_rating")
+    @classmethod
     def validate_performance_rating(cls, v):
         """
         Validate performance rating against allowed values.
@@ -56,7 +57,8 @@ class EmployeeData(BaseModel):
             raise ValueError(f"Performance rating must be one of: {', '.join(allowed_ratings)}")
         return v
 
-    @validator("gender")
+    @field_validator("gender")
+    @classmethod
     def validate_gender(cls, v):
         """
         Validate gender against allowed values.
@@ -66,15 +68,16 @@ class EmployeeData(BaseModel):
             raise ValueError(f"Gender must be one of: {', '.join(allowed_genders)}")
         return v
 
-    @validator("salary")
-    def validate_salary_level_range(cls, salary, values):
+    @field_validator("salary")
+    @classmethod
+    def validate_salary_level_range(cls, salary, info):
         """
         Validate salary is within expected range for the level.
         """
-        if "level" not in values:
+        if not hasattr(info, "data") or "level" not in info.data:
             return salary
 
-        level = values["level"]
+        level = info.data["level"]
 
         # Define expected salary ranges by level (from PLANNING.md)
         level_ranges = {

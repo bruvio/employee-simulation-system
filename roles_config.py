@@ -38,7 +38,7 @@ class Role(BaseModel):
     """
 
     title: str = Field(description="Job title or role name")
-    min_salaries: List[float] = Field(description="List of minimum salaries (supports multiple bands)", min_items=1)
+    min_salaries: List[float] = Field(description="List of minimum salaries (supports multiple bands)", min_length=1)
     headcount_hint: Optional[int] = Field(default=None, ge=0, description="Optional expected headcount for planning")
     notes: Optional[str] = Field(default=None, description="Optional descriptive notes")
 

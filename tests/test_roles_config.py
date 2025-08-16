@@ -6,6 +6,7 @@ import tempfile
 
 import pytest
 import yaml
+from pydantic import ValidationError
 
 from roles_config import InterventionPolicy, Role, RolesConfig, RolesConfigLoader, create_example_config
 
@@ -47,7 +48,7 @@ class TestRole:
         """
         Test validation fails with empty salaries.
         """
-        with pytest.raises(ValueError, match="min_salaries cannot be empty"):
+        with pytest.raises(ValidationError, match="at least 1 item"):
             Role(title="Engineer", min_salaries=[])
 
     def test_role_validation_negative_salary(self):
@@ -154,7 +155,7 @@ class TestRolesConfigLoader:
     Test roles configuration loader.
     """
 
-    def setUp(self):
+    def setup_method(self):
         """
         Set up test fixtures.
         """
