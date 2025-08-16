@@ -2,6 +2,19 @@
 
 
 def clean_file(filename):
+    """
+    clean_file _summary_
+
+    Parameters
+    ----------
+    filename : _type_
+        _description_
+
+    Returns
+    -------
+    _type_
+        _description_
+    """
     try:
         with open(filename, "r") as f:
             content = f.read()
