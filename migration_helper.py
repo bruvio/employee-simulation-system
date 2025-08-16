@@ -30,13 +30,13 @@ def main():
 Examples:
   # Check what migration is needed
   python migration_helper.py --check
-  
+
   # Full migration: assess, backup, and provide cleanup instructions
   python migration_helper.py --migrate
-  
+
   # Just remove empty legacy directories
   python migration_helper.py --clean-empty
-  
+
   # Show detailed migration strategy
   python migration_helper.py --strategy
         """,

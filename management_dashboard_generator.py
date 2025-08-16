@@ -670,7 +670,7 @@ class ManagementDashboardGenerator:
         <p>Comprehensive Analysis & Management Recommendations</p>
         <p style="font-size: 0.9em; opacity: 0.8;">Generated on {datetime.now().strftime('%B %d, %Y at %I:%M %p')}</p>
     </div>
-    
+
     <!-- Key Metrics Overview -->
     <div class="metrics-grid">
         <div class="metric-card">
@@ -690,13 +690,13 @@ class ManagementDashboardGenerator:
             <div class="metric-label">Remediation Cost</div>
         </div>
     </div>
-    
+
     <!-- Executive Insights -->
     <div class="insights-panel">
         <h3>🎯 Key Insights</h3>
         {''.join(f'<div class="insight-item">💡 {insight}</div>' for insight in executive_summary.get('key_insights', []))}
     </div>
-    
+
     <!-- Recommended Actions -->
     <div class="insights-panel">
         <h3>⚡ Immediate Action Items</h3>

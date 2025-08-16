@@ -90,11 +90,11 @@ class HTMLReportBuilder:
         {self._generate_appendix_section(manifest, analysis_payload)}
         {self._generate_footer()}
     </div>
-    
+
     <script>
         // Initialize Mermaid
         mermaid.initialize({{ startOnLoad: true, theme: 'default' }});
-        
+
         // Initialize interactive charts
         {charts.get('plotly_init', '')}
     </script>
@@ -117,7 +117,7 @@ class HTMLReportBuilder:
             --text-muted: #6c757d;
             --border-color: #dee2e6;
         }
-        
+
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             line-height: 1.6;

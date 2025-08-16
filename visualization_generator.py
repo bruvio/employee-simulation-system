@@ -43,7 +43,8 @@ class VisualizationGenerator:
             self.tracked_employees = self.story_tracker.tracked_categories
             self._load_employee_stories()
             LOGGER.info(
-                f"Story tracking enabled with {sum(len(employees) for employees in self.tracked_employees.values())} tracked employees"
+                f"Story tracking enabled with {sum(len(employees) "
+                f"for employees in self.tracked_employees.values())} tracked employees"
             )
 
         self.setup_plotting_style()

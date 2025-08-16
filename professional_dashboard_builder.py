@@ -266,16 +266,16 @@ class ProfessionalDashboardBuilder:
     <div class="container-fluid py-4">
         <!-- Scenario Overview Section -->
         {self._build_scenario_overview(key_metrics, scenario_config)}
-        
+
         <!-- KPI Cards -->
         {self._build_kpi_cards(key_metrics)}
-        
+
         <!-- Charts Section -->
         {self._build_charts_section(charts)}
-        
+
         <!-- File Browser Section -->
         {self._build_file_browser(generated_files)}
-        
+
         <!-- Analysis Summary -->
         {self._build_analysis_summary(analysis_payload, key_metrics)}
     </div>
@@ -302,7 +302,7 @@ class ProfessionalDashboardBuilder:
             box-shadow: 0 8px 32px rgba(0,0,0,0.1);
             transition: transform 0.3s ease;
         }
-        
+
         .metric-card:hover {
             transform: translateY(-5px);
         }

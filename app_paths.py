@@ -297,7 +297,8 @@ def check_migration_needed() -> dict:
                 migration_info["file_counts"]["results_legacy"] = total_items
                 migration_info["recommendations"].append(
                     f"⚠️  IMPORTANT: Legacy results/ structure detected ({total_items} items).\n"
-                    f"   → Archive before cleanup: tar -czf results_legacy_backup_$(date +%Y%m%d_%H%M%S).tar.gz results/\n"
+                    f"   → Archive before cleanup: tar -czf results_legacy_backup_"
+                    f"$(date +%Y%m%d_%H%M%S).tar.gz results/\n"
                     f"   → Review and migrate important data to new run_YYYYMMDD_HHMMSS/ structure."
                 )
                 migration_info["suggested_commands"].extend(

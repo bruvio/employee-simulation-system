@@ -574,7 +574,8 @@ class EmployeeStoryExplorer:
         print("\n💼 GENDER PAY GAP REMEDIATION ANALYSIS")
         print(f"={'='*60}")
         print(
-            f"Target gap: {target_gap:.1f}%, Max timeline: {max_years} years, Budget limit: {budget_limit:.1f}% of payroll"
+            f"Target gap: {target_gap:.1f}%, Max timeline: {max_years} years, "
+            f"Budget limit: {budget_limit:.1f}% of payroll"
         )
 
         try:
@@ -593,7 +594,8 @@ class EmployeeStoryExplorer:
             print("\n✅ RECOMMENDED STRATEGY:")
             print(f"   Strategy: {recommended['strategy_name'].replace('_', ' ').title()}")
             print(
-                f"   Total cost: £{recommended['total_cost']:,.2f} ({recommended['cost_as_percent_payroll']*100:.2f}% of payroll)"
+                f"   Total cost: £{recommended['total_cost']:,.2f} "
+                f"({recommended['cost_as_percent_payroll']*100:.2f}% of payroll)"
             )
             print(f"   Timeline: {recommended['timeline_years']} years")
             print(f"   Gap reduction: {recommended['gap_reduction_percent']:.1f}%")
@@ -864,9 +866,10 @@ def create_comprehensive_report(explorer, scenario, analysis_results):
         f.write("# Comprehensive Employee Analysis Report\n\n")
         f.write("## Executive Summary\n\n")
         f.write(
-            f"This comprehensive analysis examines a simulated employee population of {scenario['population_size']:,} employees "
-            f"generated with random seed {scenario['random_seed']}. The analysis includes population overview, "
-            f"story tracking, and advanced salary progression modeling.\n\n"
+            f"This comprehensive analysis examines a simulated employee population of "
+            f"{scenario['population_size']:,} employees generated with random seed {scenario['random_seed']}. "
+            f"The analysis includes population overview, story tracking, and advanced salary "
+            f"progression modeling.\n\n"
         )
 
         if analysis_results:

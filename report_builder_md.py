@@ -63,8 +63,8 @@ class MarkdownReportBuilder:
 
         return f"""# {org} Employee Analysis Report - {scenario} Scenario
 
-**Generated:** {timestamp}  
-**Scenario:** {scenario}  
+**Generated:** {timestamp}
+**Scenario:** {scenario}
 **Organization:** {org}
 
 ---
@@ -121,7 +121,7 @@ flowchart LR
     F --> G[Report Builder]
     G --> H[index.html]
     G --> I[report.md]
-    
+
     subgraph "Analysis Modules"
         D1[Median Convergence]
         D2[Gender Gap Analysis]

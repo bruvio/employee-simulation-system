@@ -383,7 +383,7 @@ class ComprehensiveDashboardBuilder:
             <p>Comprehensive Results Dashboard - {self.scenario_name} Scenario</p>
             <p style="font-size: 0.9em; opacity: 0.8;">Generated on {datetime.now().strftime('%B %d, %Y at %I:%M %p')}</p>
         </div>
-        
+
         <div class="content">
             <!-- Scenario Configuration Overview -->
             <div class="section">
@@ -409,7 +409,7 @@ class ComprehensiveDashboardBuilder:
                         </div>
                     </div>
                 </div>
-                
+
                 <div class="explanation">
                     <h4>📋 Configuration Explanation</h4>
                     <p><strong>Default Configuration:</strong> The system's base configuration sets a {self.default_gender_gap}% gender pay gap as the starting point for all scenarios.</p>
@@ -424,7 +424,7 @@ class ComprehensiveDashboardBuilder:
                     <p><strong>Target Goal:</strong> The long-term organizational goal is to reduce the gap to {self.target_gender_gap}% through targeted interventions.</p>
                 </div>
             </div>
-            
+
             <!-- Key Performance Indicators -->
             <div class="section">
                 <h2>📈 Key Performance Indicators</h2>
@@ -447,14 +447,13 @@ class ComprehensiveDashboardBuilder:
                     </div>
                 </div>
             </div>
-            
+
             <!-- Simulation Results Explanation -->
             <div class="section">
                 <h2>🔍 Detailed Simulation Results Explanation</h2>
                 <div class="simulation-explanation">
                     <h3>What the Simulation Models</h3>
                     <p>This employee simulation system models a realistic organizational salary structure with the following key components:</p>
-                    
                     <h4>📊 Population Generation</h4>
                     <ul>
                         <li><strong>Size:</strong> {self.population_size} employees across 6 organizational levels</li>

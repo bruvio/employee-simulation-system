@@ -4,9 +4,8 @@ def clean_file(filename):
     try:
         with open(filename, 'r') as f:
             content = f.read()
-        
+
         lines = content.splitlines(keepends=True)
-        
         cleaned_lines = []
         changes = 0
         for line in lines:
