@@ -151,14 +151,14 @@ class RolesConfigLoader:
             return config
 
         except yaml.YAMLError as e:
-            raise ValidationError(f"Invalid YAML format: {e}")
+            raise ValueError(f"Invalid YAML format: {e}")
         except json.JSONDecodeError as e:
-            raise ValidationError(f"Invalid JSON format: {e}")
+            raise ValueError(f"Invalid JSON format: {e}")
         except ValidationError as e:
             self.logger.error(f"Config validation failed: {e}")
             raise
         except Exception as e:
-            raise ValidationError(f"Failed to load config: {e}")
+            raise ValueError(f"Failed to load config: {e}")
 
     def get_minimum_for_role(self, config: RolesConfig, title: str, band_index: int = 0) -> Optional[float]:
         """

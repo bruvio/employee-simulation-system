@@ -387,9 +387,25 @@ class TestGELCLIIntegration:
     Test GEL CLI integration (mocked orchestrator calls).
     """
 
-    @patch("gel_output_manager.GELOutputManager")
-    @patch("roles_config.RolesConfigLoader")
-    def test_cli_workflow_simulation(self, mock_loader, mock_output_manager):
+    def setup_method(self):
+        """
+        Set up test fixtures.
+        """
+        self.temp_dir = Path(tempfile.mkdtemp())
+
+    def teardown_method(self):
+        """
+        Clean up test fixtures.
+        """
+        if self.temp_dir.exists():
+            shutil.rmtree(self.temp_dir)
+
+    @patch("employee_simulation_orchestrator.HTMLReportBuilder")
+    @patch("employee_simulation_orchestrator.MarkdownReportBuilder")
+    @patch("employee_simulation_orchestrator.GELPolicyConstraints")
+    @patch("employee_simulation_orchestrator.GELOutputManager")
+    @patch("employee_simulation_orchestrator.RolesConfigLoader")
+    def test_cli_workflow_simulation(self, mock_loader, mock_output_manager, mock_policy, mock_md_builder, mock_html_builder):
         """
         Test simulated CLI workflow with mocked components.
         """
@@ -408,15 +424,37 @@ class TestGELCLIIntegration:
 
         mock_output_instance = MagicMock()
         mock_run_dirs = {
-            "run_root": Path("/fake/results/GEL/run_2025-08-14_10-00Z"),
-            "assets": Path("/fake/results/GEL/run_2025-08-14_10-00Z/assets"),
+            "run_root": self.temp_dir / "GEL" / "run_2025-08-14_10-00Z",
+            "assets": self.temp_dir / "GEL" / "run_2025-08-14_10-00Z" / "assets",
         }
+        # Create the directories for the test
+        mock_run_dirs["run_root"].mkdir(parents=True, exist_ok=True)
+        mock_run_dirs["assets"].mkdir(parents=True, exist_ok=True)
+        
         mock_output_instance.create_gel_run_directory.return_value = mock_run_dirs
+        mock_output_instance.create_manifest_data.return_value = {"test": "manifest"}
         mock_output_instance.organize_gel_outputs.return_value = {
-            "html_report": "/fake/results/GEL/run_2025-08-14_10-00Z/index.html",
-            "markdown_report": "/fake/results/GEL/run_2025-08-14_10-00Z/report.md",
+            "html_report": str(mock_run_dirs["run_root"] / "index.html"),
+            "markdown_report": str(mock_run_dirs["run_root"] / "report.md"),
         }
         mock_output_manager.return_value = mock_output_instance
+
+        # Setup report builder mocks
+        mock_md_instance = MagicMock()
+        mock_md_instance.build_gel_report.return_value = str(mock_run_dirs["run_root"] / "report.md")
+        mock_md_builder.return_value = mock_md_instance
+
+        mock_html_instance = MagicMock()
+        mock_html_instance.build_gel_report.return_value = str(mock_run_dirs["run_root"] / "index.html")
+        mock_html_builder.return_value = mock_html_instance
+
+        # Setup policy constraints mock
+        mock_policy_instance = MagicMock()
+        mock_policy_instance.identify_managers_and_teams.return_value = {}
+        mock_policy_instance.prioritize_interventions.return_value = {}
+        mock_policy_instance.optimize_budget_allocation.return_value = {}
+        mock_policy_instance.generate_policy_summary.return_value = {}
+        mock_policy.return_value = mock_policy_instance
 
         # Simulate CLI arguments
         config = {"enable_gel_reporting": True, "gel_org": "GEL", "gel_roles_config_path": "config/orgs/GEL/roles.yaml"}
