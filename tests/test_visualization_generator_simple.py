@@ -1,20 +1,24 @@
 #!/usr/bin/env python3
-"""Simple tests for visualization_generator module."""
+"""
+Simple tests for visualization_generator module.
+"""
 
-from unittest.mock import MagicMock, patch
-
-import pytest
+from unittest.mock import patch
 
 
 def test_import_module():
-    """Test that the module can be imported."""
+    """
+    Test that the module can be imported.
+    """
     import visualization_generator
 
     assert hasattr(visualization_generator, "__file__")
 
 
 def test_visualization_generator_init():
-    """Test VisualizationGenerator initialization."""
+    """
+    Test VisualizationGenerator initialization.
+    """
     from visualization_generator import VisualizationGenerator
 
     generator = VisualizationGenerator()
@@ -23,7 +27,9 @@ def test_visualization_generator_init():
 
 @patch("matplotlib.pyplot")
 def test_basic_visualization_methods(mock_plt):
-    """Test basic visualization methods exist and can be called."""
+    """
+    Test basic visualization methods exist and can be called.
+    """
     from visualization_generator import VisualizationGenerator
 
     generator = VisualizationGenerator()
@@ -55,7 +61,9 @@ def test_basic_visualization_methods(mock_plt):
 @patch("matplotlib.pyplot")
 @patch("builtins.open")
 def test_save_visualization(mock_open, mock_plt):
-    """Test visualization saving functionality."""
+    """
+    Test visualization saving functionality.
+    """
     from visualization_generator import VisualizationGenerator
 
     generator = VisualizationGenerator()
@@ -72,7 +80,9 @@ def test_save_visualization(mock_open, mock_plt):
 
 
 def test_utility_functions():
-    """Test utility functions exist."""
+    """
+    Test utility functions exist.
+    """
     import visualization_generator
 
     # Check for utility classes/functions
@@ -85,7 +95,9 @@ def test_utility_functions():
 
 @patch("matplotlib.pyplot")
 def test_chart_configuration(mock_plt):
-    """Test chart configuration methods."""
+    """
+    Test chart configuration methods.
+    """
     from visualization_generator import VisualizationGenerator
 
     generator = VisualizationGenerator()

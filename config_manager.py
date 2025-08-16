@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
-"""Configuration Manager for Employee Simulation System.
+"""
+Configuration Manager for Employee Simulation System.
 
 Handles loading, merging, and managing configuration files and user scenarios.
 """
@@ -12,10 +13,13 @@ from typing import Any, Dict, List, Optional
 
 
 class ConfigurationManager:
-    """Manages configuration loading and scenario application for the simulation system."""
+    """
+    Manages configuration loading and scenario application for the simulation system.
+    """
 
     def __init__(self, config_path: str = "config.json"):
-        """Initialize configuration manager.
+        """
+        Initialize configuration manager.
 
         Args:
             config_path: Path to the main configuration file
@@ -24,7 +28,9 @@ class ConfigurationManager:
         self.base_config = self._load_base_config()
 
     def _load_base_config(self) -> Dict[str, Any]:
-        """Load the base configuration file."""
+        """
+        Load the base configuration file.
+        """
         try:
             if self.config_path.exists():
                 with open(self.config_path, "r") as f:
@@ -36,7 +42,9 @@ class ConfigurationManager:
             return self._get_fallback_config()
 
     def _get_fallback_config(self) -> Dict[str, Any]:
-        """Provide fallback configuration if file loading fails."""
+        """
+        Provide fallback configuration if file loading fails.
+        """
         return {
             "population": {"population_size": 1000, "random_seed": 42},
             "simulation": {"max_cycles": 15, "convergence_threshold": 0.001},
@@ -49,7 +57,8 @@ class ConfigurationManager:
     def get_orchestrator_config(
         self, scenario: Optional[str] = None, overrides: Optional[Dict[str, Any]] = None
     ) -> Dict[str, Any]:
-        """Get configuration formatted for EmployeeSimulationOrchestrator.
+        """
+        Get configuration formatted for EmployeeSimulationOrchestrator.
 
         Args:
             scenario: Name of predefined scenario to apply
@@ -79,7 +88,8 @@ class ConfigurationManager:
         return config
 
     def _flatten_config(self, nested_config: Dict[str, Any]) -> Dict[str, Any]:
-        """Flatten nested configuration into format expected by orchestrator.
+        """
+        Flatten nested configuration into format expected by orchestrator.
 
         Args:
             nested_config: Nested configuration dictionary
@@ -89,8 +99,11 @@ class ConfigurationManager:
         """
         flat_config = {}
 
-        # Population settings
-        pop_config = nested_config.get("population", {})
+        # Handle new config structure with defaults section
+        defaults = nested_config.get("defaults", {})
+
+        # Population settings - check defaults first, then direct keys for backwards compatibility
+        pop_config = defaults if defaults else nested_config.get("population", {})
 
         # Convert salary constraints string keys to integers if present
         salary_constraints = pop_config.get("salary_constraints")
@@ -107,8 +120,8 @@ class ConfigurationManager:
             }
         )
 
-        # Simulation settings
-        sim_config = nested_config.get("simulation", {})
+        # Simulation settings - check defaults.simulation first, then direct simulation key
+        sim_config = defaults.get("simulation", {}) if defaults else nested_config.get("simulation", {})
         flat_config.update(
             {
                 "max_cycles": sim_config.get("max_cycles", 15),
@@ -116,8 +129,8 @@ class ConfigurationManager:
             }
         )
 
-        # Export settings
-        export_config = nested_config.get("export", {})
+        # Export settings - check defaults.export first, then direct export key
+        export_config = defaults.get("export", {}) if defaults else nested_config.get("export", {})
         flat_config.update(
             {
                 "export_formats": export_config.get("export_formats", ["csv", "json"]),
@@ -127,8 +140,8 @@ class ConfigurationManager:
             }
         )
 
-        # Story tracking settings
-        story_config = nested_config.get("story_tracking", {})
+        # Story tracking settings - check defaults.story_tracking first, then direct story_tracking key
+        story_config = defaults.get("story_tracking", {}) if defaults else nested_config.get("story_tracking", {})
         flat_config.update(
             {
                 "enable_story_tracking": story_config.get("enable_story_tracking", False),
@@ -143,8 +156,8 @@ class ConfigurationManager:
             }
         )
 
-        # Logging settings
-        log_config = nested_config.get("logging", {})
+        # Logging settings - check defaults.logging first, then direct logging key
+        log_config = defaults.get("logging", {}) if defaults else nested_config.get("logging", {})
         flat_config.update(
             {
                 "log_level": log_config.get("log_level", "INFO"),
@@ -154,8 +167,10 @@ class ConfigurationManager:
             }
         )
 
-        # Advanced analysis settings
-        analysis_config = nested_config.get("advanced_analysis", {})
+        # Advanced analysis settings - check defaults.advanced_analysis first, then direct advanced_analysis key
+        analysis_config = (
+            defaults.get("advanced_analysis", {}) if defaults else nested_config.get("advanced_analysis", {})
+        )
         flat_config.update(
             {
                 "enable_advanced_analysis": analysis_config.get("enable_advanced_analysis", False),
@@ -176,7 +191,8 @@ class ConfigurationManager:
         return flat_config
 
     def get_scenario_config(self, scenario_name: str) -> Optional[Dict[str, Any]]:
-        """Get configuration for a specific scenario.
+        """
+        Get configuration for a specific scenario.
 
         Args:
             scenario_name: Name of the scenario
@@ -184,9 +200,15 @@ class ConfigurationManager:
         Returns:
             Configuration dictionary for the scenario, or None if not found
         """
-        scenarios = self.base_config.get("user_stories", {}).get("scenarios", {})
+        # Check scenarios section first (new structure)
+        scenarios = self.base_config.get("scenarios", {})
         if scenario_name in scenarios:
             return scenarios[scenario_name]
+
+        # Also check legacy locations for backwards compatibility
+        legacy_scenarios = self.base_config.get("user_stories", {}).get("scenarios", {})
+        if scenario_name in legacy_scenarios:
+            return legacy_scenarios[scenario_name]
 
         # Also check customization examples
         examples = self.base_config.get("customization_examples", {})
@@ -196,13 +218,23 @@ class ConfigurationManager:
         return None
 
     def list_scenarios(self) -> List[str]:
-        """Get list of available scenario names."""
-        scenarios = list(self.base_config.get("user_stories", {}).get("scenarios", {}).keys())
+        """
+        Get list of available scenario names.
+        """
+        # Get scenarios from new structure
+        scenarios = list(self.base_config.get("scenarios", {}).keys())
+
+        # Also get from legacy locations
+        legacy_scenarios = list(self.base_config.get("user_stories", {}).get("scenarios", {}).keys())
         examples = list(self.base_config.get("customization_examples", {}).keys())
-        return scenarios + [name for name in examples if name != "description"]
+
+        # Combine all scenarios and remove duplicates
+        all_scenarios = scenarios + legacy_scenarios + [name for name in examples if name != "description"]
+        return list(set(all_scenarios))
 
     def save_scenario(self, scenario_name: str, config: Dict[str, Any]) -> None:
-        """Save a new scenario to the configuration file.
+        """
+        Save a new scenario to the configuration file.
 
         Args:
             scenario_name: Name for the new scenario
@@ -220,7 +252,9 @@ class ConfigurationManager:
             json.dump(self.base_config, f, indent=2)
 
     def print_scenario_info(self, scenario_name: str) -> None:
-        """Print detailed information about a scenario."""
+        """
+        Print detailed information about a scenario.
+        """
         scenario_config = self.get_scenario_config(scenario_name)
         if not scenario_config:
             print(f"Scenario '{scenario_name}' not found.")
@@ -236,7 +270,8 @@ class ConfigurationManager:
     def create_config_file(
         self, output_path: str, scenario: Optional[str] = None, overrides: Optional[Dict[str, Any]] = None
     ) -> None:
-        """Create a standalone configuration file.
+        """
+        Create a standalone configuration file.
 
         Args:
             output_path: Path where to save the configuration file
@@ -252,7 +287,9 @@ class ConfigurationManager:
 
 
 def main():
-    """Command-line interface for configuration management."""
+    """
+    Command-line interface for configuration management.
+    """
     parser = argparse.ArgumentParser(description="Employee Simulation Configuration Manager")
     parser.add_argument("--config", default="config.json", help="Path to configuration file")
 

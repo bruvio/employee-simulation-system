@@ -1,20 +1,24 @@
 #!/usr/bin/env python3
-"""Simple tests for file_optimization_manager module."""
+"""
+Simple tests for file_optimization_manager module.
+"""
 
-from unittest.mock import MagicMock, patch
-
-import pytest
+from unittest.mock import patch
 
 
 def test_import_module():
-    """Test that the module can be imported."""
+    """
+    Test that the module can be imported.
+    """
     import file_optimization_manager
 
     assert hasattr(file_optimization_manager, "__file__")
 
 
 def test_file_optimization_class():
-    """Test file optimization class exists."""
+    """
+    Test file optimization class exists.
+    """
     import file_optimization_manager
 
     potential_classes = ["FileOptimizationManager", "OptimizationManager", "FileManager", "FileOptimizer"]
@@ -32,7 +36,9 @@ def test_file_optimization_class():
 
 
 def test_optimization_functions():
-    """Test optimization functions."""
+    """
+    Test optimization functions.
+    """
     import file_optimization_manager
 
     functions = ["optimize_files", "manage_files", "cleanup_files"]
@@ -44,7 +50,9 @@ def test_optimization_functions():
 
 @patch("builtins.open")
 def test_basic_file_operations(mock_open):
-    """Test basic file operations."""
+    """
+    Test basic file operations.
+    """
     import file_optimization_manager
 
     for class_name in ["FileOptimizationManager", "FileManager"]:

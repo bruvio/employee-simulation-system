@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
-"""Comprehensive tests for employee_population_simulator module.
+"""
+Comprehensive tests for employee_population_simulator module.
 
 Tests population generation, salary constraints, and distribution logic.
 """
@@ -13,10 +14,14 @@ from employee_population_simulator import EmployeePopulationGenerator
 
 
 class TestEmployeePopulationGenerator:
-    """Test the EmployeePopulationGenerator class."""
+    """
+    Test the EmployeePopulationGenerator class.
+    """
 
     def setup_method(self):
-        """Setup test fixtures."""
+        """
+        Setup test fixtures.
+        """
         self.level_distribution = [0.25, 0.25, 0.20, 0.15, 0.10, 0.05]
         self.gender_pay_gap_percent = 15.0
         self.salary_constraints = {
@@ -36,14 +41,18 @@ class TestEmployeePopulationGenerator:
         )
 
     def test_initialization(self):
-        """Test generator initialization."""
+        """
+        Test generator initialization.
+        """
         assert self.generator.population_size == 100
         assert self.generator.level_distribution == self.level_distribution
         assert self.generator.gender_pay_gap_percent == self.gender_pay_gap_percent
         assert self.generator.random_seed == 42
 
     def test_initialization_with_defaults(self):
-        """Test generator initialization with default values."""
+        """
+        Test generator initialization with default values.
+        """
         generator = EmployeePopulationGenerator(population_size=50)
         assert generator.population_size == 50
         assert generator.level_distribution == [0.25, 0.25, 0.20, 0.15, 0.10, 0.05]
@@ -51,7 +60,9 @@ class TestEmployeePopulationGenerator:
         assert generator.random_seed is not None
 
     def test_generate_population_basic(self):
-        """Test basic population generation."""
+        """
+        Test basic population generation.
+        """
         population = self.generator.generate_population()
 
         # Verify population size
@@ -67,21 +78,27 @@ class TestEmployeePopulationGenerator:
             assert "hire_date" in employee
 
     def test_generate_population_levels_within_range(self):
-        """Test that generated population has levels within valid range."""
+        """
+        Test that generated population has levels within valid range.
+        """
         population = self.generator.generate_population()
 
         for employee in population:
             assert 1 <= employee["level"] <= 6
 
     def test_generate_population_salaries_positive(self):
-        """Test that all generated salaries are positive."""
+        """
+        Test that all generated salaries are positive.
+        """
         population = self.generator.generate_population()
 
         for employee in population:
             assert employee["salary"] > 0
 
     def test_generate_population_performance_ratings_valid(self):
-        """Test that performance ratings are from valid set."""
+        """
+        Test that performance ratings are from valid set.
+        """
         valid_ratings = ["Not met", "Partially met", "Achieving", "High Performing", "Exceeding"]
         population = self.generator.generate_population()
 
@@ -89,7 +106,9 @@ class TestEmployeePopulationGenerator:
             assert employee["performance_rating"] in valid_ratings
 
     def test_generate_population_gender_distribution(self):
-        """Test gender distribution in generated population."""
+        """
+        Test gender distribution in generated population.
+        """
         population = self.generator.generate_population()
 
         genders = [emp["gender"] for emp in population]
@@ -102,7 +121,9 @@ class TestEmployeePopulationGenerator:
         assert male_count + female_count == len(population)
 
     def test_generate_population_level_distribution(self):
-        """Test that level distribution approximately matches config."""
+        """
+        Test that level distribution approximately matches config.
+        """
         # Use larger population for better statistical accuracy
         large_generator = EmployeePopulationGenerator(
             population_size=1000,
@@ -131,7 +152,9 @@ class TestEmployeePopulationGenerator:
             ), f"Level {level}: expected ~{expected_count}, got {actual_count}"
 
     def test_generate_population_salary_constraints(self):
-        """Test that salaries respect level constraints."""
+        """
+        Test that salaries respect level constraints.
+        """
         population = self.generator.generate_population()
 
         salary_constraints = self.salary_constraints
@@ -154,14 +177,18 @@ class TestEmployeePopulationGenerator:
                 ), f"Level {level} salary {salary} outside range {adjusted_min}-{adjusted_max}"
 
     def test_generate_population_unique_ids(self):
-        """Test that all employee IDs are unique."""
+        """
+        Test that all employee IDs are unique.
+        """
         population = self.generator.generate_population()
 
         employee_ids = [emp["employee_id"] for emp in population]
         assert len(employee_ids) == len(set(employee_ids)), "Employee IDs should be unique"
 
     def test_generate_population_tenure_years_valid(self):
-        """Test that hire dates are valid."""
+        """
+        Test that hire dates are valid.
+        """
         population = self.generator.generate_population()
 
         for employee in population:
@@ -179,7 +206,9 @@ class TestEmployeePopulationGenerator:
                 assert False, f"Invalid hire date format: {hire_date}"
 
     def test_generate_population_departments_assigned(self):
-        """Test that all employees have review history field."""
+        """
+        Test that all employees have review history field.
+        """
         population = self.generator.generate_population()
 
         for employee in population:
@@ -188,7 +217,9 @@ class TestEmployeePopulationGenerator:
             assert isinstance(employee["review_history"], list), "Review history should be a list"
 
     def test_generate_population_reproducible_with_seed(self):
-        """Test that population generation is reproducible with same seed."""
+        """
+        Test that population generation is reproducible with same seed.
+        """
         generator1 = EmployeePopulationGenerator(
             population_size=50,
             level_distribution=self.level_distribution,
@@ -216,7 +247,9 @@ class TestEmployeePopulationGenerator:
             assert pop1[i]["performance_rating"] == pop2[i]["performance_rating"]
 
     def test_generate_population_different_with_different_seed(self):
-        """Test that different seeds produce different populations."""
+        """
+        Test that different seeds produce different populations.
+        """
         generator1 = EmployeePopulationGenerator(
             population_size=50,
             level_distribution=self.level_distribution,
@@ -250,7 +283,9 @@ class TestEmployeePopulationGenerator:
         assert differences >= len(pop1) * 0.2
 
     def test_generate_population_small_size(self):
-        """Test generation with small population size."""
+        """
+        Test generation with small population size.
+        """
         small_generator = EmployeePopulationGenerator(
             population_size=5,
             random_seed=42,
@@ -275,7 +310,9 @@ class TestEmployeePopulationGenerator:
             ]
 
     def test_generate_population_large_size(self):
-        """Test generation with larger population size."""
+        """
+        Test generation with larger population size.
+        """
         large_generator = EmployeePopulationGenerator(
             population_size=500,
             random_seed=42,
@@ -294,7 +331,9 @@ class TestEmployeePopulationGenerator:
 
     @patch("employee_population_simulator.LOGGER")
     def test_generate_population_logging(self, mock_logger):
-        """Test that population generation includes proper logging."""
+        """
+        Test that population generation includes proper logging.
+        """
         self.generator.generate_population()
 
         # Verify logging occurred
@@ -306,7 +345,9 @@ class TestEmployeePopulationGenerator:
         assert len(success_logs) > 0
 
     def test_generate_population_config_variations(self):
-        """Test population generation with different config variations."""
+        """
+        Test population generation with different config variations.
+        """
         # Test with no gender pay gap
         no_gap_generator = EmployeePopulationGenerator(
             population_size=100,
@@ -330,7 +371,9 @@ class TestEmployeePopulationGenerator:
         assert len(population) == 100
 
     def test_generate_population_edge_cases(self):
-        """Test population generation edge cases."""
+        """
+        Test population generation edge cases.
+        """
         # Test with minimum population size
         min_generator = EmployeePopulationGenerator(
             population_size=1,
@@ -355,7 +398,9 @@ class TestEmployeePopulationGenerator:
         ]
 
     def test_generate_population_performance_distribution(self):
-        """Test performance rating distribution."""
+        """
+        Test performance rating distribution.
+        """
         # Generate larger population for statistical validity
         large_generator = EmployeePopulationGenerator(
             population_size=1000,
@@ -385,7 +430,9 @@ class TestEmployeePopulationGenerator:
         assert high_performing_percent > 0.1, "Should have significant 'High Performing' representation"
 
     def test_generate_population_salary_realism(self):
-        """Test that generated salaries are realistic for UK market."""
+        """
+        Test that generated salaries are realistic for UK market.
+        """
         population = self.generator.generate_population()
 
         for employee in population:
@@ -404,10 +451,14 @@ class TestEmployeePopulationGenerator:
 
 
 class TestPopulationGeneratorErrorHandling:
-    """Test error handling in population generator."""
+    """
+    Test error handling in population generator.
+    """
 
     def test_invalid_population_size(self):
-        """Test handling of invalid population sizes."""
+        """
+        Test handling of invalid population sizes.
+        """
         # Test zero population size - expect KeyError during statistics logging
         with pytest.raises((ValueError, AssertionError, KeyError)):
             generator = EmployeePopulationGenerator(population_size=0)
@@ -419,7 +470,9 @@ class TestPopulationGeneratorErrorHandling:
             generator.generate_population()
 
     def test_invalid_level_distribution(self):
-        """Test handling of invalid level distributions."""
+        """
+        Test handling of invalid level distributions.
+        """
         invalid_level_distribution = [0.5, 0.3, 0.1, 0.05, 0.03]  # Only 5 values instead of 6
 
         # Should handle gracefully or raise appropriate error
@@ -433,7 +486,9 @@ class TestPopulationGeneratorErrorHandling:
             )
 
     def test_missing_salary_constraints(self):
-        """Test handling when salary constraints are missing."""
+        """
+        Test handling when salary constraints are missing.
+        """
         # Test with None salary constraints (should use defaults)
         generator = EmployeePopulationGenerator(
             population_size=10,

@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
-"""Configuration Examples and Usage Guide for Employee Simulation System.
+"""
+Configuration Examples and Usage Guide for Employee Simulation System.
 
 This script demonstrates how to use the configuration system and scenarios.
 """
@@ -10,7 +11,9 @@ from config_manager import ConfigurationManager
 
 
 def show_usage_examples():
-    """Show examples of how to use the configuration system."""
+    """
+    Show examples of how to use the configuration system.
+    """
     print("=== Employee Simulation System - Configuration Examples ===\n")
 
     # Initialize configuration manager
@@ -21,13 +24,13 @@ def show_usage_examples():
     for i, scenario in enumerate(scenarios, 1):
         print(f"   {i}. {scenario}")
 
-    print(f"\n2. SHOW SCENARIO DETAILS:")
+    print("\n2. SHOW SCENARIO DETAILS:")
     if scenarios:
         example_scenario = scenarios[0]
         print(f"   Example: {example_scenario}")
         config_manager.print_scenario_info(example_scenario)
 
-    print(f"\n3. COMMAND LINE USAGE EXAMPLES:")
+    print("\n3. COMMAND LINE USAGE EXAMPLES:")
     print("   # Use default configuration (config.json):")
     print("   python employee_simulation_orchestrator.py --mode advanced-analysis-only")
     print()
@@ -40,7 +43,7 @@ def show_usage_examples():
     print("   # Use custom config file:")
     print("   python employee_simulation_orchestrator.py --config my_custom_config.json")
 
-    print(f"\n4. CONFIGURATION MANAGER CLI USAGE:")
+    print("\n4. CONFIGURATION MANAGER CLI USAGE:")
     print("   # List all scenarios:")
     print("   python config_manager.py list")
     print()
@@ -55,7 +58,9 @@ def show_usage_examples():
 
 
 def demonstrate_programmatic_usage():
-    """Show how to use configuration manager programmatically."""
+    """
+    Show how to use configuration manager programmatically.
+    """
     print("\n=== PROGRAMMATIC CONFIGURATION USAGE ===\n")
 
     config_manager = ConfigurationManager("config.json")
@@ -82,7 +87,9 @@ def demonstrate_programmatic_usage():
 
 
 def create_custom_scenario_example():
-    """Example of creating a custom scenario."""
+    """
+    Example of creating a custom scenario.
+    """
     print("\n=== CREATING CUSTOM SCENARIOS ===\n")
 
     config_manager = ConfigurationManager("config.json")
@@ -109,7 +116,9 @@ def create_custom_scenario_example():
 
 
 def show_advanced_configuration_options():
-    """Show advanced configuration options available."""
+    """
+    Show advanced configuration options available.
+    """
     print("\n=== ADVANCED CONFIGURATION OPTIONS ===\n")
 
     config_manager = ConfigurationManager("config.json")
@@ -122,11 +131,11 @@ def show_advanced_configuration_options():
     print("• logging: log_level, enable_progress_bar, enable_file_logging, generate_summary_report")
     print("• advanced_analysis: enable_advanced_analysis, run_*_analysis, progression_analysis_years, etc.")
 
-    print(f"\nFor detailed configuration structure, see config.json")
+    print("\nFor detailed configuration structure, see config.json")
 
     # Show actual config structure
     base_config = config_manager.base_config
-    print(f"\nMain configuration sections available:")
+    print("\nMain configuration sections available:")
     for section in base_config.keys():
         if section not in ["meta", "user_stories", "customization_examples"]:
             print(f"  • {section}")
@@ -138,7 +147,7 @@ if __name__ == "__main__":
     create_custom_scenario_example()
     show_advanced_configuration_options()
 
-    print(f"\n=== NEXT STEPS ===")
+    print("\n=== NEXT STEPS ===")
     print(
         "1. Try running with default config: python employee_simulation_orchestrator.py --mode advanced-analysis-only"
     )

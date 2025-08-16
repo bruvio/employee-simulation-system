@@ -1,18 +1,19 @@
-#!/Users/brunoviola/bruvio-tools/.venv/bin/python3
+#!/usr/bin/env python3
 
 import hashlib
 import json
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Union
 
-import yaml
 from pydantic import BaseModel, Field, ValidationError, field_validator
+import yaml
 
 from logger import LOGGER
 
 
 class InterventionPolicy(BaseModel):
-    """Policy constraints for management interventions.
+    """
+    Policy constraints for management interventions.
 
     Args:
         max_direct_reports: Maximum number of direct reports per manager
@@ -26,7 +27,8 @@ class InterventionPolicy(BaseModel):
 
 
 class Role(BaseModel):
-    """Individual role configuration with salary minimums.
+    """
+    Individual role configuration with salary minimums.
 
     Args:
         title: Job title/role name
@@ -36,14 +38,16 @@ class Role(BaseModel):
     """
 
     title: str = Field(description="Job title or role name")
-    min_salaries: List[float] = Field(description="List of minimum salaries (supports multiple bands)", min_items=1)
+    min_salaries: List[float] = Field(description="List of minimum salaries (supports multiple bands)", min_length=1)
     headcount_hint: Optional[int] = Field(default=None, ge=0, description="Optional expected headcount for planning")
     notes: Optional[str] = Field(default=None, description="Optional descriptive notes")
 
     @field_validator("min_salaries")
     @classmethod
     def validate_salaries(cls, v):
-        """Validate salary values are positive and reasonable."""
+        """
+        Validate salary values are positive and reasonable.
+        """
         if not v:
             raise ValueError("min_salaries cannot be empty")
 
@@ -58,7 +62,8 @@ class Role(BaseModel):
 
 
 class RolesConfig(BaseModel):
-    """Complete role configuration for an organization.
+    """
+    Complete role configuration for an organization.
 
     Args:
         org: Organization identifier
@@ -79,7 +84,9 @@ class RolesConfig(BaseModel):
     @field_validator("roles")
     @classmethod
     def validate_roles(cls, v):
-        """Validate role list has no duplicate titles."""
+        """
+        Validate role list has no duplicate titles.
+        """
         if not v:
             raise ValueError("roles list cannot be empty")
 
@@ -92,7 +99,8 @@ class RolesConfig(BaseModel):
 
 
 class RolesConfigLoader:
-    """Loader and validator for role configuration files.
+    """
+    Loader and validator for role configuration files.
 
     Supports YAML and JSON formats with comprehensive validation.
     """
@@ -101,7 +109,8 @@ class RolesConfigLoader:
         self.logger = LOGGER
 
     def load_config(self, config_path: Union[str, Path]) -> RolesConfig:
-        """Load and validate role configuration from file.
+        """
+        Load and validate role configuration from file.
 
         Args:
             config_path: Path to YAML or JSON configuration file
@@ -142,17 +151,18 @@ class RolesConfigLoader:
             return config
 
         except yaml.YAMLError as e:
-            raise ValidationError(f"Invalid YAML format: {e}")
+            raise ValueError(f"Invalid YAML format: {e}")
         except json.JSONDecodeError as e:
-            raise ValidationError(f"Invalid JSON format: {e}")
+            raise ValueError(f"Invalid JSON format: {e}")
         except ValidationError as e:
             self.logger.error(f"Config validation failed: {e}")
             raise
         except Exception as e:
-            raise ValidationError(f"Failed to load config: {e}")
+            raise ValueError(f"Failed to load config: {e}")
 
     def get_minimum_for_role(self, config: RolesConfig, title: str, band_index: int = 0) -> Optional[float]:
-        """Get minimum salary for a specific role.
+        """
+        Get minimum salary for a specific role.
 
         Args:
             config: Loaded roles configuration
@@ -174,7 +184,8 @@ class RolesConfigLoader:
         return None
 
     def get_all_roles(self, config: RolesConfig) -> List[str]:
-        """Get list of all role titles in config.
+        """
+        Get list of all role titles in config.
 
         Args:
             config: Loaded roles configuration
@@ -185,7 +196,8 @@ class RolesConfigLoader:
         return [role.title for role in config.roles]
 
     def calculate_config_hash(self, config: RolesConfig) -> str:
-        """Calculate SHA256 hash of configuration for tracking changes.
+        """
+        Calculate SHA256 hash of configuration for tracking changes.
 
         Args:
             config: Roles configuration
@@ -201,7 +213,8 @@ class RolesConfigLoader:
         return hashlib.sha256(config_str.encode("utf-8")).hexdigest()
 
     def validate_config_file(self, config_path: Union[str, Path]) -> Dict[str, Any]:
-        """Validate configuration file and return summary.
+        """
+        Validate configuration file and return summary.
 
         Args:
             config_path: Path to configuration file
@@ -243,7 +256,8 @@ class RolesConfigLoader:
 
 
 def create_example_config() -> RolesConfig:
-    """Create example configuration for testing.
+    """
+    Create example configuration for testing.
 
     Returns:
         Example RolesConfig instance

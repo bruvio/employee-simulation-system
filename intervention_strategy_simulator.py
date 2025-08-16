@@ -1,4 +1,4 @@
-#!/Users/brunoviola/bruvio-tools/.venv/bin/python3
+#!/usr/bin/env python3
 
 import argparse
 from datetime import datetime
@@ -15,7 +15,8 @@ from salary_forecasting_engine import SalaryForecastingEngine
 
 
 class InterventionStrategySimulator:
-    """Simulate and analyze management intervention strategies for salary equity.
+    """
+    Simulate and analyze management intervention strategies for salary equity.
 
     Focuses on gender pay gap remediation, strategic salary adjustments, and cost-benefit analysis for various
     intervention approaches with budget optimization.
@@ -53,7 +54,8 @@ class InterventionStrategySimulator:
     def model_gender_gap_remediation(
         self, target_gap_percent: float = 0.0, max_years: int = 5, budget_constraint: float = 0.005
     ) -> Dict:
-        """Model comprehensive gender pay gap remediation strategies.
+        """
+        Model comprehensive gender pay gap remediation strategies.
 
         Args:
             target_gap_percent: Target gap percentage (0.0 = complete equality)
@@ -124,7 +126,8 @@ class InterventionStrategySimulator:
         return result
 
     def analyze_population_salary_equity(self, dimensions: List[str] = None) -> Dict:
-        """Analyze salary equity across multiple demographic dimensions.
+        """
+        Analyze salary equity across multiple demographic dimensions.
 
         Args:
             dimensions: List of dimensions to analyze (gender, level, tenure, etc.)
@@ -159,7 +162,8 @@ class InterventionStrategySimulator:
         return equity_analysis
 
     def simulate_intervention_impact(self, strategy: Dict, projection_years: int = 5) -> Dict:
-        """Simulate the multi-year impact of an intervention strategy.
+        """
+        Simulate the multi-year impact of an intervention strategy.
 
         Args:
             strategy: Intervention strategy details
@@ -214,7 +218,8 @@ class InterventionStrategySimulator:
         }
 
     def optimize_budget_allocation(self, total_budget: float, intervention_types: List[str] = None) -> Dict:
-        """Optimize budget allocation across different intervention types.
+        """
+        Optimize budget allocation across different intervention types.
 
         Args:
             total_budget: Total available budget for interventions
@@ -249,7 +254,9 @@ class InterventionStrategySimulator:
         }
 
     def _calculate_baseline_metrics(self) -> Dict:
-        """Calculate baseline population metrics for comparison."""
+        """
+        Calculate baseline population metrics for comparison.
+        """
         male_employees = self.population_df[self.population_df["gender"] == "Male"]
         female_employees = self.population_df[self.population_df["gender"] == "Female"]
 
@@ -274,7 +281,9 @@ class InterventionStrategySimulator:
         }
 
     def _identify_underpaid_female_employees(self) -> List[Dict]:
-        """Identify female employees who are underpaid relative to male counterparts."""
+        """
+        Identify female employees who are underpaid relative to male counterparts.
+        """
         underpaid_females = []
 
         LOGGER.debug("Analyzing salary patterns by level and gender:")
@@ -328,7 +337,9 @@ class InterventionStrategySimulator:
         return underpaid_females
 
     def _model_immediate_adjustment_strategy(self, target_gap_percent: float, budget_constraint: float) -> Dict:
-        """Model immediate salary adjustment to close gender gap."""
+        """
+        Model immediate salary adjustment to close gender gap.
+        """
         underpaid_females = self._identify_underpaid_female_employees()
 
         if not underpaid_females:
@@ -389,7 +400,9 @@ class InterventionStrategySimulator:
         }
 
     def _model_gradual_strategy(self, target_gap_percent: float, years: int, budget_constraint: float) -> Dict:
-        """Model gradual salary adjustment strategy over specified years."""
+        """
+        Model gradual salary adjustment strategy over specified years.
+        """
         immediate_strategy = self._model_immediate_adjustment_strategy(target_gap_percent, budget_constraint)
 
         if not immediate_strategy.get("applicable", False):
@@ -440,7 +453,9 @@ class InterventionStrategySimulator:
         }
 
     def _model_natural_convergence_strategy(self, target_gap_percent: float, max_years: int) -> Dict:
-        """Model natural convergence without direct interventions."""
+        """
+        Model natural convergence without direct interventions.
+        """
         # Simulate natural progression using market growth rates
         annual_gap_reduction = 0.5  # Assume 0.5% gap reduction per year naturally
         years_to_target = max(
@@ -473,7 +488,9 @@ class InterventionStrategySimulator:
     def _model_targeted_intervention_strategy(
         self, target_gap_percent: float, max_years: int, budget_constraint: float
     ) -> Dict:
-        """Model targeted interventions focusing on highest-impact employees."""
+        """
+        Model targeted interventions focusing on highest-impact employees.
+        """
         underpaid_females = self._identify_underpaid_female_employees()
 
         if not underpaid_females:
@@ -522,7 +539,9 @@ class InterventionStrategySimulator:
         }
 
     def _evaluate_strategies(self, strategies: Dict, budget_constraint: float) -> Dict:
-        """Evaluate and score all available strategies."""
+        """
+        Evaluate and score all available strategies.
+        """
         evaluation = {}
 
         for strategy_name, strategy in strategies.items():
@@ -561,7 +580,9 @@ class InterventionStrategySimulator:
         }
 
     def _find_optimal_strategy(self, strategy_evaluation: Dict, budget_constraint: float) -> Dict:
-        """Find the optimal strategy based on evaluation scores."""
+        """
+        Find the optimal strategy based on evaluation scores.
+        """
         if not strategy_evaluation["ranking"]:
             return {"strategy_name": "no_viable_strategy", "reason": "No applicable strategies found"}
 
@@ -582,7 +603,9 @@ class InterventionStrategySimulator:
         }
 
     def _calculate_effectiveness_score(self, strategy: Dict) -> float:
-        """Calculate strategy effectiveness score (0-1)."""
+        """
+        Calculate strategy effectiveness score (0-1).
+        """
         gap_reduction = strategy.get("gap_reduction_percent", 0)
         max_possible_reduction = self.baseline_metrics["gender_pay_gap_percent"]
 
@@ -592,7 +615,9 @@ class InterventionStrategySimulator:
         return min(1.0, gap_reduction / max_possible_reduction)
 
     def _calculate_feasibility_score(self, strategy: Dict, budget_constraint: float) -> float:
-        """Calculate strategy feasibility score (0-1)."""
+        """
+        Calculate strategy feasibility score (0-1).
+        """
         cost_percent = strategy.get("cost_as_percent_payroll", 0)
         timeline_years = strategy.get("timeline_years", 1)
 
@@ -609,7 +634,9 @@ class InterventionStrategySimulator:
         return (budget_feasibility + timeline_feasibility + complexity_feasibility) / 3
 
     def _calculate_risk_score(self, strategy: Dict) -> float:
-        """Calculate strategy risk score (0-1, higher = more risky)."""
+        """
+        Calculate strategy risk score (0-1, higher = more risky).
+        """
         legal_risk_map = {"low": 0.8, "medium": 0.5, "high": 0.2}
         legal_risk = legal_risk_map.get(strategy.get("legal_risk_reduction", "medium"), 0.5)
 
@@ -625,7 +652,9 @@ class InterventionStrategySimulator:
         return (budget_risk + implementation_risk + (1 - legal_risk)) / 3
 
     def _calculate_cost_efficiency_score(self, strategy: Dict) -> float:
-        """Calculate cost efficiency score (0-1)."""
+        """
+        Calculate cost efficiency score (0-1).
+        """
         cost = strategy.get("total_cost", 0)
         gap_reduction = strategy.get("gap_reduction_percent", 0)
 
@@ -642,7 +671,9 @@ class InterventionStrategySimulator:
 
     # Additional helper methods for analysis components
     def _analyze_gender_equity(self) -> Dict:
-        """Analyze gender-based salary equity."""
+        """
+        Analyze gender-based salary equity.
+        """
         male_data = self.population_df[self.population_df["gender"] == "Male"]
         female_data = self.population_df[self.population_df["gender"] == "Female"]
 
@@ -656,7 +687,9 @@ class InterventionStrategySimulator:
         }
 
     def _analyze_level_equity(self) -> Dict:
-        """Analyze salary equity by level."""
+        """
+        Analyze salary equity by level.
+        """
         level_equity = {}
 
         for level in sorted(self.population_df["level"].unique()):
@@ -674,7 +707,9 @@ class InterventionStrategySimulator:
         return level_equity
 
     def _analyze_gender_by_level_equity(self) -> Dict:
-        """Analyze gender equity within each level."""
+        """
+        Analyze gender equity within each level.
+        """
         gender_level_equity = {}
 
         for level in sorted(self.population_df["level"].unique()):
@@ -700,7 +735,9 @@ class InterventionStrategySimulator:
         return gender_level_equity
 
     def _calculate_pay_gap_significance(self, male_data: pd.DataFrame, female_data: pd.DataFrame) -> str:
-        """Calculate statistical significance of pay gap."""
+        """
+        Calculate statistical significance of pay gap.
+        """
         if len(male_data) < 5 or len(female_data) < 5:
             return "insufficient_data"
 
@@ -717,7 +754,9 @@ class InterventionStrategySimulator:
             return "not_significant"
 
     def _analyze_tenure_equity(self) -> Dict:
-        """Analyze salary equity by tenure."""
+        """
+        Analyze salary equity by tenure.
+        """
         # Add tenure calculation if not present
         current_date = datetime.now()
         tenure_data = []
@@ -753,7 +792,9 @@ class InterventionStrategySimulator:
         return tenure_analysis
 
     def _calculate_overall_equity_score(self, equity_analysis: Dict) -> float:
-        """Calculate overall equity score (0-1, higher is better)."""
+        """
+        Calculate overall equity score (0-1, higher is better).
+        """
         scores = []
 
         # Gender equity score
@@ -772,7 +813,9 @@ class InterventionStrategySimulator:
         return np.mean(scores) if scores else 0.5
 
     def _identify_priority_interventions(self, equity_analysis: Dict) -> List[Dict]:
-        """Identify priority interventions based on equity analysis."""
+        """
+        Identify priority interventions based on equity analysis.
+        """
         interventions = []
 
         # Gender gap intervention
@@ -803,7 +846,9 @@ class InterventionStrategySimulator:
         return sorted(interventions, key=lambda x: {"high": 3, "medium": 2, "low": 1}[x["priority"]], reverse=True)
 
     def _create_implementation_plan(self, strategy: Dict) -> List[Dict]:
-        """Create detailed implementation plan for recommended strategy."""
+        """
+        Create detailed implementation plan for recommended strategy.
+        """
         strategy_name = strategy.get("strategy_name", "unknown")
         timeline_years = strategy.get("timeline_years", 1)
 
@@ -835,7 +880,9 @@ class InterventionStrategySimulator:
             ]
 
     def _calculate_roi_analysis(self, strategy: Dict) -> Dict:
-        """Calculate return on investment analysis for strategy."""
+        """
+        Calculate return on investment analysis for strategy.
+        """
         total_cost = strategy.get("total_cost", 0)
         affected_employees = strategy.get("affected_employees", 0)
 
@@ -862,7 +909,9 @@ class InterventionStrategySimulator:
         }
 
     def _assess_implementation_risks(self, strategy: Dict) -> Dict:
-        """Assess implementation risks for strategy."""
+        """
+        Assess implementation risks for strategy.
+        """
         risks = []
 
         if strategy.get("budget_utilization", 0) > 0.8:
@@ -885,7 +934,9 @@ class InterventionStrategySimulator:
         }
 
     def _suggest_risk_mitigation(self, risks: List[str]) -> List[str]:
-        """Suggest risk mitigation strategies."""
+        """
+        Suggest risk mitigation strategies.
+        """
         mitigations = []
 
         if "high_budget_utilization" in risks:
@@ -904,12 +955,16 @@ class InterventionStrategySimulator:
 
     # Placeholder methods for missing functionality
     def _apply_yearly_interventions(self, population: List[Dict], strategy: Dict, year: int) -> List[Dict]:
-        """Apply strategy interventions for a specific year."""
+        """
+        Apply strategy interventions for a specific year.
+        """
         # Placeholder - would implement actual intervention logic
         return population
 
     def _calculate_yearly_metrics(self, population: List[Dict], year: int) -> Dict:
-        """Calculate metrics for a specific year."""
+        """
+        Calculate metrics for a specific year.
+        """
         df = pd.DataFrame(population)
         male_median = df[df["gender"] == "Male"]["salary"].median()
         female_median = df[df["gender"] == "Female"]["salary"].median()
@@ -918,39 +973,55 @@ class InterventionStrategySimulator:
         return {"gender_pay_gap_percent": gap, "male_median_salary": male_median, "female_median_salary": female_median}
 
     def _apply_natural_progression(self, population: List[Dict]) -> List[Dict]:
-        """Apply natural salary progression for one year."""
+        """
+        Apply natural salary progression for one year.
+        """
         # Placeholder - would implement natural progression logic
         for employee in population:
             employee["salary"] *= 1.03  # 3% annual increase
         return population
 
     def _count_affected_employees(self, population: List[Dict], strategy: Dict) -> int:
-        """Count employees affected by strategy."""
+        """
+        Count employees affected by strategy.
+        """
         return strategy.get("affected_employees", 0)
 
     def _calculate_long_term_roi(self, timeline: List[Dict]) -> Dict:
-        """Calculate long-term ROI metrics."""
+        """
+        Calculate long-term ROI metrics.
+        """
         return {"total_roi": 1.5, "annual_roi": 0.3}  # Placeholder
 
     def _estimate_success_probability(self, strategy: Dict, timeline: List[Dict]) -> float:
-        """Estimate probability of strategy success."""
+        """
+        Estimate probability of strategy success.
+        """
         feasibility_map = {"high": 0.9, "medium": 0.7, "low": 0.5}
         return feasibility_map.get(strategy.get("feasibility", "medium"), 0.7)
 
     def _calculate_intervention_options(self, intervention_type: str, budget: float) -> Dict:
-        """Calculate intervention options for a specific type."""
+        """
+        Calculate intervention options for a specific type.
+        """
         return {"cost": budget * 0.25, "impact_score": 0.8}  # Placeholder
 
     def _optimize_allocation(self, options: Dict, budget: float) -> Dict:
-        """Optimize budget allocation across intervention types."""
+        """
+        Optimize budget allocation across intervention types.
+        """
         return {"allocation": {k: budget / len(options) for k in options.keys()}}  # Placeholder
 
     def _calculate_allocation_impact(self, allocation: Dict) -> Dict:
-        """Calculate expected impact of budget allocation."""
+        """
+        Calculate expected impact of budget allocation.
+        """
         return {"total_impact_score": 0.85}  # Placeholder
 
     def _prioritize_interventions(self, allocation: Dict) -> List[str]:
-        """Prioritize interventions by impact."""
+        """
+        Prioritize interventions by impact.
+        """
         return list(allocation.get("allocation", {}).keys())  # Placeholder
 
     def model_equity_intervention(
@@ -959,7 +1030,8 @@ class InterventionStrategySimulator:
         budget_constraint: float = 0.005,
         years_to_achieve: int = 5,
     ) -> Dict:
-        """Model comprehensive equity intervention strategies.
+        """
+        Model comprehensive equity intervention strategies.
 
         Args:
             intervention_type: Type of equity intervention to model
@@ -1014,7 +1086,9 @@ class InterventionStrategySimulator:
         return result
 
     def _analyze_comprehensive_equity_gaps(self) -> Dict:
-        """Analyze equity gaps across multiple dimensions."""
+        """
+        Analyze equity gaps across multiple dimensions.
+        """
         gaps = {
             "gender_gap": self._calculate_baseline_metrics()["gender_pay_gap_percent"],
             "level_inequities": {},
@@ -1038,7 +1112,9 @@ class InterventionStrategySimulator:
         return gaps
 
     def _model_comprehensive_equity_approach(self, equity_gaps: Dict, max_budget: float, years: int) -> Dict:
-        """Model comprehensive equity intervention approach."""
+        """
+        Model comprehensive equity intervention approach.
+        """
         # Address all equity dimensions simultaneously
         total_investment = min(max_budget, max_budget * 0.8)  # Use 80% of budget for comprehensive approach
         affected_employees = len(self.population_df) // 3  # Assume 1/3 of employees affected
@@ -1062,7 +1138,9 @@ class InterventionStrategySimulator:
         }
 
     def _model_targeted_adjustment_approach(self, equity_gaps: Dict, max_budget: float, years: int) -> Dict:
-        """Model targeted salary adjustment approach."""
+        """
+        Model targeted salary adjustment approach.
+        """
         return {
             "approach_name": "targeted_adjustment",
             "description": "Focus on specific high-impact salary adjustments",
@@ -1077,7 +1155,9 @@ class InterventionStrategySimulator:
         }
 
     def _model_gradual_remediation_approach(self, equity_gaps: Dict, max_budget: float, years: int) -> Dict:
-        """Model gradual remediation approach."""
+        """
+        Model gradual remediation approach.
+        """
         return {
             "approach_name": "gradual_remediation",
             "description": "Spread equity improvements over extended timeline",
@@ -1092,7 +1172,9 @@ class InterventionStrategySimulator:
         }
 
     def _model_performance_based_approach(self, equity_gaps: Dict, max_budget: float, years: int) -> Dict:
-        """Model performance-based intervention approach."""
+        """
+        Model performance-based intervention approach.
+        """
         return {
             "approach_name": "performance_based",
             "description": "Link equity improvements to performance development programs",
@@ -1107,7 +1189,9 @@ class InterventionStrategySimulator:
         }
 
     def _select_optimal_equity_approach(self, approaches: Dict, budget_constraint: float) -> Dict:
-        """Select the optimal equity approach based on multiple criteria."""
+        """
+        Select the optimal equity approach based on multiple criteria.
+        """
         # Simple scoring based on expected outcomes and feasibility
         scores = {}
 
@@ -1138,7 +1222,9 @@ class InterventionStrategySimulator:
 
 
 def main():
-    """Main function for testing and validation."""
+    """
+    Main function for testing and validation.
+    """
     parser = argparse.ArgumentParser(description="Intervention Strategy Simulator")
     parser.add_argument("--test-simulation", action="store_true", help="Run test simulation")
     parser.add_argument("--target-gap", type=float, default=0.0, help="Target gender gap percent (default: 0.0)")
@@ -1207,7 +1293,7 @@ def main():
             print(json.dumps(remediation_result, indent=2, default=str))
         else:
             # Summary output
-            print(f"\n💼 Gender Pay Gap Remediation Analysis")
+            print("\n💼 Gender Pay Gap Remediation Analysis")
             print(f"{'='*60}")
 
             current = remediation_result["current_state"]
@@ -1219,7 +1305,7 @@ def main():
             print(f"  Total payroll: £{current['total_payroll']:,.0f}")
 
             target = remediation_result["target_state"]
-            print(f"\nTarget State:")
+            print("\nTarget State:")
             print(f"  Target gap: {target['target_gap_percent']:.1f}%")
             print(
                 f"  Budget limit: £{target['budget_constraint_amount']:,.0f} ({target['budget_constraint_percent']:.1%})"
@@ -1237,7 +1323,7 @@ def main():
             print(f"  Final gap: {recommended['projected_final_gap']:.1f}%")
             print(f"  Feasibility: {recommended['feasibility']}")
 
-            print(f"\n📊 Strategy Comparison:")
+            print("\n📊 Strategy Comparison:")
             for strategy_name, strategy in remediation_result["available_strategies"].items():
                 if strategy.get("applicable", True):
                     print(

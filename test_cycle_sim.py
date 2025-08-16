@@ -1,4 +1,4 @@
-#!/Users/brunoviola/bruvio-tools/.venv/bin/python3
+#!/usr/bin/env python3
 
 from employee_population_simulator import EmployeePopulationGenerator
 from review_cycle_simulator import ReviewCycleSimulator

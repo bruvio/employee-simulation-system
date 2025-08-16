@@ -1,17 +1,17 @@
-#!/Users/brunoviola/bruvio-tools/.venv/bin/python3
+#!/usr/bin/env python3
 
-import json
-import os
-import shutil
 from datetime import datetime
+import json
 from pathlib import Path
+import shutil
 from typing import Any, Dict, List, Optional, Union
 
 from logger import LOGGER
 
 
 class GELOutputManager:
-    """Clean deterministic output directory manager for GEL scenario reports.
+    """
+    Clean deterministic output directory manager for GEL scenario reports.
 
     Creates structured output directories as specified in PRP:
     results/GEL/run_2025-08-14_09-00Z/
@@ -32,7 +32,8 @@ class GELOutputManager:
     def create_gel_run_directory(
         self, org: str = "GEL", timestamp: Optional[datetime] = None, create_latest_link: bool = True
     ) -> Dict[str, Path]:
-        """Create deterministic GEL run directory structure.
+        """
+        Create deterministic GEL run directory structure.
 
         Args:
             org: Organization identifier (default: GEL)
@@ -81,7 +82,8 @@ class GELOutputManager:
         return directories
 
     def _create_latest_link(self, org_dir: Path, run_dir: Path) -> None:
-        """Create convenience 'latest' link to current run.
+        """
+        Create convenience 'latest' link to current run.
 
         Uses symlink on Unix/Mac, copies on Windows for compatibility.
         """
@@ -120,7 +122,8 @@ class GELOutputManager:
         figure_files: Optional[List[Path]] = None,
         cleanup_temp: bool = True,
     ) -> Dict[str, Path]:
-        """Organize and move GEL outputs to final directory structure.
+        """
+        Organize and move GEL outputs to final directory structure.
 
         Args:
             run_directories: Directory structure from create_gel_run_directory
@@ -188,7 +191,8 @@ class GELOutputManager:
     def _organize_asset_files(
         self, source_files: List[Path], target_dir: Path, asset_type: str, cleanup_temp: bool
     ) -> List[Path]:
-        """Organize asset files into target directory.
+        """
+        Organize asset files into target directory.
 
         Args:
             source_files: List of source file paths
@@ -242,7 +246,8 @@ class GELOutputManager:
         recommended_uplifts_cost_pct: float,
         additional_metadata: Optional[Dict[str, Any]] = None,
     ) -> Dict[str, Any]:
-        """Create standardized manifest data for GEL scenarios.
+        """
+        Create standardized manifest data for GEL scenarios.
 
         Args:
             scenario: Scenario name (e.g., "GEL")
@@ -291,7 +296,8 @@ class GELOutputManager:
         return manifest
 
     def validate_gel_output(self, run_directory: Path) -> Dict[str, Any]:
-        """Validate GEL output directory structure and contents.
+        """
+        Validate GEL output directory structure and contents.
 
         Args:
             run_directory: Path to GEL run directory
@@ -362,7 +368,8 @@ class GELOutputManager:
         return validation_results
 
     def cleanup_old_runs(self, org: str = "GEL", keep_recent: int = 5, dry_run: bool = False) -> List[Path]:
-        """Clean up old GEL run directories, keeping only recent ones.
+        """
+        Clean up old GEL run directories, keeping only recent ones.
 
         Args:
             org: Organization identifier
@@ -413,7 +420,7 @@ if __name__ == "__main__":
     timestamp = datetime.utcnow()
     directories = manager.create_gel_run_directory(timestamp=timestamp)
 
-    print(f"Created directories:")
+    print("Created directories:")
     for name, path in directories.items():
         print(f"  {name}: {path}")
 

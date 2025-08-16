@@ -1,18 +1,22 @@
 #!/usr/bin/env python3
-"""Simple tests for median_convergence_analyzer module."""
-
-from unittest.mock import MagicMock, patch
+"""
+Simple tests for median_convergence_analyzer module.
+"""
 
 
 def test_import_module():
-    """Test that the module can be imported."""
+    """
+    Test that the module can be imported.
+    """
     import median_convergence_analyzer
 
     assert hasattr(median_convergence_analyzer, "__file__")
 
 
 def test_analyzer_class():
-    """Test analyzer class exists."""
+    """
+    Test analyzer class exists.
+    """
     import median_convergence_analyzer
 
     potential_classes = ["MedianConvergenceAnalyzer", "ConvergenceAnalyzer", "MedianAnalyzer"]
@@ -30,7 +34,9 @@ def test_analyzer_class():
 
 
 def test_analysis_functions():
-    """Test analysis functions."""
+    """
+    Test analysis functions.
+    """
     import median_convergence_analyzer
 
     functions = ["analyze_convergence", "calculate_median", "analyze_median_convergence"]
@@ -41,7 +47,9 @@ def test_analysis_functions():
 
 
 def test_basic_analysis():
-    """Test basic analysis functionality."""
+    """
+    Test basic analysis functionality.
+    """
     import median_convergence_analyzer
 
     test_data = [{"salary": 50000, "level": 3}, {"salary": 60000, "level": 4}]
@@ -60,7 +68,9 @@ def test_basic_analysis():
 
 
 def test_convergence_calculation():
-    """Test convergence calculation."""
+    """
+    Test convergence calculation.
+    """
     import median_convergence_analyzer
 
     # Check for calculation functions
@@ -76,7 +86,9 @@ def test_convergence_calculation():
 
 
 def test_median_utilities():
-    """Test median utility functions."""
+    """
+    Test median utility functions.
+    """
     import median_convergence_analyzer
 
     # Check for median functions

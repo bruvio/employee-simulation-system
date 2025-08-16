@@ -1,20 +1,24 @@
 #!/usr/bin/env python3
-"""Simple tests for run_employee_simulation module."""
+"""
+Simple tests for run_employee_simulation module.
+"""
 
 from unittest.mock import MagicMock, patch
 
-import pytest
-
 
 def test_import_module():
-    """Test that the module can be imported."""
+    """
+    Test that the module can be imported.
+    """
     import run_employee_simulation
 
     assert hasattr(run_employee_simulation, "__file__")
 
 
 def test_employee_story_explorer_init():
-    """Test EmployeeStoryExplorer initialization."""
+    """
+    Test EmployeeStoryExplorer initialization.
+    """
     from run_employee_simulation import EmployeeStoryExplorer
 
     explorer = EmployeeStoryExplorer()
@@ -25,7 +29,9 @@ def test_employee_story_explorer_init():
 
 
 def test_utility_functions_exist():
-    """Test utility functions exist."""
+    """
+    Test utility functions exist.
+    """
     import run_employee_simulation
 
     # Check that basic functions exist
@@ -38,7 +44,9 @@ def test_utility_functions_exist():
 
 @patch("builtins.print")
 def test_create_comprehensive_report_basic(mock_print):
-    """Test basic comprehensive report creation."""
+    """
+    Test basic comprehensive report creation.
+    """
     from run_employee_simulation import create_comprehensive_report
 
     mock_explorer = MagicMock()
@@ -59,7 +67,9 @@ def test_create_comprehensive_report_basic(mock_print):
 @patch("builtins.open")
 @patch("run_employee_simulation.Path")
 def test_create_markdown_report_basic(mock_path, mock_open):
-    """Test basic markdown report creation."""
+    """
+    Test basic markdown report creation.
+    """
     from run_employee_simulation import create_markdown_report
 
     mock_explorer = MagicMock()
@@ -80,7 +90,9 @@ def test_create_markdown_report_basic(mock_path, mock_open):
 @patch("run_employee_simulation.EmployeeStoryExplorer")
 @patch("builtins.print")
 def test_run_example_scenarios_basic(mock_print, mock_explorer_class):
-    """Test basic example scenarios runner."""
+    """
+    Test basic example scenarios runner.
+    """
     from run_employee_simulation import run_example_scenarios
 
     mock_explorer = MagicMock()

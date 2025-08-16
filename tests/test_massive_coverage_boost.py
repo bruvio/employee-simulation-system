@@ -1,11 +1,13 @@
 #!/usr/bin/env python3
 """Massive coverage boost - import and test ALL major modules systematically."""
 
-from unittest.mock import MagicMock, patch
+from unittest.mock import patch
 
 
 def test_import_all_remaining_large_modules():
-    """Import all large modules to boost coverage rapidly."""
+    """
+    Import all large modules to boost coverage rapidly.
+    """
     large_modules = [
         # 0% coverage modules (highest priority)
         "analysis_narrator",
@@ -49,7 +51,9 @@ def test_import_all_remaining_large_modules():
 
 
 def test_instantiate_all_major_classes():
-    """Try to instantiate classes from all major modules."""
+    """
+    Try to instantiate classes from all major modules.
+    """
     class_tests = [
         ("analysis_narrator", "AnalysisNarrator"),
         ("employee_population_simulator", "EmployeePopulationGenerator"),
@@ -92,7 +96,9 @@ def test_instantiate_all_major_classes():
 
 @patch("builtins.print")
 def test_call_main_functions_everywhere(mock_print):
-    """Call main functions in modules that have them."""
+    """
+    Call main functions in modules that have them.
+    """
     modules_with_main = [
         "analyze_individual_progression",
         "model_interventions",
@@ -120,7 +126,9 @@ def test_call_main_functions_everywhere(mock_print):
 
 
 def test_access_module_level_attributes():
-    """Access module-level attributes to boost coverage."""
+    """
+    Access module-level attributes to boost coverage.
+    """
     modules_to_test = [
         "analysis_narrator",
         "employee_population_simulator",
@@ -159,7 +167,9 @@ def test_access_module_level_attributes():
 
 @patch("builtins.open")
 def test_file_operations_across_modules(mock_open):
-    """Test file operations that exist across modules."""
+    """
+    Test file operations that exist across modules.
+    """
     modules_with_file_ops = [
         "data_export_system",
         "file_optimization_manager",
@@ -201,7 +211,9 @@ def test_file_operations_across_modules(mock_open):
 
 
 def test_calculation_and_analysis_functions():
-    """Test calculation and analysis functions across modules."""
+    """
+    Test calculation and analysis functions across modules.
+    """
     analysis_modules = [
         "median_convergence_analyzer",
         "analyze_individual_progression",
@@ -241,7 +253,9 @@ def test_calculation_and_analysis_functions():
 
 @patch("matplotlib.pyplot")
 def test_visualization_functions_everywhere(mock_plt):
-    """Test visualization functions across modules."""
+    """
+    Test visualization functions across modules.
+    """
     viz_modules = [
         "visualization_generator",
         "management_dashboard_generator",

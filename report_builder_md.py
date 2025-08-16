@@ -1,17 +1,18 @@
-#!/Users/brunoviola/bruvio-tools/.venv/bin/python3
+#!/usr/bin/env python3
 
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Union
+from typing import Any, Dict, Union
 
 from logger import LOGGER
 
 
 class MarkdownReportBuilder:
-    """Markdown report builder with Mermaid diagram support for GEL scenario.
+    """
+    Markdown report builder with Mermaid diagram support for GEL scenario.
 
-    Generates narrative reports with coherent storylines about population structure,
-    inequality, high-performer rewards, and recommended actions.
+    Generates narrative reports with coherent storylines about population structure, inequality, high-performer rewards,
+    and recommended actions.
     """
 
     def __init__(self, output_dir: Union[str, Path] = "results"):
@@ -22,7 +23,8 @@ class MarkdownReportBuilder:
     def build_gel_report(
         self, analysis_payload: Dict[str, Any], manifest: Dict[str, Any], output_file: str = "report.md"
     ) -> Path:
-        """Build comprehensive GEL scenario report with Mermaid diagrams.
+        """
+        Build comprehensive GEL scenario report with Mermaid diagrams.
 
         Args:
             analysis_payload: Complete analysis results from orchestrator
@@ -52,15 +54,17 @@ class MarkdownReportBuilder:
         return report_path
 
     def _generate_header(self, manifest: Dict[str, Any]) -> str:
-        """Generate report header and title."""
+        """
+        Generate report header and title.
+        """
         org = manifest.get("org", "Unknown")
         timestamp = manifest.get("timestamp_utc", datetime.utcnow().isoformat())
         scenario = manifest.get("scenario", "GEL")
 
         return f"""# {org} Employee Analysis Report - {scenario} Scenario
 
-**Generated:** {timestamp}  
-**Scenario:** {scenario}  
+**Generated:** {timestamp}
+**Scenario:** {scenario}
 **Organization:** {org}
 
 ---
@@ -68,7 +72,9 @@ class MarkdownReportBuilder:
 """
 
     def _generate_overview_and_inputs(self, manifest: Dict[str, Any], analysis_payload: Dict[str, Any]) -> str:
-        """Generate overview and inputs section."""
+        """
+        Generate overview and inputs section.
+        """
         population = manifest.get("population", "Unknown")
         seed = manifest.get("random_seed", "Unknown")
         roles_config_hash = manifest.get("roles_config_sha256", "Unknown")
@@ -98,7 +104,9 @@ class MarkdownReportBuilder:
 """
 
     def _generate_data_flow_diagram(self) -> str:
-        """Generate Mermaid data flow diagram."""
+        """
+        Generate Mermaid data flow diagram.
+        """
         return """## 2. Data Flow Overview {{#dataflow}}
 
 The following diagram illustrates how data flows through the GEL scenario analysis:
@@ -113,10 +121,10 @@ flowchart LR
     F --> G[Report Builder]
     G --> H[index.html]
     G --> I[report.md]
-    
+
     subgraph "Analysis Modules"
         D1[Median Convergence]
-        D2[Gender Gap Analysis] 
+        D2[Gender Gap Analysis]
         D3[High Performer Identification]
         D4[Intervention Modeling]
     end
@@ -133,7 +141,9 @@ flowchart LR
 """
 
     def _generate_population_stratification(self, analysis_payload: Dict[str, Any]) -> str:
-        """Generate population stratification section."""
+        """
+        Generate population stratification section.
+        """
         stratification = analysis_payload.get("population_stratification", {})
 
         content = """## 3. Population Stratification {{#stratification}}
@@ -179,7 +189,7 @@ graph TD
     A --> C[Managers]
     
     B --> B1[Junior Levels 1-2]
-    B --> B2[Mid Levels 3-4] 
+    B --> B2[Mid Levels 3-4]
     B --> B3[Senior Levels 5-6]
     
     C --> C1[Team Leads]
@@ -200,10 +210,12 @@ graph TD
         return content
 
     def _generate_inequality_and_risk(self, analysis_payload: Dict[str, Any], manifest: Dict[str, Any]) -> str:
-        """Generate inequality and risk analysis section."""
+        """
+        Generate inequality and risk analysis section.
+        """
         inequality_data = analysis_payload.get("inequality_analysis", {})
 
-        content = f"""## 4. Inequality & Risk Analysis {{#inequality}}
+        content = """## 4. Inequality & Risk Analysis {#inequality}
 
 ### Key Findings
 
@@ -254,7 +266,9 @@ graph TD
         return content
 
     def _generate_high_performer_recognition(self, analysis_payload: Dict[str, Any], manifest: Dict[str, Any]) -> str:
-        """Generate high performer recognition section."""
+        """
+        Generate high performer recognition section.
+        """
         high_performers = analysis_payload.get("high_performers", {})
         budget_pct = manifest.get("intervention_budget_pct", 0.5)
 
@@ -309,7 +323,9 @@ The following trade-offs were considered within the 0.5% budget constraint:
         return content
 
     def _generate_manager_budget_diagram(self, manifest: Dict[str, Any]) -> str:
-        """Generate Mermaid diagram for manager budget allocation."""
+        """
+        Generate Mermaid diagram for manager budget allocation.
+        """
         max_reports = manifest.get("max_direct_reports", 6)
         budget_pct = manifest.get("intervention_budget_pct", 0.5)
 
@@ -361,7 +377,9 @@ flowchart TD
 """
 
     def _generate_recommendations(self, analysis_payload: Dict[str, Any], manifest: Dict[str, Any]) -> str:
-        """Generate targeted recommendations section."""
+        """
+        Generate targeted recommendations section.
+        """
         recommendations = analysis_payload.get("recommendations", {})
 
         content = """## 7. Targeted Recommendations {{#recommendations}}
@@ -417,7 +435,9 @@ The following metrics should be tracked to measure the effectiveness of interven
         return content
 
     def _generate_appendix(self, manifest: Dict[str, Any], analysis_payload: Dict[str, Any]) -> str:
-        """Generate appendix with assumptions and references."""
+        """
+        Generate appendix with assumptions and references.
+        """
         config_hash = manifest.get("roles_config_sha256", "Unknown")
 
         return f"""## 8. Appendix {{#appendix}}
@@ -453,6 +473,8 @@ Selected role minimums:
         for role in roles[:10]:  # Show first 10 roles
             title = role.get("title", "Unknown")
             min_salary = min(role.get("min_salaries", [0]))
+            if "content" not in locals():
+                content = ""
             content += f"- **{title}:** £{min_salary:,.2f}\n"
 
         if len(roles) > 10:
@@ -486,7 +508,9 @@ python employee_simulation_orchestrator.py \\
 
 
 def create_sample_analysis_payload() -> Dict[str, Any]:
-    """Create sample analysis payload for testing."""
+    """
+    Create sample analysis payload for testing.
+    """
     return {
         "population_stratification": {
             "by_level": {

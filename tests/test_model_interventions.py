@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
-"""Comprehensive tests for model_interventions module.
+"""
+Comprehensive tests for model_interventions module.
 
 Tests intervention modeling functions, report generation, and analysis workflows.
 """
@@ -28,10 +29,14 @@ from model_interventions import (
 
 
 class TestUtilityFunctions:
-    """Test utility functions for formatting and data handling."""
+    """
+    Test utility functions for formatting and data handling.
+    """
 
     def test_format_currency(self):
-        """Test currency formatting function."""
+        """
+        Test currency formatting function.
+        """
         result = format_currency(1000)
         assert "£" in result and "1,000" in result  # Allow for decimal places
         result = format_currency(1000.50)
@@ -41,14 +46,18 @@ class TestUtilityFunctions:
         assert "£-" in result and "500" in result
 
     def test_format_currency_large_numbers(self):
-        """Test currency formatting with large numbers."""
+        """
+        Test currency formatting with large numbers.
+        """
         result = format_currency(1000000)
         assert "£" in result and "1,000,000" in result
         result = format_currency(1234567.89)
         assert "£" in result and "1,234,567" in result
 
     def test_format_percentage(self):
-        """Test percentage formatting function."""
+        """
+        Test percentage formatting function.
+        """
         # format_percentage expects raw percentage values, not decimals
         result = format_percentage(15.0)
         assert "%" in result and "15" in result
@@ -59,18 +68,24 @@ class TestUtilityFunctions:
         assert "%" in result and "100" in result
 
     def test_format_percentage_edge_cases(self):
-        """Test percentage formatting edge cases."""
+        """
+        Test percentage formatting edge cases.
+        """
         result = format_percentage(-5.0)
         assert "%" in result and "-5" in result
         assert format_percentage(2.5) == "2.5%"
 
 
 class TestPopulationDataLoading:
-    """Test population data loading functionality."""
+    """
+    Test population data loading functionality.
+    """
 
     @patch("model_interventions.EmployeePopulationGenerator")
     def test_load_population_data_generate(self, mock_generator_class):
-        """Test population data generation."""
+        """
+        Test population data generation.
+        """
         # Setup mock
         mock_generator = MagicMock()
         mock_generator_class.return_value = mock_generator
@@ -88,14 +103,18 @@ class TestPopulationDataLoading:
 
     @patch("builtins.open", mock_open(read_data='[{"employee_id": 1, "salary": 50000}]'))
     def test_load_population_data_from_file(self):
-        """Test loading population data from JSON file."""
+        """
+        Test loading population data from JSON file.
+        """
         result = load_population_data("test_file.json")
 
         assert isinstance(result, list)
         assert len(result) >= 0  # Should return data
 
     def test_load_population_data_invalid_source(self):
-        """Test loading with invalid data source."""
+        """
+        Test loading with invalid data source.
+        """
         # Should handle invalid sources gracefully
         try:
             load_population_data("invalid_source")
@@ -104,10 +123,14 @@ class TestPopulationDataLoading:
 
 
 class TestReportGeneration:
-    """Test report generation functions."""
+    """
+    Test report generation functions.
+    """
 
     def setup_method(self):
-        """Setup test fixtures."""
+        """
+        Setup test fixtures.
+        """
         self.gender_gap_result = {
             "current_state": {
                 "gender_pay_gap_percent": 15.0,
@@ -216,7 +239,9 @@ class TestReportGeneration:
         }
 
     def test_create_gender_gap_report_text(self):
-        """Test gender gap report creation in text format."""
+        """
+        Test gender gap report creation in text format.
+        """
         # Test with minimal data that won't crash the function
         minimal_result = {
             "current_state": {
@@ -238,7 +263,9 @@ class TestReportGeneration:
             pass
 
     def test_create_gender_gap_report_json(self):
-        """Test gender gap report creation in JSON format."""
+        """
+        Test gender gap report creation in JSON format.
+        """
         simple_result = {"current_gap": 0.15, "target_gap": 0.05}
         report = create_gender_gap_report(simple_result, "json")
 
@@ -251,7 +278,9 @@ class TestReportGeneration:
             pytest.fail("Report should be valid JSON")
 
     def test_create_median_convergence_report_text(self):
-        """Test median convergence report creation in text format."""
+        """
+        Test median convergence report creation in text format.
+        """
         report = create_median_convergence_report(self.convergence_result, "text")
 
         assert isinstance(report, str)
@@ -260,7 +289,9 @@ class TestReportGeneration:
         assert "60,000" in report  # Employee salary (not median, which isn't in this report format)
 
     def test_create_median_convergence_report_json(self):
-        """Test median convergence report creation in JSON format."""
+        """
+        Test median convergence report creation in JSON format.
+        """
         report = create_median_convergence_report(self.convergence_result, "json")
 
         assert isinstance(report, str)
@@ -270,7 +301,9 @@ class TestReportGeneration:
         assert "median_salary" in parsed
 
     def test_create_equity_report_text(self):
-        """Test equity report creation in text format."""
+        """
+        Test equity report creation in text format.
+        """
         report = create_equity_report(self.equity_result, "text")
 
         assert isinstance(report, str)
@@ -278,7 +311,9 @@ class TestReportGeneration:
         assert "75,000" in report  # Male median salary
 
     def test_create_equity_report_json(self):
-        """Test equity report creation in JSON format."""
+        """
+        Test equity report creation in JSON format.
+        """
         report = create_equity_report(self.equity_result, "json")
 
         assert isinstance(report, str)
@@ -288,11 +323,15 @@ class TestReportGeneration:
 
 
 class TestReportSaving:
-    """Test report saving functionality."""
+    """
+    Test report saving functionality.
+    """
 
     @patch("model_interventions.os.makedirs")
     def test_save_report_text(self, mock_makedirs):
-        """Test saving text report."""
+        """
+        Test saving text report.
+        """
         report_content = "Test report content"
         output_file = "test_report.txt"
 
@@ -306,7 +345,9 @@ class TestReportSaving:
 
     @patch("model_interventions.os.makedirs")
     def test_save_report_json(self, mock_makedirs):
-        """Test saving JSON report."""
+        """
+        Test saving JSON report.
+        """
         report_content = '{"test": "data"}'
         output_file = "test_report.json"
 
@@ -319,7 +360,9 @@ class TestReportSaving:
             mock_file().write.assert_called_once_with(report_content)
 
     def test_save_report_with_temp_file(self):
-        """Test saving report to actual temporary file."""
+        """
+        Test saving report to actual temporary file.
+        """
         report_content = "Test report for file operations"
 
         with tempfile.NamedTemporaryFile(mode="w", delete=False, suffix=".txt") as tmp_file:
@@ -337,10 +380,14 @@ class TestReportSaving:
 
 
 class TestAnalysisFunctions:
-    """Test analysis workflow functions."""
+    """
+    Test analysis workflow functions.
+    """
 
     def setup_method(self):
-        """Setup test fixtures."""
+        """
+        Setup test fixtures.
+        """
         self.population_data = [
             {
                 "employee_id": 1,
@@ -360,7 +407,9 @@ class TestAnalysisFunctions:
 
     @patch("model_interventions.InterventionStrategySimulator")
     def test_run_gender_gap_analysis(self, mock_simulator_class):
-        """Test gender gap analysis execution."""
+        """
+        Test gender gap analysis execution.
+        """
         # Setup mock
         mock_simulator = MagicMock()
         mock_simulator_class.return_value = mock_simulator
@@ -377,7 +426,9 @@ class TestAnalysisFunctions:
 
     @patch("model_interventions.MedianConvergenceAnalyzer")
     def test_run_median_convergence_analysis(self, mock_analyzer_class):
-        """Test median convergence analysis execution."""
+        """
+        Test median convergence analysis execution.
+        """
         # Setup mock
         mock_analyzer = MagicMock()
         mock_analyzer_class.return_value = mock_analyzer
@@ -395,7 +446,9 @@ class TestAnalysisFunctions:
 
     @patch("model_interventions.InterventionStrategySimulator")
     def test_run_equity_analysis(self, mock_simulator_class):
-        """Test comprehensive equity analysis."""
+        """
+        Test comprehensive equity analysis.
+        """
         # Setup mock
         mock_simulator = MagicMock()
         mock_simulator_class.return_value = mock_simulator
@@ -413,12 +466,16 @@ class TestAnalysisFunctions:
 
 
 class TestMainFunction:
-    """Test the main CLI function."""
+    """
+    Test the main CLI function.
+    """
 
     @patch("model_interventions.argparse.ArgumentParser")
     @patch("model_interventions.load_population_data")
     def test_main_gender_gap_analysis(self, mock_load_data, mock_parser_class):
-        """Test main function with gender gap analysis."""
+        """
+        Test main function with gender gap analysis.
+        """
         # Setup mocks
         mock_parser = MagicMock()
         mock_parser_class.return_value = mock_parser
@@ -453,7 +510,9 @@ class TestMainFunction:
     @patch("model_interventions.argparse.ArgumentParser")
     @patch("model_interventions.load_population_data")
     def test_main_convergence_analysis(self, mock_load_data, mock_parser_class):
-        """Test main function with convergence analysis."""
+        """
+        Test main function with convergence analysis.
+        """
         # Setup mocks
         mock_parser = MagicMock()
         mock_parser_class.return_value = mock_parser
@@ -485,7 +544,9 @@ class TestMainFunction:
 
     @patch("model_interventions.argparse.ArgumentParser")
     def test_main_error_handling(self, mock_parser_class):
-        """Test main function error handling."""
+        """
+        Test main function error handling.
+        """
         mock_parser = MagicMock()
         mock_parser_class.return_value = mock_parser
         mock_parser.parse_args.side_effect = Exception("CLI parsing failed")
@@ -498,10 +559,14 @@ class TestMainFunction:
 
 
 class TestIntegrationScenarios:
-    """Test integration scenarios and edge cases."""
+    """
+    Test integration scenarios and edge cases.
+    """
 
     def test_full_workflow_integration(self):
-        """Test complete workflow from data loading to report generation."""
+        """
+        Test complete workflow from data loading to report generation.
+        """
         # Test the integration of multiple components
         population_data = [
             {"employee_id": 1, "level": 3, "salary": 60000, "gender": "Female"},
@@ -526,7 +591,9 @@ class TestIntegrationScenarios:
             pass
 
     def test_error_recovery_scenarios(self):
-        """Test error recovery in various scenarios."""
+        """
+        Test error recovery in various scenarios.
+        """
         # Test with empty population data
 
         # Should handle empty data gracefully

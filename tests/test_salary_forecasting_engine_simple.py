@@ -1,8 +1,6 @@
 #!/usr/bin/env python3
 """Simple tests for salary_forecasting_engine module."""
 
-from unittest.mock import MagicMock, patch
-
 
 def test_import_module():
     """Test that the module can be imported."""
@@ -30,7 +28,9 @@ def test_forecasting_engine_class():
 
 
 def test_forecasting_functions():
-    """Test forecasting functions."""
+    """
+    Test forecasting functions.
+    """
     import salary_forecasting_engine
 
     functions = ["forecast_salary", "predict_salary", "calculate_forecast"]
@@ -41,7 +41,9 @@ def test_forecasting_functions():
 
 
 def test_basic_forecasting():
-    """Test basic forecasting functionality."""
+    """
+    Test basic forecasting functionality.
+    """
     import salary_forecasting_engine
 
     test_data = {"current_salary": 50000, "years": 5}

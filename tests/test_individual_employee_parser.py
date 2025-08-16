@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
-"""Unit tests for individual_employee_parser module.
+"""
+Unit tests for individual_employee_parser module.
 
 Tests the IndividualEmployeeParser class and related functions for parsing
 and validating individual employee data from various formats.
@@ -22,10 +23,14 @@ from individual_employee_parser import (
 
 
 class TestEmployeeData:
-    """Test the EmployeeData pydantic model validation."""
+    """
+    Test the EmployeeData pydantic model validation.
+    """
 
     def test_valid_employee_data(self):
-        """Test creating EmployeeData with valid data."""
+        """
+        Test creating EmployeeData with valid data.
+        """
         employee = EmployeeData(level=5, salary=80000, performance_rating="Exceeding")
 
         assert employee.level == 5
@@ -35,14 +40,18 @@ class TestEmployeeData:
         assert employee.tenure_years == 1  # Default value
 
     def test_invalid_performance_rating(self):
-        """Test validation fails for invalid performance rating."""
+        """
+        Test validation fails for invalid performance rating.
+        """
         with pytest.raises(ValidationError) as exc_info:
             EmployeeData(level=3, salary=75000, performance_rating="Outstanding")  # Invalid rating
 
         assert "Performance rating must be one of" in str(exc_info.value)
 
     def test_invalid_level_range(self):
-        """Test validation fails for level outside 1-6 range."""
+        """
+        Test validation fails for level outside 1-6 range.
+        """
         # Test level too low
         with pytest.raises(ValidationError):
             EmployeeData(level=0, salary=50000, performance_rating="Achieving")
@@ -52,12 +61,16 @@ class TestEmployeeData:
             EmployeeData(level=7, salary=100000, performance_rating="High Performing")
 
     def test_invalid_salary_negative(self):
-        """Test validation fails for negative salary."""
+        """
+        Test validation fails for negative salary.
+        """
         with pytest.raises(ValidationError):
             EmployeeData(level=3, salary=-50000, performance_rating="Achieving")
 
     def test_salary_level_validation(self):
-        """Test salary range validation based on level."""
+        """
+        Test salary range validation based on level.
+        """
         # Valid salary for level
         employee = EmployeeData(
             level=3, salary=85000, performance_rating="Achieving"  # Within range for level 3 (72000-95000)
@@ -73,16 +86,22 @@ class TestEmployeeData:
         assert "outside expected range" in str(exc_info.value)
 
     def test_invalid_gender(self):
-        """Test validation fails for invalid gender."""
+        """
+        Test validation fails for invalid gender.
+        """
         with pytest.raises(ValidationError):
             EmployeeData(level=3, salary=75000, performance_rating="Achieving", gender="Other")  # Not in allowed list
 
 
 class TestIndividualEmployeeParser:
-    """Test the IndividualEmployeeParser class."""
+    """
+    Test the IndividualEmployeeParser class.
+    """
 
     def test_parse_from_string_basic(self):
-        """Test parsing basic employee data from string."""
+        """
+        Test parsing basic employee data from string.
+        """
         parser = IndividualEmployeeParser()
         result = parser.parse_from_string("level:5,salary:80692.5,performance:Exceeding")
 
@@ -91,7 +110,9 @@ class TestIndividualEmployeeParser:
         assert result == expected
 
     def test_parse_from_string_extended(self):
-        """Test parsing extended employee data from string."""
+        """
+        Test parsing extended employee data from string.
+        """
         parser = IndividualEmployeeParser()
         data_string = "level:3,salary:75000,performance:High Performing,gender:Male,tenure:3,name:John Doe"
         result = parser.parse_from_string(data_string)
@@ -108,14 +129,18 @@ class TestIndividualEmployeeParser:
         assert result == expected
 
     def test_parse_from_string_performance_alias(self):
-        """Test parsing with 'performance' instead of 'performance_rating'."""
+        """
+        Test parsing with 'performance' instead of 'performance_rating'.
+        """
         parser = IndividualEmployeeParser()
         result = parser.parse_from_string("level:2,salary:60000,performance:Achieving")
 
         assert result["performance_rating"] == "Achieving"
 
     def test_parse_from_string_empty_string(self):
-        """Test parsing fails with empty string."""
+        """
+        Test parsing fails with empty string.
+        """
         parser = IndividualEmployeeParser()
 
         with pytest.raises(ValueError) as exc_info:
@@ -124,7 +149,9 @@ class TestIndividualEmployeeParser:
         assert "cannot be empty" in str(exc_info.value)
 
     def test_parse_from_string_invalid_format(self):
-        """Test parsing fails with invalid format."""
+        """
+        Test parsing fails with invalid format.
+        """
         parser = IndividualEmployeeParser()
 
         with pytest.raises(ValueError) as exc_info:
@@ -133,7 +160,9 @@ class TestIndividualEmployeeParser:
         assert "Expected 'key:value'" in str(exc_info.value)
 
     def test_parse_from_string_missing_required_fields(self):
-        """Test parsing fails when required fields are missing."""
+        """
+        Test parsing fails when required fields are missing.
+        """
         parser = IndividualEmployeeParser()
 
         with pytest.raises(ValueError) as exc_info:
@@ -142,7 +171,9 @@ class TestIndividualEmployeeParser:
         assert "Missing required fields" in str(exc_info.value)
 
     def test_parse_from_string_invalid_numeric_values(self):
-        """Test parsing fails with invalid numeric values."""
+        """
+        Test parsing fails with invalid numeric values.
+        """
         parser = IndividualEmployeeParser()
 
         with pytest.raises(ValueError):
@@ -152,7 +183,9 @@ class TestIndividualEmployeeParser:
             parser.parse_from_string("level:5,salary:eighty_thousand,performance:Achieving")  # Non-numeric salary
 
     def test_parse_from_dict_basic(self):
-        """Test parsing from dictionary format."""
+        """
+        Test parsing from dictionary format.
+        """
         parser = IndividualEmployeeParser()
         input_dict = {"level": 4, "salary": 90000, "performance_rating": "High Performing"}
 
@@ -160,7 +193,9 @@ class TestIndividualEmployeeParser:
         assert result == input_dict
 
     def test_parse_from_dict_normalize_keys(self):
-        """Test dictionary parsing normalizes key names."""
+        """
+        Test dictionary parsing normalizes key names.
+        """
         parser = IndividualEmployeeParser()
         input_dict = {
             "level": 3,
@@ -177,14 +212,18 @@ class TestIndividualEmployeeParser:
         assert "tenure" not in result
 
     def test_parse_from_dict_invalid_input(self):
-        """Test parsing from dictionary fails with invalid input."""
+        """
+        Test parsing from dictionary fails with invalid input.
+        """
         parser = IndividualEmployeeParser()
 
         with pytest.raises(ValueError):
             parser.parse_from_dict("not_a_dict")
 
     def test_validate_and_create_success(self):
-        """Test successful validation and creation."""
+        """
+        Test successful validation and creation.
+        """
         parser = IndividualEmployeeParser()
         data = {"level": 5, "salary": 80000, "performance_rating": "Exceeding"}
 
@@ -196,7 +235,9 @@ class TestIndividualEmployeeParser:
         assert employee.performance_rating == "Exceeding"
 
     def test_validate_and_create_failure(self):
-        """Test validation failure creates user-friendly error."""
+        """
+        Test validation failure creates user-friendly error.
+        """
         parser = IndividualEmployeeParser()
         data = {
             "level": 10,  # Invalid level
@@ -212,10 +253,14 @@ class TestIndividualEmployeeParser:
 
 
 class TestConvenienceFunctions:
-    """Test the convenience functions."""
+    """
+    Test the convenience functions.
+    """
 
     def test_parse_employee_data_string_success(self):
-        """Test successful parsing with convenience function."""
+        """
+        Test successful parsing with convenience function.
+        """
         employee = parse_employee_data_string("level:5,salary:80692.5,performance:Exceeding")
 
         assert isinstance(employee, EmployeeData)
@@ -224,12 +269,16 @@ class TestConvenienceFunctions:
         assert employee.performance_rating == "Exceeding"
 
     def test_parse_employee_data_string_failure(self):
-        """Test parsing failure with convenience function."""
+        """
+        Test parsing failure with convenience function.
+        """
         with pytest.raises(ValueError):
             parse_employee_data_string("level:invalid,salary:80000,performance:Achieving")
 
     def test_validate_employee_data_success(self):
-        """Test successful validation with convenience function."""
+        """
+        Test successful validation with convenience function.
+        """
         data = {"level": 3, "salary": 75000, "performance": "High Performing"}  # Test alias handling
 
         employee = validate_employee_data(data)
@@ -238,7 +287,9 @@ class TestConvenienceFunctions:
         assert employee.performance_rating == "High Performing"
 
     def test_create_individual_employee(self):
-        """Test creating employee record compatible with simulation system."""
+        """
+        Test creating employee record compatible with simulation system.
+        """
         employee_data = EmployeeData(
             employee_id=42,
             name="Test Employee",
@@ -270,10 +321,14 @@ class TestConvenienceFunctions:
 
 
 class TestEdgeCases:
-    """Test edge cases and boundary conditions."""
+    """
+    Test edge cases and boundary conditions.
+    """
 
     def test_salary_at_level_boundaries(self):
-        """Test salaries at the boundary of level ranges."""
+        """
+        Test salaries at the boundary of level ranges.
+        """
         # Test minimum salary for level 3 (should work with buffer)
         employee = EmployeeData(level=3, salary=72000, performance_rating="Achieving")  # Minimum for level 3
         assert employee.salary == 72000
@@ -283,7 +338,9 @@ class TestEdgeCases:
         assert employee.salary == 95000
 
     def test_whitespace_handling(self):
-        """Test parsing handles whitespace correctly."""
+        """
+        Test parsing handles whitespace correctly.
+        """
         parser = IndividualEmployeeParser()
         result = parser.parse_from_string(" level : 3 , salary : 75000 , performance : Achieving ")
 
@@ -292,14 +349,18 @@ class TestEdgeCases:
         assert result["performance_rating"] == "Achieving"
 
     def test_colon_in_value(self):
-        """Test parsing handles colons within values."""
+        """
+        Test parsing handles colons within values.
+        """
         parser = IndividualEmployeeParser()
         result = parser.parse_from_string("level:3,salary:75000,performance:Achieving,name:John: Jr")
 
         assert result["name"] == "John: Jr"
 
     def test_all_performance_ratings(self):
-        """Test all valid performance ratings are accepted."""
+        """
+        Test all valid performance ratings are accepted.
+        """
         valid_ratings = ["Not met", "Partially met", "Achieving", "High Performing", "Exceeding"]
 
         for rating in valid_ratings:

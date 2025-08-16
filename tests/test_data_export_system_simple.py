@@ -1,20 +1,24 @@
 #!/usr/bin/env python3
-"""Simple tests for data_export_system module."""
+"""
+Simple tests for data_export_system module.
+"""
 
-from unittest.mock import MagicMock, patch
-
-import pytest
+from unittest.mock import patch
 
 
 def test_import_module():
-    """Test that the module can be imported."""
+    """
+    Test that the module can be imported.
+    """
     import data_export_system
 
     assert hasattr(data_export_system, "__file__")
 
 
 def test_data_export_system_init():
-    """Test DataExportSystem initialization."""
+    """
+    Test DataExportSystem initialization.
+    """
     from data_export_system import DataExportSystem
 
     system = DataExportSystem()
@@ -23,7 +27,9 @@ def test_data_export_system_init():
 
 @patch("builtins.open")
 def test_export_basic(mock_open):
-    """Test basic export functionality."""
+    """
+    Test basic export functionality.
+    """
     from data_export_system import DataExportSystem
 
     system = DataExportSystem()
@@ -38,7 +44,9 @@ def test_export_basic(mock_open):
 
 
 def test_utility_functions():
-    """Test utility functions exist."""
+    """
+    Test utility functions exist.
+    """
     import data_export_system
 
     # Check that basic classes exist

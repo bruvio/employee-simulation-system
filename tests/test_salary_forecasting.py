@@ -1,4 +1,4 @@
-#!/Users/brunoviola/bruvio-tools/.venv/bin/python3
+#!/usr/bin/env python3
 
 import os
 import sys
@@ -13,15 +13,20 @@ from salary_forecasting_engine import SalaryForecastingEngine
 
 
 class TestSalaryForecastingEngine:
-    """Test suite for SalaryForecastingEngine mathematical calculations."""
+    """
+    Test suite for SalaryForecastingEngine mathematical calculations.
+    """
 
     @pytest.fixture
     def engine(self):
-        """Create a SalaryForecastingEngine instance for testing."""
+        """
+        Create a SalaryForecastingEngine instance for testing.
+        """
         return SalaryForecastingEngine(confidence_level=0.95, market_inflation_rate=0.025)
 
     def test_cagr_calculation_basic(self, engine):
-        """Test basic CAGR calculation.
+        """
+        Test basic CAGR calculation.
 
         Args:
           engine:
@@ -34,7 +39,8 @@ class TestSalaryForecastingEngine:
         assert abs(cagr - expected) < 0.00001
 
     def test_cagr_calculation_edge_cases(self, engine):
-        """Test CAGR calculation edge cases.
+        """
+        Test CAGR calculation edge cases.
 
         Args:
           engine:
@@ -51,7 +57,8 @@ class TestSalaryForecastingEngine:
         assert abs(cagr - expected) < 0.00001
 
     def test_cagr_invalid_inputs(self, engine):
-        """Test CAGR calculation with invalid inputs.
+        """
+        Test CAGR calculation with invalid inputs.
 
         Args:
           engine:
@@ -71,7 +78,8 @@ class TestSalaryForecastingEngine:
             engine.calculate_cagr(0, 100000, 5)  # Zero start
 
     def test_compound_growth_projection(self, engine):
-        """Test compound growth projection.
+        """
+        Test compound growth projection.
 
         Args:
           engine:
@@ -84,7 +92,8 @@ class TestSalaryForecastingEngine:
         assert abs(future_value - expected) < 0.01
 
     def test_compound_growth_zero_years(self, engine):
-        """Test compound growth with zero years.
+        """
+        Test compound growth with zero years.
 
         Args:
           engine:
@@ -95,7 +104,8 @@ class TestSalaryForecastingEngine:
         assert future_value == 80000  # No growth
 
     def test_compound_growth_invalid_inputs(self, engine):
-        """Test compound growth with invalid inputs.
+        """
+        Test compound growth with invalid inputs.
 
         Args:
           engine:
@@ -109,7 +119,8 @@ class TestSalaryForecastingEngine:
             engine.project_compound_growth(80000, 0.05, -3)  # Negative years
 
     def test_uplift_increase_calculation(self, engine):
-        """Test uplift increase calculation using UPLIFT_MATRIX.
+        """
+        Test uplift increase calculation using UPLIFT_MATRIX.
 
         Args:
           engine:
@@ -127,7 +138,8 @@ class TestSalaryForecastingEngine:
         assert abs(new_salary - expected) < 0.01
 
     def test_uplift_invalid_inputs(self, engine):
-        """Test uplift calculation with invalid inputs.
+        """
+        Test uplift calculation with invalid inputs.
 
         Args:
           engine:
@@ -141,7 +153,8 @@ class TestSalaryForecastingEngine:
             engine.calculate_uplift_increase(80000, 7, "High Performing")  # Invalid level
 
     def test_confidence_interval_calculation(self, engine):
-        """Test confidence interval calculation.
+        """
+        Test confidence interval calculation.
 
         Args:
           engine:
@@ -158,7 +171,8 @@ class TestSalaryForecastingEngine:
         assert upper - mean == mean - lower  # Symmetric
 
     def test_confidence_interval_edge_cases(self, engine):
-        """Test confidence interval edge cases.
+        """
+        Test confidence interval edge cases.
 
         Args:
           engine:
@@ -175,7 +189,8 @@ class TestSalaryForecastingEngine:
             engine.calculate_confidence_interval([])
 
     def test_performance_scenarios_generation(self, engine):
-        """Test performance scenario generation.
+        """
+        Test performance scenario generation.
 
         Args:
           engine:
@@ -207,7 +222,8 @@ class TestSalaryForecastingEngine:
         assert optimistic_index >= conservative_index
 
     def test_time_to_target_calculation(self, engine):
-        """Test time to target salary calculation.
+        """
+        Test time to target salary calculation.
 
         Args:
           engine:
@@ -220,7 +236,8 @@ class TestSalaryForecastingEngine:
         assert abs(years - expected) < 0.01
 
     def test_time_to_target_invalid_inputs(self, engine):
-        """Test time to target with invalid inputs.
+        """
+        Test time to target with invalid inputs.
 
         Args:
           engine:
@@ -237,7 +254,8 @@ class TestSalaryForecastingEngine:
             engine.calculate_time_to_target(80000, 100000, 0)  # Zero growth rate
 
     def test_market_adjustments(self, engine):
-        """Test market adjustment application.
+        """
+        Test market adjustment application.
 
         Args:
           engine:
@@ -260,7 +278,8 @@ class TestSalaryForecastingEngine:
         assert engine.apply_market_adjustments([]) == []
 
     def test_population_median_progression(self, engine):
-        """Test population median progression calculation.
+        """
+        Test population median progression calculation.
 
         Args:
           engine:
@@ -292,7 +311,8 @@ class TestSalaryForecastingEngine:
                 assert level_path[i] > level_path[i - 1]
 
     def test_validation_method(self, engine):
-        """Test the built-in validation method.
+        """
+        Test the built-in validation method.
 
         Args:
           engine:
@@ -303,7 +323,8 @@ class TestSalaryForecastingEngine:
         assert result is True  # All validations should pass
 
     def test_performance_variance_calculation(self, engine):
-        """Test performance variance calculation.
+        """
+        Test performance variance calculation.
 
         Args:
           engine:
@@ -324,7 +345,9 @@ class TestSalaryForecastingEngine:
 
 
 def test_engine_initialization():
-    """Test engine initialization with different parameters."""
+    """
+    Test engine initialization with different parameters.
+    """
     # Default initialization
     engine1 = SalaryForecastingEngine()
     assert engine1.confidence_level == 0.95

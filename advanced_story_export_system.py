@@ -1,4 +1,4 @@
-#!/Users/brunoviola/bruvio-tools/.venv/bin/python3
+#!/usr/bin/env python3
 
 import csv
 from datetime import datetime
@@ -11,7 +11,8 @@ import pandas as pd
 
 
 class AdvancedStoryExportSystem:
-    """Advanced story export and reporting system for employee simulation data.
+    """
+    Advanced story export and reporting system for employee simulation data.
 
     Implements Phase 4 PRP requirements for comprehensive story export functionality.
 
@@ -29,7 +30,8 @@ class AdvancedStoryExportSystem:
         self.output_base_dir.mkdir(parents=True, exist_ok=True)
 
     def _log(self, message: str, level: str = "info"):
-        """Helper method for logging.
+        """
+        Helper method for logging.
 
         Args:
           message: str:
@@ -49,7 +51,8 @@ class AdvancedStoryExportSystem:
         cycle_data: Optional[pd.DataFrame] = None,
         formats: List[str] = None,
     ) -> Dict[str, str]:
-        """Export comprehensive employee stories in multiple formats.
+        """
+        Export comprehensive employee stories in multiple formats.
 
         Args:
           employee_stories: Stories organized by category
@@ -111,7 +114,8 @@ class AdvancedStoryExportSystem:
     def _prepare_comprehensive_story_data(
         self, employee_stories: Dict[str, List], population_data: List[Dict], cycle_data: Optional[pd.DataFrame] = None
     ) -> List[Dict]:
-        """Prepare comprehensive story data for export.
+        """
+        Prepare comprehensive story data for export.
 
         Args:
           employee_stories: Dict[str:
@@ -194,7 +198,8 @@ class AdvancedStoryExportSystem:
         return comprehensive_stories
 
     def _calculate_growth_rate(self, values: List[float]) -> float:
-        """Calculate compound growth rate.
+        """
+        Calculate compound growth rate.
 
         Args:
           values: List[float]:
@@ -215,7 +220,8 @@ class AdvancedStoryExportSystem:
         return round(growth_rate * 100, 2)  # Return as percentage
 
     def _export_stories_json(self, comprehensive_data: List[Dict], employee_stories: Dict[str, List]) -> Path:
-        """Export stories as comprehensive JSON.
+        """
+        Export stories as comprehensive JSON.
 
         Args:
           comprehensive_data: List[Dict]:
@@ -262,7 +268,8 @@ class AdvancedStoryExportSystem:
         return json_file
 
     def _export_stories_csv(self, comprehensive_data: List[Dict]) -> Path:
-        """Export stories as flat CSV for analysis.
+        """
+        Export stories as flat CSV for analysis.
 
         Args:
           comprehensive_data: List[Dict]:
@@ -306,7 +313,8 @@ class AdvancedStoryExportSystem:
         return csv_file
 
     def _export_stories_excel(self, comprehensive_data: List[Dict], employee_stories: Dict[str, List]) -> Path:
-        """Export stories as multi-sheet Excel workbook.
+        """
+        Export stories as multi-sheet Excel workbook.
 
         Args:
           comprehensive_data: List[Dict]:
@@ -362,7 +370,8 @@ class AdvancedStoryExportSystem:
         return excel_file
 
     def _export_stories_xml(self, comprehensive_data: List[Dict], employee_stories: Dict[str, List]) -> Path:
-        """Export stories as structured XML.
+        """
+        Export stories as structured XML.
 
         Args:
           comprehensive_data: List[Dict]:
@@ -425,7 +434,8 @@ class AdvancedStoryExportSystem:
         return xml_file
 
     def _export_stories_markdown(self, comprehensive_data: List[Dict], employee_stories: Dict[str, List]) -> Path:
-        """Export stories as formatted Markdown report.
+        """
+        Export stories as formatted Markdown report.
 
         Args:
           comprehensive_data: List[Dict]:
@@ -543,7 +553,8 @@ class AdvancedStoryExportSystem:
     def export_comparative_analysis(
         self, employee_stories: Dict[str, List], population_data: List[Dict], output_format: str = "json"
     ) -> str:
-        """Export comparative analysis across employee categories.
+        """
+        Export comparative analysis across employee categories.
 
         Args:
           employee_stories: Stories organized by category
@@ -722,7 +733,9 @@ class AdvancedStoryExportSystem:
         return str(output_file)
 
     def get_export_summary(self) -> Dict[str, Any]:
-        """Get summary of export capabilities and recent exports."""
+        """
+        Get summary of export capabilities and recent exports.
+        """
 
         # Count recent exports
         recent_exports = list(self.output_base_dir.glob(f"*{self.export_timestamp}*"))

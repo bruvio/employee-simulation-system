@@ -1,11 +1,15 @@
 #!/usr/bin/env python3
-"""Comprehensive simple tests for all major modules to boost coverage rapidly."""
+"""
+Comprehensive simple tests for all major modules to boost coverage rapidly.
+"""
 
-from unittest.mock import MagicMock, patch
+from unittest.mock import patch
 
 
 def test_import_all_major_modules():
-    """Test that all major modules can be imported."""
+    """
+    Test that all major modules can be imported.
+    """
     modules = [
         "advanced_story_export_system",
         "analysis_narrator",
@@ -46,7 +50,9 @@ def test_import_all_major_modules():
 
 
 def test_basic_classes_exist():
-    """Test basic classes exist in major modules."""
+    """
+    Test basic classes exist in major modules.
+    """
     test_cases = [
         ("employee_population_simulator", ["EmployeePopulationGenerator", "PopulationGenerator"]),
         ("employee_simulation_orchestrator", ["EmployeeSimulationOrchestrator", "Orchestrator"]),
@@ -73,7 +79,9 @@ def test_basic_classes_exist():
 
 
 def test_main_functions_exist():
-    """Test main functions exist in major modules."""
+    """
+    Test main functions exist in major modules.
+    """
     modules_with_main = [
         "analyze_individual_progression",
         "model_interventions",
@@ -93,7 +101,9 @@ def test_main_functions_exist():
 
 @patch("builtins.print")
 def test_basic_functionality(mock_print):
-    """Test basic functionality across modules."""
+    """
+    Test basic functionality across modules.
+    """
     # Test data
     test_employee = {"employee_id": 1, "salary": 50000, "level": 3}
     test_population = [test_employee]
@@ -131,7 +141,9 @@ def test_basic_functionality(mock_print):
 
 
 def test_utility_functions():
-    """Test utility functions across modules."""
+    """
+    Test utility functions across modules.
+    """
     utility_tests = [
         ("individual_employee_parser", ["parse_employee_data", "parse_employee_data_string"]),
         ("salary_forecasting_engine", ["forecast_salary", "calculate_forecast"]),
@@ -163,7 +175,9 @@ def test_utility_functions():
 
 @patch("matplotlib.pyplot")
 def test_visualization_modules(mock_plt):
-    """Test visualization-related functionality."""
+    """
+    Test visualization-related functionality.
+    """
     viz_modules = ["visualization_generator", "management_dashboard_generator"]
 
     for module_name in viz_modules:

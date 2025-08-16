@@ -1,4 +1,6 @@
-"""File management service for centralized file operations."""
+"""
+File management service for centralized file operations.
+"""
 
 from datetime import datetime
 import json
@@ -11,14 +13,19 @@ from ..config.constants import DEFAULT_OUTPUT_DIR, DEFAULT_REPORTS_DIR
 
 
 class FileServiceError(Exception):
-    """Custom exception for file service operations."""
+    """
+    Custom exception for file service operations.
+    """
 
 
 class FileService:
-    """Centralized file management service."""
+    """
+    Centralized file management service.
+    """
 
     def __init__(self, base_dir: Optional[str] = None):
-        """Initialize file service.
+        """
+        Initialize file service.
 
         Args:
             base_dir: Base directory for file operations (current dir if None)
@@ -28,7 +35,8 @@ class FileService:
         self.reports_dir = self.base_dir / DEFAULT_REPORTS_DIR
 
     def ensure_directory(self, path: Union[str, Path]) -> Path:
-        """Ensure directory exists, creating if necessary.
+        """
+        Ensure directory exists, creating if necessary.
 
         Args:
             path: Directory path
@@ -47,7 +55,8 @@ class FileService:
             raise FileServiceError(f"Failed to create directory {dir_path}: {e}")
 
     def get_output_path(self, filename: str, subdirectory: str = "") -> Path:
-        """Get full path for output file.
+        """
+        Get full path for output file.
 
         Args:
             filename: Name of the file
@@ -65,7 +74,8 @@ class FileService:
         return output_path / filename
 
     def get_reports_path(self, filename: str, subdirectory: str = "") -> Path:
-        """Get full path for report file.
+        """
+        Get full path for report file.
 
         Args:
             filename: Name of the file
@@ -83,7 +93,8 @@ class FileService:
         return reports_path / filename
 
     def save_text_file(self, content: str, file_path: Union[str, Path], encoding: str = "utf-8") -> Path:
-        """Save text content to file.
+        """
+        Save text content to file.
 
         Args:
             content: Text content to save
@@ -104,7 +115,8 @@ class FileService:
             raise FileServiceError(f"Failed to save text file {full_path}: {e}")
 
     def load_text_file(self, file_path: Union[str, Path], encoding: str = "utf-8") -> str:
-        """Load text content from file.
+        """
+        Load text content from file.
 
         Args:
             file_path: Path to load file
@@ -127,7 +139,8 @@ class FileService:
     def save_json_file(
         self, data: Any, file_path: Union[str, Path], indent: int = 2, ensure_ascii: bool = False
     ) -> Path:
-        """Save data as JSON file.
+        """
+        Save data as JSON file.
 
         Args:
             data: Data to save
@@ -149,7 +162,8 @@ class FileService:
             raise FileServiceError(f"Failed to save JSON file {full_path}: {e}")
 
     def load_json_file(self, file_path: Union[str, Path]) -> Any:
-        """Load data from JSON file.
+        """
+        Load data from JSON file.
 
         Args:
             file_path: Path to load file
@@ -169,7 +183,8 @@ class FileService:
             raise FileServiceError(f"Failed to load JSON file {full_path}: {e}")
 
     def copy_file(self, source: Union[str, Path], destination: Union[str, Path]) -> Path:
-        """Copy file from source to destination.
+        """
+        Copy file from source to destination.
 
         Args:
             source: Source file path
@@ -193,7 +208,8 @@ class FileService:
             raise FileServiceError(f"Failed to copy file {src_path} to {dest_path}: {e}")
 
     def move_file(self, source: Union[str, Path], destination: Union[str, Path]) -> Path:
-        """Move file from source to destination.
+        """
+        Move file from source to destination.
 
         Args:
             source: Source file path
@@ -217,7 +233,8 @@ class FileService:
             raise FileServiceError(f"Failed to move file {src_path} to {dest_path}: {e}")
 
     def delete_file(self, file_path: Union[str, Path]) -> bool:
-        """Delete a file if it exists.
+        """
+        Delete a file if it exists.
 
         Args:
             file_path: Path to file to delete
@@ -237,7 +254,8 @@ class FileService:
             raise FileServiceError(f"Failed to delete file {full_path}: {e}")
 
     def list_files(self, directory: Union[str, Path], pattern: str = "*", recursive: bool = False) -> List[Path]:
-        """List files in directory matching pattern.
+        """
+        List files in directory matching pattern.
 
         Args:
             directory: Directory to search
@@ -264,7 +282,8 @@ class FileService:
             raise FileServiceError(f"Failed to list files in {dir_path}: {e}")
 
     def get_file_info(self, file_path: Union[str, Path]) -> Dict[str, Any]:
-        """Get information about a file.
+        """
+        Get information about a file.
 
         Args:
             file_path: Path to file
@@ -293,7 +312,8 @@ class FileService:
             raise FileServiceError(f"Failed to get file info for {full_path}: {e}")
 
     def create_temp_file(self, suffix: str = "", prefix: str = "temp_", content: Optional[str] = None) -> Path:
-        """Create a temporary file.
+        """
+        Create a temporary file.
 
         Args:
             suffix: File suffix/extension
@@ -314,7 +334,8 @@ class FileService:
             raise FileServiceError(f"Failed to create temporary file: {e}")
 
     def cleanup_temp_files(self, temp_paths: List[Path]) -> int:
-        """Clean up temporary files.
+        """
+        Clean up temporary files.
 
         Args:
             temp_paths: List of temporary file paths to clean up
@@ -336,7 +357,8 @@ class FileService:
     def organize_files_by_date(
         self, source_dir: Union[str, Path], target_dir: Union[str, Path], date_format: str = "%Y/%m"
     ) -> Dict[str, List[Path]]:
-        """Organize files by date into subdirectories.
+        """
+        Organize files by date into subdirectories.
 
         Args:
             source_dir: Source directory with files to organize
@@ -374,7 +396,8 @@ class FileService:
         return organized_files
 
     def _resolve_path(self, path: Union[str, Path]) -> Path:
-        """Resolve path relative to base directory.
+        """
+        Resolve path relative to base directory.
 
         Args:
             path: Path to resolve
@@ -394,7 +417,8 @@ _file_service = None
 
 
 def get_file_service(base_dir: Optional[str] = None) -> FileService:
-    """Get global file service instance.
+    """
+    Get global file service instance.
 
     Args:
         base_dir: Base directory (uses current if None and not already initialized)

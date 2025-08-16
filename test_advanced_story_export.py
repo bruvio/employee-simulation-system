@@ -1,6 +1,8 @@
-#!/Users/brunoviola/bruvio-tools/.venv/bin/python3
+#!/usr/bin/env python3
 
-"""Test Advanced Story Export System."""
+"""
+Test Advanced Story Export System.
+"""
 
 import json
 from pathlib import Path
@@ -12,7 +14,9 @@ import pandas as pd
 
 
 def test_advanced_story_export():
-    """Test advanced story export functionality."""
+    """
+    Test advanced story export functionality.
+    """
 
     print("🚀 Testing Advanced Story Export System")
     print("=" * 50)

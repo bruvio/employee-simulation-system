@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
-"""Management Dashboard Generator for Employee Simulation System.
+"""
+Management Dashboard Generator for Employee Simulation System.
 
 Transforms technical analysis results into executive-friendly visualizations and dashboards.
 """
@@ -20,16 +21,18 @@ from smart_logging_manager import get_smart_logger
 
 
 class ManagementDashboardGenerator:
-    """Generates executive-friendly management dashboards from technical analysis results.
+    """
+    Generates executive-friendly management dashboards from technical analysis results.
 
     Transforms complex salary equity analysis into actionable visual insights for non-technical stakeholders and
-    management decision-making.
+    management decision- making.
     """
 
     def __init__(
         self, analysis_results: Dict[str, Any], population_data: List[Dict], config: Dict[str, Any], smart_logger=None
     ):
-        """Initialize management dashboard generator.
+        """
+        Initialize management dashboard generator.
 
         Args:
             analysis_results: Results from advanced analysis pipeline
@@ -84,7 +87,8 @@ class ManagementDashboardGenerator:
         self.logger.log_info("Initialized ManagementDashboardGenerator for executive reporting")
 
     def generate_executive_dashboard(self) -> Dict[str, str]:
-        """Generate comprehensive executive dashboard with all management components.
+        """
+        Generate comprehensive executive dashboard with all management components.
 
         Returns:
             Dictionary containing paths to generated dashboard files
@@ -127,7 +131,9 @@ class ManagementDashboardGenerator:
             raise
 
     def _create_executive_summary(self) -> Dict[str, Any]:
-        """Create executive summary panel with key insights and metrics."""
+        """
+        Create executive summary panel with key insights and metrics.
+        """
 
         df = pd.DataFrame(self.population_data)
 
@@ -197,7 +203,9 @@ class ManagementDashboardGenerator:
         return summary
 
     def _create_salary_equity_overview(self) -> Dict[str, Any]:
-        """Create salary equity overview with visual KPIs."""
+        """
+        Create salary equity overview with visual KPIs.
+        """
 
         df = pd.DataFrame(self.population_data)
 
@@ -301,7 +309,9 @@ class ManagementDashboardGenerator:
         }
 
     def _create_gap_analysis_chart(self) -> Dict[str, Any]:
-        """Create comprehensive gap analysis visualization."""
+        """
+        Create comprehensive gap analysis visualization.
+        """
 
         df = pd.DataFrame(self.population_data)
 
@@ -365,7 +375,9 @@ class ManagementDashboardGenerator:
         }
 
     def _create_intervention_simulator(self) -> Dict[str, Any]:
-        """Create intervention strategy cost-benefit simulator."""
+        """
+        Create intervention strategy cost-benefit simulator.
+        """
 
         # Get intervention analysis results
         # intervention_results = self.analysis_results.get("analysis_results", {}).get("intervention_strategies", {})
@@ -420,7 +432,9 @@ class ManagementDashboardGenerator:
         }
 
     def _create_action_priority_matrix(self) -> Dict[str, Any]:
-        """Create action priority matrix with recommended next steps."""
+        """
+        Create action priority matrix with recommended next steps.
+        """
 
         df = pd.DataFrame(self.population_data)
 
@@ -506,10 +520,12 @@ class ManagementDashboardGenerator:
     # Risk assessment was not part of original requirements
 
     def _assemble_dashboard(self, components: Dict[str, Any]) -> Dict[str, str]:
-        """Assemble all components into a cohesive HTML dashboard."""
+        """
+        Assemble all components into a cohesive HTML dashboard.
+        """
 
-        # Create dashboard HTML
-        html_content = self._create_dashboard_html(components)
+        # Create comprehensive dashboard HTML with all files and explanations
+        html_content = self._create_comprehensive_dashboard_html(components)
 
         # Save dashboard file
         dashboard_dir = Path("artifacts/advanced_analysis")
@@ -543,7 +559,9 @@ class ManagementDashboardGenerator:
         }
 
     def _create_dashboard_html(self, components: Dict[str, Any]) -> str:
-        """Create comprehensive HTML dashboard with all components."""
+        """
+        Create comprehensive HTML dashboard with all components.
+        """
 
         executive_summary = components.get("executive_summary", {})
 
@@ -652,7 +670,7 @@ class ManagementDashboardGenerator:
         <p>Comprehensive Analysis & Management Recommendations</p>
         <p style="font-size: 0.9em; opacity: 0.8;">Generated on {datetime.now().strftime('%B %d, %Y at %I:%M %p')}</p>
     </div>
-    
+
     <!-- Key Metrics Overview -->
     <div class="metrics-grid">
         <div class="metric-card">
@@ -672,13 +690,13 @@ class ManagementDashboardGenerator:
             <div class="metric-label">Remediation Cost</div>
         </div>
     </div>
-    
+
     <!-- Executive Insights -->
     <div class="insights-panel">
         <h3>🎯 Key Insights</h3>
         {''.join(f'<div class="insight-item">💡 {insight}</div>' for insight in executive_summary.get('key_insights', []))}
     </div>
-    
+
     <!-- Recommended Actions -->
     <div class="insights-panel">
         <h3>⚡ Immediate Action Items</h3>
@@ -713,7 +731,9 @@ class ManagementDashboardGenerator:
         return html_template
 
     def _generate_chart_embeddings(self, components: Dict[str, Any]) -> str:
-        """Generate JavaScript code to embed Plotly charts in dashboard."""
+        """
+        Generate JavaScript code to embed Plotly charts in dashboard.
+        """
 
         embeddings = []
 

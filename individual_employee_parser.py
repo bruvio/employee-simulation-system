@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
-"""Individual Employee Data Parser for Employee Simulation System.
+"""
+Individual Employee Data Parser for Employee Simulation System.
 
 This module provides utilities for parsing and validating individual employee
 data from command-line arguments and other sources.
@@ -18,11 +19,12 @@ Date: 2025-08-11
 
 from typing import Any, Dict
 
-from pydantic import BaseModel, Field, ValidationError, validator
+from pydantic import BaseModel, Field, ValidationError, field_validator
 
 
 class EmployeeData(BaseModel):
-    """Pydantic model for individual employee data validation.
+    """
+    Pydantic model for individual employee data validation.
 
     Attributes:
         employee_id: Unique identifier for the employee
@@ -44,29 +46,38 @@ class EmployeeData(BaseModel):
     tenure_years: int = Field(default=1, ge=0, description="Years of service")
     department: str = Field(default="Engineering", description="Department name")
 
-    @validator("performance_rating")
+    @field_validator("performance_rating")
+    @classmethod
     def validate_performance_rating(cls, v):
-        """Validate performance rating against allowed values."""
+        """
+        Validate performance rating against allowed values.
+        """
         allowed_ratings = ["Not met", "Partially met", "Achieving", "High Performing", "Exceeding"]
         if v not in allowed_ratings:
             raise ValueError(f"Performance rating must be one of: {', '.join(allowed_ratings)}")
         return v
 
-    @validator("gender")
+    @field_validator("gender")
+    @classmethod
     def validate_gender(cls, v):
-        """Validate gender against allowed values."""
+        """
+        Validate gender against allowed values.
+        """
         allowed_genders = ["Male", "Female"]
         if v not in allowed_genders:
             raise ValueError(f"Gender must be one of: {', '.join(allowed_genders)}")
         return v
 
-    @validator("salary")
-    def validate_salary_level_range(cls, salary, values):
-        """Validate salary is within expected range for the level."""
-        if "level" not in values:
+    @field_validator("salary")
+    @classmethod
+    def validate_salary_level_range(cls, salary, info):
+        """
+        Validate salary is within expected range for the level.
+        """
+        if not hasattr(info, "data") or "level" not in info.data:
             return salary
 
-        level = values["level"]
+        level = info.data["level"]
 
         # Define expected salary ranges by level (from PLANNING.md)
         level_ranges = {
@@ -95,7 +106,8 @@ class EmployeeData(BaseModel):
 
 
 class IndividualEmployeeParser:
-    """Parser for individual employee data from various formats.
+    """
+    Parser for individual employee data from various formats.
 
     Supports parsing employee data from:
     - Command-line format: "level:X,salary:Y,performance:Z"
@@ -110,7 +122,8 @@ class IndividualEmployeeParser:
 
     @staticmethod
     def parse_from_string(data_string: str) -> Dict[str, Any]:
-        """Parse employee data from command-line string format.
+        """
+        Parse employee data from command-line string format.
 
         Args:
             data_string: String in format "level:X,salary:Y,performance:Z,key:value,..."
@@ -183,7 +196,8 @@ class IndividualEmployeeParser:
 
     @staticmethod
     def parse_from_dict(data_dict: Dict[str, Any]) -> Dict[str, Any]:
-        """Parse employee data from dictionary format.
+        """
+        Parse employee data from dictionary format.
 
         Args:
             data_dict: Dictionary with employee data
@@ -212,7 +226,8 @@ class IndividualEmployeeParser:
 
     @staticmethod
     def validate_and_create(employee_data: Dict[str, Any]) -> EmployeeData:
-        """Validate employee data and create EmployeeData instance.
+        """
+        Validate employee data and create EmployeeData instance.
 
         Args:
             employee_data: Dictionary with employee data
@@ -237,7 +252,8 @@ class IndividualEmployeeParser:
 
 
 def parse_employee_data_string(data_string: str) -> EmployeeData:
-    """Convenience function to parse employee data string and validate.
+    """
+    Convenience function to parse employee data string and validate.
 
     Args:
         data_string: String in format "level:X,salary:Y,performance:Z"
@@ -254,7 +270,8 @@ def parse_employee_data_string(data_string: str) -> EmployeeData:
 
 
 def validate_employee_data(employee_data: Dict[str, Any]) -> EmployeeData:
-    """Convenience function to validate employee data dictionary.
+    """
+    Convenience function to validate employee data dictionary.
 
     Args:
         employee_data: Dictionary with employee data
@@ -271,7 +288,8 @@ def validate_employee_data(employee_data: Dict[str, Any]) -> EmployeeData:
 
 
 def create_individual_employee(employee_data: EmployeeData) -> Dict[str, Any]:
-    """Create employee record compatible with existing simulation system.
+    """
+    Create employee record compatible with existing simulation system.
 
     Args:
         employee_data: Validated EmployeeData instance

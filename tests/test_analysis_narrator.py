@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
-"""Comprehensive tests for analysis_narrator module.
+"""
+Comprehensive tests for analysis_narrator module.
 
 Tests narrative generation, story creation, and analysis reporting functionality.
 """
@@ -13,10 +14,14 @@ from analysis_narrator import AnalysisNarrator
 
 
 class TestAnalysisNarrator:
-    """Test the AnalysisNarrator class."""
+    """
+    Test the AnalysisNarrator class.
+    """
 
     def setup_method(self):
-        """Setup test fixtures."""
+        """
+        Setup test fixtures.
+        """
         self.sample_data = {
             "population_stats": {
                 "total_employees": 1000,
@@ -31,7 +36,9 @@ class TestAnalysisNarrator:
         }
 
     def test_initialization(self):
-        """Test narrator initialization."""
+        """
+        Test narrator initialization.
+        """
         scenario_config = {"population_size": 1000, "scenario_name": "test"}
         narrator = AnalysisNarrator(scenario_config)
 
@@ -40,7 +47,9 @@ class TestAnalysisNarrator:
         assert narrator.config == scenario_config
 
     def test_initialization_with_config(self):
-        """Test narrator initialization with configuration."""
+        """
+        Test narrator initialization with configuration.
+        """
         config = {"narrative_style": "executive", "detail_level": "high", "population_size": 500}
 
         narrator = AnalysisNarrator(config)
@@ -48,7 +57,9 @@ class TestAnalysisNarrator:
         assert narrator.config == config
 
     def test_generate_narrative_basic(self):
-        """Test basic narrative generation."""
+        """
+        Test basic narrative generation.
+        """
         narrator = AnalysisNarrator({"population_size": 1000})
 
         # Test if generate_narrative method exists
@@ -60,7 +71,9 @@ class TestAnalysisNarrator:
             assert narrator is not None
 
     def test_create_executive_summary(self):
-        """Test executive summary creation."""
+        """
+        Test executive summary creation.
+        """
         narrator = AnalysisNarrator({"population_size": 1000})
 
         # Test if create_executive_summary method exists
@@ -72,7 +85,9 @@ class TestAnalysisNarrator:
             assert narrator is not None
 
     def test_generate_findings_story(self):
-        """Test findings story generation."""
+        """
+        Test findings story generation.
+        """
         narrator = AnalysisNarrator({"population_size": 1000})
 
         # Test if generate_findings_story method exists
@@ -83,7 +98,9 @@ class TestAnalysisNarrator:
             assert narrator is not None
 
     def test_create_recommendations_narrative(self):
-        """Test recommendations narrative creation."""
+        """
+        Test recommendations narrative creation.
+        """
         narrator = AnalysisNarrator({"population_size": 1000})
 
         # Test if create_recommendations_narrative method exists
@@ -95,7 +112,9 @@ class TestAnalysisNarrator:
             assert narrator is not None
 
     def test_format_statistics_narrative(self):
-        """Test statistics narrative formatting."""
+        """
+        Test statistics narrative formatting.
+        """
         narrator = AnalysisNarrator({"population_size": 1000})
 
         # Test if format_statistics method exists
@@ -112,7 +131,9 @@ class TestAnalysisNarrator:
             assert "£75,000" in formatted
 
     def test_generate_trend_narrative(self):
-        """Test trend narrative generation."""
+        """
+        Test trend narrative generation.
+        """
         narrator = AnalysisNarrator({"population_size": 1000})
 
         # Test if generate_trend_narrative method exists
@@ -125,10 +146,14 @@ class TestAnalysisNarrator:
 
 
 class TestNarrativeStyles:
-    """Test different narrative styles."""
+    """
+    Test different narrative styles.
+    """
 
     def setup_method(self):
-        """Setup test fixtures."""
+        """
+        Setup test fixtures.
+        """
         self.analysis_data = {
             "key_findings": ["15% gender pay gap", "Salary outliers detected"],
             "employee_count": 1000,
@@ -136,7 +161,9 @@ class TestNarrativeStyles:
         }
 
     def test_executive_style_narrative(self):
-        """Test executive style narrative."""
+        """
+        Test executive style narrative.
+        """
         narrator = AnalysisNarrator({"population_size": 1000})
 
         # Test if set_style method exists
@@ -150,7 +177,9 @@ class TestNarrativeStyles:
             assert narrator is not None
 
     def test_technical_style_narrative(self):
-        """Test technical style narrative."""
+        """
+        Test technical style narrative.
+        """
         narrator = AnalysisNarrator({"population_size": 1000})
 
         # Test if set_style method exists
@@ -164,7 +193,9 @@ class TestNarrativeStyles:
             assert narrator is not None
 
     def test_detailed_style_narrative(self):
-        """Test detailed style narrative."""
+        """
+        Test detailed style narrative.
+        """
         narrator = AnalysisNarrator({"population_size": 1000})
 
         # Test if set_detail_level method exists
@@ -181,10 +212,14 @@ class TestNarrativeStyles:
 
 
 class TestStoryGeneration:
-    """Test story generation functionality."""
+    """
+    Test story generation functionality.
+    """
 
     def setup_method(self):
-        """Setup test fixtures."""
+        """
+        Setup test fixtures.
+        """
         self.employee_stories = [
             {"employee_id": 1, "story": "Promoted from L3 to L4", "salary_change": 15000, "timeline": "6 months"},
             {
@@ -196,7 +231,9 @@ class TestStoryGeneration:
         ]
 
     def test_create_employee_story(self):
-        """Test individual employee story creation."""
+        """
+        Test individual employee story creation.
+        """
         narrator = AnalysisNarrator({"population_size": 1000})
 
         # Test if create_employee_story method exists
@@ -209,7 +246,9 @@ class TestStoryGeneration:
             assert narrator is not None
 
     def test_combine_employee_stories(self):
-        """Test combining multiple employee stories."""
+        """
+        Test combining multiple employee stories.
+        """
         narrator = AnalysisNarrator({"population_size": 1000})
 
         # Test if combine_stories method exists
@@ -221,7 +260,9 @@ class TestStoryGeneration:
             assert narrator is not None
 
     def test_generate_population_story(self):
-        """Test population-level story generation."""
+        """
+        Test population-level story generation.
+        """
         narrator = AnalysisNarrator({"population_size": 1000})
 
         # Test if generate_population_story method exists
@@ -239,10 +280,14 @@ class TestStoryGeneration:
 
 
 class TestTemplateSystem:
-    """Test narrative template system."""
+    """
+    Test narrative template system.
+    """
 
     def test_load_templates(self):
-        """Test template loading."""
+        """
+        Test template loading.
+        """
         narrator = AnalysisNarrator({"population_size": 1000})
 
         # Test if load_templates method exists
@@ -257,7 +302,9 @@ class TestTemplateSystem:
             assert narrator is not None
 
     def test_apply_template(self):
-        """Test template application."""
+        """
+        Test template application.
+        """
         narrator = AnalysisNarrator({"population_size": 1000})
 
         # Test if apply_template method exists
@@ -269,7 +316,9 @@ class TestTemplateSystem:
             assert narrator is not None
 
     def test_custom_template_creation(self):
-        """Test custom template creation."""
+        """
+        Test custom template creation.
+        """
         narrator = AnalysisNarrator({"population_size": 1000})
 
         # Test if create_template method exists
@@ -281,10 +330,14 @@ class TestTemplateSystem:
 
 
 class TestOutputFormats:
-    """Test different output formats."""
+    """
+    Test different output formats.
+    """
 
     def setup_method(self):
-        """Setup test fixtures."""
+        """
+        Setup test fixtures.
+        """
         self.narrative_content = {
             "title": "Salary Analysis Report",
             "summary": "Key findings from the analysis",
@@ -293,7 +346,9 @@ class TestOutputFormats:
         }
 
     def test_generate_markdown_output(self):
-        """Test markdown output generation."""
+        """
+        Test markdown output generation.
+        """
         narrator = AnalysisNarrator({"population_size": 1000})
 
         # Test if to_markdown method exists
@@ -308,7 +363,9 @@ class TestOutputFormats:
             assert markdown.startswith("# Salary")
 
     def test_generate_html_output(self):
-        """Test HTML output generation."""
+        """
+        Test HTML output generation.
+        """
         narrator = AnalysisNarrator({"population_size": 1000})
 
         # Test if to_html method exists
@@ -321,7 +378,9 @@ class TestOutputFormats:
 
     @patch("builtins.open", mock_open())
     def test_save_narrative_to_file(self):
-        """Test saving narrative to file."""
+        """
+        Test saving narrative to file.
+        """
         narrator = AnalysisNarrator({"population_size": 1000})
 
         # Test if save_to_file method exists
@@ -334,10 +393,14 @@ class TestOutputFormats:
 
 
 class TestDataIntegration:
-    """Test integration with analysis data."""
+    """
+    Test integration with analysis data.
+    """
 
     def setup_method(self):
-        """Setup test fixtures."""
+        """
+        Setup test fixtures.
+        """
         self.complex_analysis_data = {
             "metadata": {"analysis_date": "2024-01-01", "version": "1.0"},
             "population_analysis": {
@@ -358,7 +421,9 @@ class TestDataIntegration:
         }
 
     def test_process_complex_data(self):
-        """Test processing complex analysis data."""
+        """
+        Test processing complex analysis data.
+        """
         narrator = AnalysisNarrator({"population_size": 1000})
 
         # Test if process_analysis_data method exists
@@ -369,7 +434,9 @@ class TestDataIntegration:
             assert narrator is not None
 
     def test_extract_key_insights(self):
-        """Test extracting key insights from data."""
+        """
+        Test extracting key insights from data.
+        """
         narrator = AnalysisNarrator({"population_size": 1000})
 
         # Test if extract_insights method exists
@@ -384,7 +451,9 @@ class TestDataIntegration:
             assert len(insights) == 2
 
     def test_prioritize_findings(self):
-        """Test prioritizing findings by importance."""
+        """
+        Test prioritizing findings by importance.
+        """
         narrator = AnalysisNarrator({"population_size": 1000})
 
         # Test if prioritize_findings method exists
@@ -398,10 +467,14 @@ class TestDataIntegration:
 
 
 class TestErrorHandling:
-    """Test error handling and edge cases."""
+    """
+    Test error handling and edge cases.
+    """
 
     def test_handle_empty_data(self):
-        """Test handling empty data."""
+        """
+        Test handling empty data.
+        """
         narrator = AnalysisNarrator({"population_size": 1000})
 
         empty_data = {}
@@ -415,7 +488,9 @@ class TestErrorHandling:
                 pass  # Acceptable to raise error for empty data
 
     def test_handle_malformed_data(self):
-        """Test handling malformed data."""
+        """
+        Test handling malformed data.
+        """
         narrator = AnalysisNarrator({"population_size": 1000})
 
         malformed_data = {"invalid": "structure", "missing": None}
@@ -428,7 +503,9 @@ class TestErrorHandling:
                 pass  # Some errors acceptable for malformed data
 
     def test_handle_missing_templates(self):
-        """Test handling missing templates."""
+        """
+        Test handling missing templates.
+        """
         narrator = AnalysisNarrator({"population_size": 1000})
 
         if hasattr(narrator, "get_template"):

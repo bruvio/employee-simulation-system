@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
-"""Analysis Narrator for Employee Simulation System.
+"""
+Analysis Narrator for Employee Simulation System.
 
-Transforms technical analysis progress into user-friendly, business-oriented narratives.
+Transforms technical analysis progress into user-friendly, business- oriented narratives.
 """
 
 
@@ -12,14 +13,16 @@ from typing import Any, Dict
 
 
 class AnalysisNarrator:
-    """Converts technical analysis steps into user-friendly business narratives.
+    """
+    Converts technical analysis steps into user-friendly business narratives.
 
     Replaces overwhelming technical logs with accessible progress updates that help non-technical stakeholders
     understand what the system is doing and why.
     """
 
     def __init__(self, scenario_config: Dict[str, Any], smart_logger=None):
-        """Initialize analysis narrator.
+        """
+        Initialize analysis narrator.
 
         Args:
             scenario_config: Configuration for current analysis scenario
@@ -288,7 +291,8 @@ class AnalysisNarrator:
         }
 
     def narrate_visualization_generation(self, viz_data: Dict[str, Any]) -> str:
-        """Create user-friendly narrative for visualization generation.
+        """
+        Create user-friendly narrative for visualization generation.
 
         Args:
             viz_data: Visualization generation data including charts_generated, types, location
@@ -317,7 +321,8 @@ class AnalysisNarrator:
 ➡️ **Next**: Assembling comprehensive management dashboard..."""
 
     def get_progress_narrative(self, step_name: str, step_data: Dict[str, Any]) -> str:
-        """Get user-friendly narrative for any analysis step.
+        """
+        Get user-friendly narrative for any analysis step.
 
         Args:
             step_name: Name of the analysis step

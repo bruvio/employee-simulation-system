@@ -1,20 +1,24 @@
 #!/usr/bin/env python3
-"""Simple tests for management_dashboard_generator module."""
+"""
+Simple tests for management_dashboard_generator module.
+"""
 
-from unittest.mock import MagicMock, patch
-
-import pytest
+from unittest.mock import patch
 
 
 def test_import_module():
-    """Test that the module can be imported."""
+    """
+    Test that the module can be imported.
+    """
     import management_dashboard_generator
 
     assert hasattr(management_dashboard_generator, "__file__")
 
 
 def test_dashboard_generator_class():
-    """Test dashboard generator class exists."""
+    """
+    Test dashboard generator class exists.
+    """
     import management_dashboard_generator
 
     # Check for common dashboard class names
@@ -44,7 +48,9 @@ def test_dashboard_generator_class():
 
 
 def test_basic_functions_exist():
-    """Test basic dashboard functions exist."""
+    """
+    Test basic dashboard functions exist.
+    """
     import management_dashboard_generator
 
     # Check for common dashboard function names
@@ -71,7 +77,9 @@ def test_basic_functions_exist():
 
 @patch("builtins.print")
 def test_dashboard_generation(mock_print):
-    """Test basic dashboard generation if functions exist."""
+    """
+    Test basic dashboard generation if functions exist.
+    """
     import management_dashboard_generator
 
     # Test data
@@ -95,7 +103,9 @@ def test_dashboard_generation(mock_print):
 
 @patch("builtins.print")
 def test_main_function_if_exists(mock_print):
-    """Test main function if it exists."""
+    """
+    Test main function if it exists.
+    """
     import management_dashboard_generator
 
     if hasattr(management_dashboard_generator, "main"):
@@ -108,7 +118,9 @@ def test_main_function_if_exists(mock_print):
 
 
 def test_module_structure():
-    """Test module has expected structure."""
+    """
+    Test module has expected structure.
+    """
     import management_dashboard_generator
 
     # Should have basic module attributes

@@ -1,24 +1,28 @@
-#!/Users/brunoviola/bruvio-tools/.venv/bin/python3
+#!/usr/bin/env python3
 
-import json
-import pytest
-import tempfile
-import shutil
 from datetime import datetime
 from pathlib import Path
-from unittest.mock import patch, MagicMock
+import shutil
+import tempfile
+from unittest.mock import MagicMock, patch
+
+import pytest
 
 from gel_output_manager import GELOutputManager
 from report_builder_html import HTMLReportBuilder
 from report_builder_md import MarkdownReportBuilder, create_sample_analysis_payload
-from roles_config import RolesConfigLoader, RolesConfig, Role, InterventionPolicy
+from roles_config import InterventionPolicy, Role, RolesConfig, RolesConfigLoader
 
 
 class TestGELIntegration:
-    """Integration tests for complete GEL workflow."""
+    """
+    Integration tests for complete GEL workflow.
+    """
 
-    def setUp(self):
-        """Set up test fixtures."""
+    def setup_method(self):
+        """
+        Set up test fixtures.
+        """
         self.temp_dir = Path(tempfile.mkdtemp())
         self.sample_manifest = {
             "scenario": "GEL",
@@ -37,13 +41,17 @@ class TestGELIntegration:
         }
         self.sample_payload = create_sample_analysis_payload()
 
-    def tearDown(self):
-        """Clean up test fixtures."""
+    def teardown_method(self):
+        """
+        Clean up test fixtures.
+        """
         if self.temp_dir.exists():
             shutil.rmtree(self.temp_dir)
 
     def test_complete_gel_workflow(self):
-        """Test complete GEL reporting workflow."""
+        """
+        Test complete GEL reporting workflow.
+        """
         # Initialize components
         output_manager = GELOutputManager(base_results_dir=self.temp_dir)
         md_builder = MarkdownReportBuilder(output_dir=self.temp_dir / "temp")
@@ -114,7 +122,9 @@ class TestGELIntegration:
         assert len(validation["errors"]) == 0
 
     def test_gel_with_roles_config(self):
-        """Test GEL workflow with roles configuration."""
+        """
+        Test GEL workflow with roles configuration.
+        """
         # Create sample roles config
         roles_config = RolesConfig(
             org="TestOrg",
@@ -155,7 +165,9 @@ class TestGELIntegration:
         assert 71300 in senior_designer_mins
 
     def test_gel_output_validation(self):
-        """Test GEL output validation functionality."""
+        """
+        Test GEL output validation functionality.
+        """
         output_manager = GELOutputManager(base_results_dir=self.temp_dir)
 
         # Create run directory
@@ -178,7 +190,9 @@ class TestGELIntegration:
         assert validation["files_found"]["index.html"]["exists"] is True
 
     def test_gel_output_cleanup(self):
-        """Test GEL output cleanup functionality."""
+        """
+        Test GEL output cleanup functionality.
+        """
         output_manager = GELOutputManager(base_results_dir=self.temp_dir)
 
         # Create multiple run directories
@@ -211,7 +225,9 @@ class TestGELIntegration:
         assert existing_count == 3
 
     def test_manifest_data_creation(self):
-        """Test manifest data creation and structure."""
+        """
+        Test manifest data creation and structure.
+        """
         output_manager = GELOutputManager()
 
         timestamp = datetime.utcnow()
@@ -244,7 +260,9 @@ class TestGELIntegration:
         assert manifest["directory_structure"]["charts"] == "assets/charts/"
 
     def test_report_content_consistency(self):
-        """Test that HTML and Markdown reports contain consistent information."""
+        """
+        Test that HTML and Markdown reports contain consistent information.
+        """
         md_builder = MarkdownReportBuilder(output_dir=self.temp_dir)
         html_builder = HTMLReportBuilder(output_dir=self.temp_dir)
 
@@ -283,7 +301,9 @@ class TestGELIntegration:
             assert info in html_content or info.replace(",", "") in html_content.replace(",", "")
 
     def test_error_handling_and_recovery(self):
-        """Test error handling and recovery in GEL workflow."""
+        """
+        Test error handling and recovery in GEL workflow.
+        """
         output_manager = GELOutputManager(base_results_dir=self.temp_dir)
 
         # Test with invalid manifest data
@@ -315,7 +335,9 @@ class TestGELIntegration:
         assert isinstance(final_paths, dict)
 
     def test_concurrent_run_handling(self):
-        """Test handling of concurrent GEL runs."""
+        """
+        Test handling of concurrent GEL runs.
+        """
         output_manager = GELOutputManager(base_results_dir=self.temp_dir)
 
         # Try to create runs with same timestamp
@@ -331,7 +353,9 @@ class TestGELIntegration:
         assert run_dirs_2["run_root"].exists()
 
     def test_symlink_fallback(self):
-        """Test symlink creation and fallback behavior."""
+        """
+        Test symlink creation and fallback behavior.
+        """
         output_manager = GELOutputManager(base_results_dir=self.temp_dir)
 
         # Create run directory with latest link
@@ -359,12 +383,32 @@ class TestGELIntegration:
 
 
 class TestGELCLIIntegration:
-    """Test GEL CLI integration (mocked orchestrator calls)."""
+    """
+    Test GEL CLI integration (mocked orchestrator calls).
+    """
 
-    @patch("gel_output_manager.GELOutputManager")
-    @patch("roles_config.RolesConfigLoader")
-    def test_cli_workflow_simulation(self, mock_loader, mock_output_manager):
-        """Test simulated CLI workflow with mocked components."""
+    def setup_method(self):
+        """
+        Set up test fixtures.
+        """
+        self.temp_dir = Path(tempfile.mkdtemp())
+
+    def teardown_method(self):
+        """
+        Clean up test fixtures.
+        """
+        if self.temp_dir.exists():
+            shutil.rmtree(self.temp_dir)
+
+    @patch("employee_simulation_orchestrator.HTMLReportBuilder")
+    @patch("employee_simulation_orchestrator.MarkdownReportBuilder")
+    @patch("employee_simulation_orchestrator.GELPolicyConstraints")
+    @patch("employee_simulation_orchestrator.GELOutputManager")
+    @patch("employee_simulation_orchestrator.RolesConfigLoader")
+    def test_cli_workflow_simulation(self, mock_loader, mock_output_manager, mock_policy, mock_md_builder, mock_html_builder):
+        """
+        Test simulated CLI workflow with mocked components.
+        """
         # Setup mocks
         mock_config = MagicMock()
         mock_config.org = "GEL"
@@ -380,15 +424,37 @@ class TestGELCLIIntegration:
 
         mock_output_instance = MagicMock()
         mock_run_dirs = {
-            "run_root": Path("/fake/results/GEL/run_2025-08-14_10-00Z"),
-            "assets": Path("/fake/results/GEL/run_2025-08-14_10-00Z/assets"),
+            "run_root": self.temp_dir / "GEL" / "run_2025-08-14_10-00Z",
+            "assets": self.temp_dir / "GEL" / "run_2025-08-14_10-00Z" / "assets",
         }
+        # Create the directories for the test
+        mock_run_dirs["run_root"].mkdir(parents=True, exist_ok=True)
+        mock_run_dirs["assets"].mkdir(parents=True, exist_ok=True)
+        
         mock_output_instance.create_gel_run_directory.return_value = mock_run_dirs
+        mock_output_instance.create_manifest_data.return_value = {"test": "manifest"}
         mock_output_instance.organize_gel_outputs.return_value = {
-            "html_report": "/fake/results/GEL/run_2025-08-14_10-00Z/index.html",
-            "markdown_report": "/fake/results/GEL/run_2025-08-14_10-00Z/report.md",
+            "html_report": str(mock_run_dirs["run_root"] / "index.html"),
+            "markdown_report": str(mock_run_dirs["run_root"] / "report.md"),
         }
         mock_output_manager.return_value = mock_output_instance
+
+        # Setup report builder mocks
+        mock_md_instance = MagicMock()
+        mock_md_instance.build_gel_report.return_value = str(mock_run_dirs["run_root"] / "report.md")
+        mock_md_builder.return_value = mock_md_instance
+
+        mock_html_instance = MagicMock()
+        mock_html_instance.build_gel_report.return_value = str(mock_run_dirs["run_root"] / "index.html")
+        mock_html_builder.return_value = mock_html_instance
+
+        # Setup policy constraints mock
+        mock_policy_instance = MagicMock()
+        mock_policy_instance.identify_managers_and_teams.return_value = {}
+        mock_policy_instance.prioritize_interventions.return_value = {}
+        mock_policy_instance.optimize_budget_allocation.return_value = {}
+        mock_policy_instance.generate_policy_summary.return_value = {}
+        mock_policy.return_value = mock_policy_instance
 
         # Simulate CLI arguments
         config = {"enable_gel_reporting": True, "gel_org": "GEL", "gel_roles_config_path": "config/orgs/GEL/roles.yaml"}

@@ -14,7 +14,8 @@ from ..config.constants import (
 
 
 def calculate_cagr(starting_value: float, ending_value: float, years: int) -> float:
-    """Calculate Compound Annual Growth Rate (CAGR).
+    """
+    Calculate Compound Annual Growth Rate (CAGR).
 
     Args:
         starting_value: Initial value
@@ -32,7 +33,8 @@ def calculate_cagr(starting_value: float, ending_value: float, years: int) -> fl
 def calculate_confidence_interval(
     base_value: float, confidence_level: float = DEFAULT_CONFIDENCE_LEVEL, variance: float = 0.1
 ) -> Tuple[float, float]:
-    """Calculate confidence interval for a value.
+    """
+    Calculate confidence interval for a value.
 
     Args:
         base_value: Base value to calculate interval around
@@ -51,7 +53,8 @@ def calculate_confidence_interval(
 
 
 def calculate_time_to_target(current_value: float, target_value: float, annual_growth_rate: float) -> float:
-    """Calculate years needed to reach target value at given growth rate.
+    """
+    Calculate years needed to reach target value at given growth rate.
 
     Args:
         current_value: Starting value
@@ -68,7 +71,8 @@ def calculate_time_to_target(current_value: float, target_value: float, annual_g
 
 
 def calculate_medians_by_level(population: List[Dict]) -> Dict[int, float]:
-    """Calculate median salary by level from population data.
+    """
+    Calculate median salary by level from population data.
 
     Args:
         population: List of employee dictionaries
@@ -89,7 +93,8 @@ def calculate_medians_by_level(population: List[Dict]) -> Dict[int, float]:
 
 
 def calculate_medians_by_level_and_gender(population: List[Dict]) -> Dict[Tuple[int, str], float]:
-    """Calculate median salary by level and gender from population data.
+    """
+    Calculate median salary by level and gender from population data.
 
     Args:
         population: List of employee dictionaries
@@ -113,7 +118,8 @@ def calculate_medians_by_level_and_gender(population: List[Dict]) -> Dict[Tuple[
 
 
 def calculate_employee_tenure(employee_data: Dict) -> float:
-    """Calculate employee tenure in years from hire date.
+    """
+    Calculate employee tenure in years from hire date.
 
     Args:
         employee_data: Employee dictionary with hire_date
@@ -133,7 +139,8 @@ def calculate_employee_tenure(employee_data: Dict) -> float:
 
 
 def calculate_pay_gap_percent(male_median: float, female_median: float) -> float:
-    """Calculate gender pay gap as percentage.
+    """
+    Calculate gender pay gap as percentage.
 
     Args:
         male_median: Median male salary
@@ -148,7 +155,8 @@ def calculate_pay_gap_percent(male_median: float, female_median: float) -> float
 
 
 def calculate_gini_coefficient(salaries: List[float]) -> float:
-    """Calculate Gini coefficient for salary inequality.
+    """
+    Calculate Gini coefficient for salary inequality.
 
     Args:
         salaries: List of salary values
@@ -174,7 +182,8 @@ def calculate_gini_coefficient(salaries: List[float]) -> float:
 def calculate_roi_metrics(
     initial_investment: float, annual_benefits: List[float], discount_rate: float = 0.05
 ) -> Dict[str, float]:
-    """Calculate ROI metrics including NPV, IRR approximation, and payback period.
+    """
+    Calculate ROI metrics including NPV, IRR approximation, and payback period.
 
     Args:
         initial_investment: Initial cost
@@ -210,7 +219,8 @@ def calculate_roi_metrics(
 def calculate_uplift_increase(
     current_salary: float, level: int, performance_rating: str, uplift_matrix: Optional[Dict] = None
 ) -> float:
-    """Calculate salary uplift based on level and performance.
+    """
+    Calculate salary uplift based on level and performance.
 
     Args:
         current_salary: Current salary amount
@@ -241,7 +251,8 @@ def calculate_uplift_increase(
 def calculate_effectiveness_score(
     cost: float, impact: float, timeline: float, max_cost: float = 1000000, max_timeline: float = 5.0
 ) -> float:
-    """Calculate effectiveness score for intervention strategies.
+    """
+    Calculate effectiveness score for intervention strategies.
 
     Args:
         cost: Strategy cost
@@ -267,7 +278,8 @@ def calculate_effectiveness_score(
 
 
 def format_currency(amount: float) -> str:
-    """Format currency amount for display.
+    """
+    Format currency amount for display.
 
     Args:
         amount: Currency amount
@@ -279,7 +291,8 @@ def format_currency(amount: float) -> str:
 
 
 def format_percentage(percent: float) -> str:
-    """Format percentage for display.
+    """
+    Format percentage for display.
 
     Args:
         percent: Percentage value
@@ -293,7 +306,8 @@ def format_percentage(percent: float) -> str:
 def calculate_statistical_significance(
     sample1: List[float], sample2: List[float], alpha: float = 0.05
 ) -> Dict[str, Any]:
-    """Calculate statistical significance between two samples.
+    """
+    Calculate statistical significance between two samples.
 
     Args:
         sample1: First sample

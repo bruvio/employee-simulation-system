@@ -1,13 +1,17 @@
-#!/Users/brunoviola/bruvio-tools/.venv/bin/python3
+#!/usr/bin/env python3
 
-"""Test file optimization and structured directory creation."""
+"""
+Test file optimization and structured directory creation.
+"""
 
 import json
 import sys
 
 
 def test_file_optimization():
-    """Test that FileOptimizationManager integration works."""
+    """
+    Test that FileOptimizationManager integration works.
+    """
 
     try:
         # Import the orchestrator with FileOptimizationManager

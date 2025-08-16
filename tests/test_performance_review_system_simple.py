@@ -1,20 +1,22 @@
 #!/usr/bin/env python3
-"""Simple tests for performance_review_system module."""
-
-from unittest.mock import MagicMock, patch
-
-import pytest
+"""
+Simple tests for performance_review_system module.
+"""
 
 
 def test_import_module():
-    """Test that the module can be imported."""
+    """
+    Test that the module can be imported.
+    """
     import performance_review_system
 
     assert hasattr(performance_review_system, "__file__")
 
 
 def test_performance_review_class():
-    """Test performance review class exists."""
+    """
+    Test performance review class exists.
+    """
     import performance_review_system
 
     potential_classes = ["PerformanceReviewSystem", "ReviewSystem", "PerformanceReview", "ReviewManager"]
@@ -32,7 +34,9 @@ def test_performance_review_class():
 
 
 def test_review_functions():
-    """Test review functions."""
+    """
+    Test review functions.
+    """
     import performance_review_system
 
     functions = ["conduct_review", "generate_review", "evaluate_performance"]
@@ -43,7 +47,9 @@ def test_review_functions():
 
 
 def test_basic_review():
-    """Test basic review functionality."""
+    """
+    Test basic review functionality.
+    """
     import performance_review_system
 
     test_employee = {"employee_id": 1, "performance": 0.8}

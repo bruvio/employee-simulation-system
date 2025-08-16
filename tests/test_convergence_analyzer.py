@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
-"""Comprehensive tests for median_convergence_analyzer module.
+"""
+Comprehensive tests for median_convergence_analyzer module.
 
 Tests convergence analysis, intervention strategies, and below-median employee identification.
 """
@@ -13,10 +14,14 @@ from median_convergence_analyzer import MedianConvergenceAnalyzer
 
 
 class TestMedianConvergenceAnalyzer:
-    """Test the MedianConvergenceAnalyzer class."""
+    """
+    Test the MedianConvergenceAnalyzer class.
+    """
 
     def setup_method(self):
-        """Setup test fixtures."""
+        """
+        Setup test fixtures.
+        """
         self.population_data = [
             {
                 "employee_id": 1,
@@ -61,7 +66,9 @@ class TestMedianConvergenceAnalyzer:
 
     @patch("median_convergence_analyzer.LOGGER")
     def test_initialization(self, mock_logger):
-        """Test analyzer initialization."""
+        """
+        Test analyzer initialization.
+        """
         analyzer = MedianConvergenceAnalyzer(self.population_data, self.config)
 
         assert len(analyzer.population_data) == 4
@@ -74,7 +81,9 @@ class TestMedianConvergenceAnalyzer:
 
     @patch("median_convergence_analyzer.LOGGER")
     def test_initialization_with_defaults(self, mock_logger):
-        """Test analyzer initialization with default config."""
+        """
+        Test analyzer initialization with default config.
+        """
         analyzer = MedianConvergenceAnalyzer(self.population_data)
 
         assert len(analyzer.population_data) == 4
@@ -82,7 +91,9 @@ class TestMedianConvergenceAnalyzer:
         assert analyzer.acceptable_gap_percent == 5.0  # default
 
     def test_median_calculation_by_level(self):
-        """Test calculation of median salaries by level."""
+        """
+        Test calculation of median salaries by level.
+        """
         analyzer = MedianConvergenceAnalyzer(self.population_data, self.config)
 
         # Level 3 median should be 75000 (middle of 60000, 75000, 85000)
@@ -95,7 +106,9 @@ class TestMedianConvergenceAnalyzer:
 
     @patch("median_convergence_analyzer.LOGGER")
     def test_analyze_convergence_timeline_below_median(self, mock_logger):
-        """Test convergence timeline analysis for below-median employee."""
+        """
+        Test convergence timeline analysis for below-median employee.
+        """
         analyzer = MedianConvergenceAnalyzer(self.population_data, self.config)
 
         # Test employee 1 (below median)
@@ -122,7 +135,9 @@ class TestMedianConvergenceAnalyzer:
 
     @patch("median_convergence_analyzer.LOGGER")
     def test_analyze_convergence_timeline_at_median(self, mock_logger):
-        """Test convergence timeline analysis for at-median employee."""
+        """
+        Test convergence timeline analysis for at-median employee.
+        """
         analyzer = MedianConvergenceAnalyzer(self.population_data, self.config)
 
         # Test employee 2 (at median)
@@ -138,7 +153,9 @@ class TestMedianConvergenceAnalyzer:
 
     @patch("median_convergence_analyzer.LOGGER")
     def test_analyze_convergence_timeline_above_median(self, mock_logger):
-        """Test convergence timeline analysis for above-median employee."""
+        """
+        Test convergence timeline analysis for above-median employee.
+        """
         analyzer = MedianConvergenceAnalyzer(self.population_data, self.config)
 
         # Test employee 3 (above median)
@@ -153,7 +170,9 @@ class TestMedianConvergenceAnalyzer:
         assert result["current_gap_percent"] > 0
 
     def test_convergence_timeline_with_performance_target(self):
-        """Test convergence analysis with target performance level."""
+        """
+        Test convergence analysis with target performance level.
+        """
         analyzer = MedianConvergenceAnalyzer(self.population_data, self.config)
 
         employee_data = self.population_data[0]  # Below median employee
@@ -168,7 +187,9 @@ class TestMedianConvergenceAnalyzer:
         assert "intervention" in result["scenarios"]
 
     def test_identify_below_median_employees(self):
-        """Test identification of below-median employees."""
+        """
+        Test identification of below-median employees.
+        """
         analyzer = MedianConvergenceAnalyzer(self.population_data, self.config)
 
         # Mock the identify_below_median_employees method if it exists
@@ -189,7 +210,9 @@ class TestMedianConvergenceAnalyzer:
             pytest.skip("identify_below_median_employees method not implemented")
 
     def test_gender_based_median_calculation(self):
-        """Test median calculation by level and gender."""
+        """
+        Test median calculation by level and gender.
+        """
         analyzer = MedianConvergenceAnalyzer(self.population_data, self.config)
 
         # Check if gender-based medians are calculated
@@ -207,7 +230,9 @@ class TestMedianConvergenceAnalyzer:
                 assert male_median == 75000
 
     def test_convergence_analysis_edge_cases(self):
-        """Test convergence analysis edge cases."""
+        """
+        Test convergence analysis edge cases.
+        """
         analyzer = MedianConvergenceAnalyzer(self.population_data, self.config)
 
         # Test with employee at exactly acceptable gap threshold
@@ -227,7 +252,9 @@ class TestMedianConvergenceAnalyzer:
         assert abs(result["current_gap_percent"] - expected_gap) < 0.01
 
     def test_convergence_timeline_calculations(self):
-        """Test convergence timeline calculations."""
+        """
+        Test convergence timeline calculations.
+        """
         analyzer = MedianConvergenceAnalyzer(self.population_data, self.config)
 
         employee_data = self.population_data[0]  # Below median employee
@@ -253,7 +280,9 @@ class TestMedianConvergenceAnalyzer:
 
     @patch("median_convergence_analyzer.LOGGER")
     def test_analyze_multiple_employees(self, mock_logger):
-        """Test analyzing multiple employees."""
+        """
+        Test analyzing multiple employees.
+        """
         analyzer = MedianConvergenceAnalyzer(self.population_data, self.config)
 
         results = []
@@ -271,7 +300,9 @@ class TestMedianConvergenceAnalyzer:
         assert above_median_count >= 1, "Should have at least one above-median employee"
 
     def test_configuration_impact(self):
-        """Test impact of different configuration parameters."""
+        """
+        Test impact of different configuration parameters.
+        """
         # Test with stricter acceptable gap
         strict_config = self.config.copy()
         strict_config["acceptable_gap_percent"] = 2.0  # Very strict
@@ -294,12 +325,16 @@ class TestMedianConvergenceAnalyzer:
         assert lenient_result["status"] == "below_median"
 
     def test_empty_population_handling(self):
-        """Test handling of empty population."""
+        """
+        Test handling of empty population.
+        """
         with pytest.raises((ValueError, IndexError, KeyError)):
             MedianConvergenceAnalyzer([], self.config)
 
     def test_single_employee_population(self):
-        """Test handling of single employee population."""
+        """
+        Test handling of single employee population.
+        """
         single_employee = [self.population_data[0]]
 
         analyzer = MedianConvergenceAnalyzer(single_employee, self.config)
@@ -309,7 +344,9 @@ class TestMedianConvergenceAnalyzer:
         assert analyzer.medians_by_level[3] == 60000  # Only employee's salary
 
     def test_same_level_employees(self):
-        """Test analysis with multiple employees at same level."""
+        """
+        Test analysis with multiple employees at same level.
+        """
         same_level_data = [
             {"employee_id": 1, "level": 3, "salary": 60000, "performance_rating": "Achieving", "gender": "Female"},
             {"employee_id": 2, "level": 3, "salary": 70000, "performance_rating": "High Performing", "gender": "Male"},
@@ -332,10 +369,14 @@ class TestMedianConvergenceAnalyzer:
 
 
 class TestConvergenceAnalyzerErrorHandling:
-    """Test error handling in convergence analyzer."""
+    """
+    Test error handling in convergence analyzer.
+    """
 
     def test_invalid_employee_data(self):
-        """Test handling of invalid employee data."""
+        """
+        Test handling of invalid employee data.
+        """
         population_data = [
             {"employee_id": 1, "level": 3, "salary": 60000, "performance_rating": "Achieving", "gender": "Female"}
         ]
@@ -349,7 +390,9 @@ class TestConvergenceAnalyzerErrorHandling:
             analyzer.analyze_convergence_timeline(invalid_employee)
 
     def test_invalid_configuration(self):
-        """Test handling of invalid configuration."""
+        """
+        Test handling of invalid configuration.
+        """
         population_data = [
             {"employee_id": 1, "level": 3, "salary": 60000, "performance_rating": "Achieving", "gender": "Female"}
         ]
@@ -363,7 +406,9 @@ class TestConvergenceAnalyzerErrorHandling:
         assert analyzer.convergence_threshold_years == -1
 
     def test_malformed_population_data(self):
-        """Test handling of malformed population data."""
+        """
+        Test handling of malformed population data.
+        """
         malformed_data = [
             {"employee_id": 1, "level": "invalid", "salary": "not_a_number"},  # Wrong types
             None,  # Null employee
@@ -379,10 +424,14 @@ class TestConvergenceAnalyzerErrorHandling:
 
 
 class TestConvergenceAnalyzerPerformance:
-    """Test performance characteristics of convergence analyzer."""
+    """
+    Test performance characteristics of convergence analyzer.
+    """
 
     def test_large_population_handling(self):
-        """Test analyzer with large population."""
+        """
+        Test analyzer with large population.
+        """
         # Create large population
         large_population = []
         for i in range(1000):
@@ -408,7 +457,9 @@ class TestConvergenceAnalyzerPerformance:
         assert result["status"] in ["below_median", "above_median"]
 
     def test_memory_usage_reasonable(self):
-        """Test that memory usage is reasonable for large populations."""
+        """
+        Test that memory usage is reasonable for large populations.
+        """
         # This is a basic test - in production you might use memory profiling
         population_data = []
         for i in range(100):

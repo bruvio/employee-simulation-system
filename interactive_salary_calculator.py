@@ -1,4 +1,4 @@
-#!/Users/brunoviola/bruvio-tools/.venv/bin/python3
+#!/usr/bin/env python3
 
 from IPython.display import clear_output, display
 import ipywidgets as widgets
@@ -9,7 +9,8 @@ from logger import LOGGER
 
 
 class InteractiveSalaryCalculator:
-    """Interactive salary calculator widget using IPython widgets.
+    """
+    Interactive salary calculator widget using IPython widgets.
 
     Provides real-time calculation of salary uplifts based on performance and level.
 
@@ -23,7 +24,9 @@ class InteractiveSalaryCalculator:
         LOGGER.info("Initialized InteractiveSalaryCalculator with IPython widgets")
 
     def setup_widgets(self):
-        """Create interactive widgets following existing pattern from pdr.md."""
+        """
+        Create interactive widgets following existing pattern from pdr.md.
+        """
 
         # Base salary input
         self.salary_input = widgets.FloatText(
@@ -70,7 +73,8 @@ class InteractiveSalaryCalculator:
         LOGGER.debug("Setup interactive widgets with observers")
 
     def update_calculation(self, change=None):
-        """Update salary calculation when inputs change.
+        """
+        Update salary calculation when inputs change.
 
         Args:
           change:  (Default value = None)
@@ -121,7 +125,8 @@ class InteractiveSalaryCalculator:
                 LOGGER.error(f"Calculator error: {e}")
 
     def _get_level_description(self, level):
-        """Get level description string.
+        """
+        Get level description string.
 
         Args:
           level:
@@ -139,7 +144,8 @@ class InteractiveSalaryCalculator:
         return level_descriptions.get(level, "Unknown")
 
     def update_info_section(self, change=None):
-        """Update information section with matrix details.
+        """
+        Update information section with matrix details.
 
         Args:
           change:  (Default value = None)
@@ -179,7 +185,9 @@ class InteractiveSalaryCalculator:
                     print(f"  {rating:15}: {other_total:.2f}% total uplift")
 
     def display(self):
-        """Display the interactive calculator."""
+        """
+        Display the interactive calculator.
+        """
         LOGGER.info("Displaying interactive salary calculator")
 
         # Create title
@@ -223,7 +231,9 @@ class InteractiveSalaryCalculator:
             widget.observe(self.update_info_section, names="value")
 
     def create_comparison_tool(self):
-        """Create a tool to compare different scenarios."""
+        """
+        Create a tool to compare different scenarios.
+        """
 
         # Scenario A inputs
         scenario_a_salary = widgets.FloatText(value=85000, description="Scenario A Salary:")
@@ -354,7 +364,9 @@ class InteractiveSalaryCalculator:
 
 
 def create_salary_calculator():
-    """Factory function to create and return salary calculator."""
+    """
+    Factory function to create and return salary calculator.
+    """
     LOGGER.info("Creating interactive salary calculator")
     return InteractiveSalaryCalculator()
 

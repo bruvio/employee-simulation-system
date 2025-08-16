@@ -1,4 +1,6 @@
-"""Basic tests to ensure the package is properly configured."""
+"""
+Basic tests to ensure the package is properly configured.
+"""
 
 from pathlib import Path
 import sys
@@ -7,12 +9,16 @@ import pytest
 
 
 def test_python_version():
-    """Test that Python version meets requirements."""
+    """
+    Test that Python version meets requirements.
+    """
     assert sys.version_info >= (3, 9), "Python 3.9+ is required"
 
 
 def test_package_imports():
-    """Test that core dependencies can be imported."""
+    """
+    Test that core dependencies can be imported.
+    """
     try:
         pass
 
@@ -21,7 +27,9 @@ def test_package_imports():
 
 
 def test_project_structure():
-    """Test that essential project files exist."""
+    """
+    Test that essential project files exist.
+    """
     project_root = Path(__file__).parent.parent
 
     essential_files = [
@@ -39,7 +47,9 @@ def test_project_structure():
 
 
 def test_package_version():
-    """Test that package version is accessible."""
+    """
+    Test that package version is accessible.
+    """
     try:
         # Try to import from package if possible
         import employee_simulation_system

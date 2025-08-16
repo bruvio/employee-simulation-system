@@ -1,16 +1,22 @@
 #!/usr/bin/env python3
-"""Simple tests for employee_story_tracker module."""
+"""
+Simple tests for employee_story_tracker module.
+"""
 
 
 def test_import_module():
-    """Test that the module can be imported."""
+    """
+    Test that the module can be imported.
+    """
     import employee_story_tracker
 
     assert hasattr(employee_story_tracker, "__file__")
 
 
 def test_story_tracker_class():
-    """Test story tracker class exists and can be instantiated."""
+    """
+    Test story tracker class exists and can be instantiated.
+    """
     import employee_story_tracker
 
     potential_classes = ["EmployeeStoryTracker", "StoryTracker", "EmployeeTracker"]
@@ -28,7 +34,9 @@ def test_story_tracker_class():
 
 
 def test_tracking_functions():
-    """Test story tracking functions."""
+    """
+    Test story tracking functions.
+    """
     import employee_story_tracker
 
     functions = ["track_employee", "add_story", "get_stories", "track_story"]
@@ -39,7 +47,9 @@ def test_tracking_functions():
 
 
 def test_basic_tracking():
-    """Test basic tracking functionality."""
+    """
+    Test basic tracking functionality.
+    """
     import employee_story_tracker
 
     # Try to find and test the main class

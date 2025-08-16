@@ -1,5 +1,6 @@
-#!/Users/brunoviola/bruvio-tools/.venv/bin/python3
+#!/usr/bin/env python3
 
+# Import centralized path management
 import argparse
 from datetime import datetime
 import json
@@ -10,6 +11,7 @@ import pandas as pd
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 
+from app_paths import get_chart_path
 from logger import LOGGER
 
 # Set plotting style
@@ -18,7 +20,8 @@ plt.rcParams["axes.grid"] = True
 
 
 class VisualizationGenerator:
-    """Comprehensive visualization generator for employee population simulation.
+    """
+    Comprehensive visualization generator for employee population simulation.
 
     Creates statistical plots and interactive visualizations for salary analysis. Enhanced with story tracking
     capabilities.
@@ -39,9 +42,6 @@ class VisualizationGenerator:
         if self.story_tracker:
             self.tracked_employees = self.story_tracker.tracked_categories
             self._load_employee_stories()
-            LOGGER.info(
-                f"Story tracking enabled with {sum(len(employees) for employees in self.tracked_employees.values())} tracked employees"
-            )
 
         self.setup_plotting_style()
 
@@ -50,7 +50,9 @@ class VisualizationGenerator:
         )
 
     def setup_plotting_style(self):
-        """Setup consistent plotting style."""
+        """
+        Setup consistent plotting style.
+        """
         # Color palette for consistency
         self.colors = {
             "male": "#2E86AB",
@@ -80,7 +82,9 @@ class VisualizationGenerator:
         LOGGER.debug("Setup plotting style and color palette")
 
     def _load_employee_stories(self):
-        """Load employee stories from story tracker."""
+        """
+        Load employee stories from story tracker.
+        """
         if not self.story_tracker:
             return
 
@@ -99,7 +103,9 @@ class VisualizationGenerator:
             LOGGER.warning(f"Error loading employee stories: {e}")
 
     def generate_complete_analysis(self):
-        """Generate all visualization components."""
+        """
+        Generate all visualization components.
+        """
         LOGGER.info("Generating complete visualization analysis")
 
         visualizations = {}
@@ -151,7 +157,9 @@ class VisualizationGenerator:
         return visualizations
 
     def plot_population_overview(self):
-        """Create population overview visualization."""
+        """
+        Create population overview visualization.
+        """
         LOGGER.debug("Creating population overview visualization")
 
         df = pd.DataFrame(self.population)
@@ -226,7 +234,9 @@ class VisualizationGenerator:
         return fig
 
     def plot_gender_analysis(self):
-        """Create gender pay gap analysis visualization."""
+        """
+        Create gender pay gap analysis visualization.
+        """
         LOGGER.debug("Creating gender pay gap analysis")
 
         df = pd.DataFrame(self.population)
@@ -325,7 +335,9 @@ class VisualizationGenerator:
         return fig
 
     def plot_performance_analysis(self):
-        """Create comprehensive performance analysis plots."""
+        """
+        Create comprehensive performance analysis plots.
+        """
         LOGGER.debug("Creating performance analysis visualization")
 
         df = pd.DataFrame(self.population)
@@ -399,7 +411,9 @@ class VisualizationGenerator:
         return fig
 
     def plot_salary_distributions(self):
-        """Create detailed salary distribution analysis."""
+        """
+        Create detailed salary distribution analysis.
+        """
         LOGGER.debug("Creating salary distribution analysis")
 
         df = pd.DataFrame(self.population)
@@ -479,7 +493,9 @@ class VisualizationGenerator:
         return fig
 
     def plot_inequality_reduction(self):
-        """Create inequality reduction analysis visualization."""
+        """
+        Create inequality reduction analysis visualization.
+        """
         LOGGER.debug("Creating inequality reduction analysis")
 
         if not self.inequality_data:
@@ -571,7 +587,9 @@ class VisualizationGenerator:
         return fig
 
     def plot_review_cycle_progression(self):
-        """Create review cycle progression analysis."""
+        """
+        Create review cycle progression analysis.
+        """
         LOGGER.debug("Creating review cycle progression analysis")
 
         if not self.inequality_data:
@@ -642,7 +660,9 @@ class VisualizationGenerator:
         return fig
 
     def plot_story_salary_distributions(self):
-        """Create salary distribution charts with individual employee highlights."""
+        """
+        Create salary distribution charts with individual employee highlights.
+        """
         LOGGER.debug("Creating story-enhanced salary distribution charts")
 
         if not self.population or not self.tracked_employees:
@@ -719,7 +739,9 @@ class VisualizationGenerator:
         return fig
 
     def plot_employee_progression_timelines(self):
-        """Create employee progression dashboards and timeline visualizations."""
+        """
+        Create employee progression dashboards and timeline visualizations.
+        """
         LOGGER.debug("Creating employee progression timeline visualizations")
 
         if not self.story_tracker:
@@ -802,7 +824,9 @@ class VisualizationGenerator:
         return fig
 
     def create_interactive_story_dashboard(self):
-        """Create interactive HTML dashboard with story tracking."""
+        """
+        Create interactive HTML dashboard with story tracking.
+        """
         LOGGER.debug("Creating interactive story dashboard")
 
         if not self.story_tracker or not self.tracked_employees:
@@ -839,8 +863,8 @@ class VisualizationGenerator:
 
             # Save as HTML
             timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-            html_path = f"images/employee_simulation_interactive_dashboard_{timestamp}.html"
-            fig.write_html(html_path)
+            html_path = get_chart_path(f"employee_simulation_interactive_dashboard_{timestamp}.html")
+            fig.write_html(str(html_path))
 
             LOGGER.info(f"Interactive dashboard saved to: {html_path}")
             return html_path
@@ -850,7 +874,8 @@ class VisualizationGenerator:
             return None
 
     def save_figure(self, fig, filename):
-        """Save figure following existing codebase pattern.
+        """
+        Save figure following existing codebase pattern.
 
         Args:
           fig:
@@ -863,12 +888,12 @@ class VisualizationGenerator:
 
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
 
-        # Save as PNG
-        png_filepath = f"/Users/brunoviola/bruvio-tools/images/employee_simulation_{filename}_{timestamp}.png"
+        # Save as PNG using centralized path
+        png_filepath = get_chart_path(f"employee_simulation_{filename}_{timestamp}.png")
         fig.savefig(png_filepath, dpi=300, bbox_inches="tight", facecolor="white", edgecolor="none")
 
         # Also save as HTML using plotly for interactivity (if possible)
-        html_filepath = f"/Users/brunoviola/bruvio-tools/images/employee_simulation_{filename}_{timestamp}.html"
+        html_filepath = get_chart_path(f"employee_simulation_{filename}_{timestamp}.html")
 
         try:
             # Convert matplotlib to plotly for interactivity
@@ -888,7 +913,9 @@ class VisualizationGenerator:
         return png_filepath
 
     def create_interactive_dashboard(self):
-        """Create interactive Plotly dashboard."""
+        """
+        Create interactive Plotly dashboard.
+        """
         LOGGER.debug("Creating interactive dashboard")
 
         if not self.population:
@@ -940,7 +967,7 @@ class VisualizationGenerator:
 
         # Save interactive dashboard
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-        dashboard_filepath = f"/Users/brunoviola/bruvio-tools/images/employee_simulation_dashboard_{timestamp}.html"
+        dashboard_filepath = get_chart_path(f"employee_simulation_dashboard_{timestamp}.html")
         fig.write_html(dashboard_filepath)
 
         LOGGER.info(f"Interactive dashboard saved: {dashboard_filepath}")
@@ -948,12 +975,16 @@ class VisualizationGenerator:
 
 
 def create_parser():
-    """Create command line argument parser."""
+    """
+    Create command line argument parser.
+    """
     parser = argparse.ArgumentParser(description="Generate visualizations for employee simulation")
     parser.add_argument("--population-file", help="JSON file with population data")
     parser.add_argument("--inequality-file", help="CSV file with inequality progression data")
     parser.add_argument(
-        "--output-dir", default="/Users/brunoviola/bruvio-tools/images/", help="Output directory for visualizations"
+        "--output-dir",
+        default=None,
+        help="Output directory for visualizations (uses centralized paths if not specified)",
     )
     parser.add_argument("--interactive", action="store_true", help="Create interactive dashboard")
 
@@ -961,7 +992,9 @@ def create_parser():
 
 
 def main():
-    """Main function for visualization generation."""
+    """
+    Main function for visualization generation.
+    """
     parser = create_parser()
     args = parser.parse_args()
 

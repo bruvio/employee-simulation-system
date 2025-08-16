@@ -1,20 +1,24 @@
 #!/usr/bin/env python3
-"""Simple tests for advanced_story_export_system module."""
+"""
+Simple tests for advanced_story_export_system module.
+"""
 
-from unittest.mock import MagicMock, patch
-
-import pytest
+from unittest.mock import patch
 
 
 def test_import_module():
-    """Test that the module can be imported."""
+    """
+    Test that the module can be imported.
+    """
     import advanced_story_export_system
 
     assert hasattr(advanced_story_export_system, "__file__")
 
 
 def test_export_system_class():
-    """Test export system class exists."""
+    """
+    Test export system class exists.
+    """
     import advanced_story_export_system
 
     potential_classes = ["AdvancedStoryExportSystem", "StoryExportSystem", "ExportSystem", "StoryExporter"]
@@ -32,7 +36,9 @@ def test_export_system_class():
 
 
 def test_export_functions():
-    """Test export functions."""
+    """
+    Test export functions.
+    """
     import advanced_story_export_system
 
     functions = ["export_stories", "export_data", "generate_export"]
@@ -44,7 +50,9 @@ def test_export_functions():
 
 @patch("builtins.open")
 def test_basic_export(mock_open):
-    """Test basic export functionality."""
+    """
+    Test basic export functionality.
+    """
     import advanced_story_export_system
 
     test_stories = [{"story": "test story", "employee_id": 1}]

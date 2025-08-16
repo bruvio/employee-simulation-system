@@ -1,30 +1,31 @@
-#!/Users/brunoviola/bruvio-tools/.venv/bin/python3
+#!/usr/bin/env python3
 
 import argparse
 from datetime import datetime
 import json
-from pathlib import Path
 
 from openpyxl.styles import Alignment, Font, PatternFill
 import pandas as pd
 
+from app_paths import get_artifact_path, get_table_path
 from logger import LOGGER
 
 
 class DataExportSystem:
-    """Comprehensive data export system for employee simulation results.
+    """
+    Comprehensive data export system for employee simulation results.
 
     Supports CSV, Excel, and JSON formats with enhanced formatting.
     """
 
-    def __init__(self, output_dir="artifacts"):
-        self.output_dir = Path(output_dir)
-        self.output_dir.mkdir(exist_ok=True)
+    def __init__(self, output_dir=None):
+        # Use centralized paths instead of hardcoded directory
         self.timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-        LOGGER.info(f"Initialized data export system with output directory: {self.output_dir}")
+        LOGGER.info("Initialized data export system with centralized paths")
 
     def export_employee_population(self, population_data, format_types=None):
-        """Export employee population data in multiple formats.
+        """
+        Export employee population data in multiple formats.
 
         Args:
             population_data: List of employee dictionaries or DataFrame
@@ -49,21 +50,21 @@ class DataExportSystem:
 
         # CSV Export
         if "csv" in format_types:
-            csv_path = self.output_dir / f"{base_filename}.csv"
+            csv_path = get_table_path(f"{base_filename}.csv")
             df.to_csv(csv_path, index=False)
             exported_files["csv"] = csv_path
             LOGGER.info(f"CSV export completed: {csv_path}")
 
         # Excel Export with enhanced formatting
         if "excel" in format_types:
-            excel_path = self.output_dir / f"{base_filename}.xlsx"
+            excel_path = get_table_path(f"{base_filename}.xlsx")
             self._export_excel_population(df, excel_path)
             exported_files["excel"] = excel_path
             LOGGER.info(f"Excel export completed: {excel_path}")
 
         # JSON Export with metadata
         if "json" in format_types:
-            json_path = self.output_dir / f"{base_filename}.json"
+            json_path = get_artifact_path(f"{base_filename}.json")
             self._export_json_population(df, json_path)
             exported_files["json"] = json_path
             LOGGER.info(f"JSON export completed: {json_path}")
@@ -71,7 +72,8 @@ class DataExportSystem:
         return exported_files
 
     def export_simulation_results(self, simulation_data, format_types=None):
-        """Export multi-cycle simulation results.
+        """
+        Export multi-cycle simulation results.
 
         Args:
             simulation_data: Dictionary with cycle results or DataFrame
@@ -100,21 +102,21 @@ class DataExportSystem:
 
         # CSV Export
         if "csv" in format_types:
-            csv_path = self.output_dir / f"{base_filename}_inequality.csv"
+            csv_path = get_table_path(f"{base_filename}_inequality.csv")
             df.to_csv(csv_path, index=False)
             exported_files["csv"] = csv_path
             LOGGER.info(f"Simulation CSV export completed: {csv_path}")
 
         # Excel Export with multiple sheets
         if "excel" in format_types:
-            excel_path = self.output_dir / f"{base_filename}.xlsx"
+            excel_path = get_table_path(f"{base_filename}.xlsx")
             self._export_excel_simulation(simulation_data, excel_path)
             exported_files["excel"] = excel_path
             LOGGER.info(f"Simulation Excel export completed: {excel_path}")
 
         # JSON Export
         if "json" in format_types:
-            json_path = self.output_dir / f"{base_filename}.json"
+            json_path = get_artifact_path(f"{base_filename}.json")
             self._export_json_simulation(simulation_data, json_path)
             exported_files["json"] = json_path
             LOGGER.info(f"Simulation JSON export completed: {json_path}")
@@ -122,7 +124,8 @@ class DataExportSystem:
         return exported_files
 
     def export_analysis_report(self, population_data, simulation_results, format_types=None):
-        """Export comprehensive analysis report combining population and simulation data.
+        """
+        Export comprehensive analysis report combining population and simulation data.
 
         Args:
             population_data: Employee population data
@@ -145,14 +148,14 @@ class DataExportSystem:
 
         # Excel Export with comprehensive dashboard
         if "excel" in format_types:
-            excel_path = self.output_dir / f"{base_filename}.xlsx"
+            excel_path = get_table_path(f"{base_filename}.xlsx")
             self._export_excel_analysis(population_data, simulation_results, analysis_summary, excel_path)
             exported_files["excel"] = excel_path
             LOGGER.info(f"Analysis Excel report completed: {excel_path}")
 
         # JSON Export with nested structure
         if "json" in format_types:
-            json_path = self.output_dir / f"{base_filename}.json"
+            json_path = get_artifact_path(f"{base_filename}.json")
             self._export_json_analysis(population_data, simulation_results, analysis_summary, json_path)
             exported_files["json"] = json_path
             LOGGER.info(f"Analysis JSON report completed: {json_path}")
@@ -160,7 +163,9 @@ class DataExportSystem:
         return exported_files
 
     def _export_excel_population(self, df, filepath):
-        """Export population data to Excel with formatting."""
+        """
+        Export population data to Excel with formatting.
+        """
         with pd.ExcelWriter(filepath, engine="openpyxl") as writer:
             df.to_excel(writer, sheet_name="Population", index=False)
 
@@ -195,7 +200,9 @@ class DataExportSystem:
             summary_df.to_excel(writer, sheet_name="Summary", index=False)
 
     def _export_excel_simulation(self, simulation_data, filepath):
-        """Export simulation results to Excel with multiple sheets."""
+        """
+        Export simulation results to Excel with multiple sheets.
+        """
         with pd.ExcelWriter(filepath, engine="openpyxl") as writer:
             # Main inequality metrics sheet
             if isinstance(simulation_data, dict):
@@ -215,7 +222,9 @@ class DataExportSystem:
                 self._format_excel_sheet(writer.sheets[sheet_name])
 
     def _export_excel_analysis(self, population_data, simulation_results, analysis_summary, filepath):
-        """Export comprehensive analysis to Excel."""
+        """
+        Export comprehensive analysis to Excel.
+        """
         with pd.ExcelWriter(filepath, engine="openpyxl") as writer:
             # Executive Summary sheet
             summary_df = pd.DataFrame(list(analysis_summary.items()), columns=["Metric", "Value"])
@@ -242,7 +251,9 @@ class DataExportSystem:
                 self._format_excel_sheet(writer.sheets[sheet_name])
 
     def _export_json_population(self, df, filepath):
-        """Export population data to JSON with metadata."""
+        """
+        Export population data to JSON with metadata.
+        """
         export_data = {
             "metadata": {
                 "export_timestamp": datetime.now().isoformat(),
@@ -258,7 +269,9 @@ class DataExportSystem:
             json.dump(export_data, f, indent=2, default=str)
 
     def _export_json_simulation(self, simulation_data, filepath):
-        """Export simulation results to JSON."""
+        """
+        Export simulation results to JSON.
+        """
         if isinstance(simulation_data, dict):
             export_data = simulation_data.copy()
             # Convert DataFrames to records
@@ -274,7 +287,9 @@ class DataExportSystem:
             json.dump(export_data, f, indent=2, default=str)
 
     def _export_json_analysis(self, population_data, simulation_results, analysis_summary, filepath):
-        """Export comprehensive analysis to JSON."""
+        """
+        Export comprehensive analysis to JSON.
+        """
         export_data = {
             "metadata": {
                 "export_timestamp": datetime.now().isoformat(),
@@ -298,7 +313,9 @@ class DataExportSystem:
             json.dump(export_data, f, indent=2, default=str)
 
     def _format_excel_sheet(self, worksheet):
-        """Apply consistent formatting to Excel worksheet."""
+        """
+        Apply consistent formatting to Excel worksheet.
+        """
         header_font = Font(bold=True, color="FFFFFF")
         header_fill = PatternFill(start_color="366092", end_color="366092", fill_type="solid")
 
@@ -322,7 +339,9 @@ class DataExportSystem:
             worksheet.column_dimensions[column_letter].width = adjusted_width
 
     def _generate_population_summary(self, df):
-        """Generate summary statistics for population data."""
+        """
+        Generate summary statistics for population data.
+        """
         summary = {
             "Total Employees": len(df),
             "Average Salary": f"£{df['salary'].mean():.2f}" if "salary" in df.columns else "N/A",
@@ -343,7 +362,9 @@ class DataExportSystem:
         return summary
 
     def _generate_analysis_summary(self, population_data, simulation_results):
-        """Generate executive summary for comprehensive analysis."""
+        """
+        Generate executive summary for comprehensive analysis.
+        """
         summary = {
             "Analysis Date": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
             "Population Size": len(population_data) if isinstance(population_data, list) else len(population_data),
@@ -364,7 +385,9 @@ class DataExportSystem:
 
 
 def main():
-    """Command-line interface for data export system."""
+    """
+    Command-line interface for data export system.
+    """
     parser = argparse.ArgumentParser(description="Export employee simulation data")
     parser.add_argument("--population-file", required=True, help="Path to population data file")
     parser.add_argument("--simulation-file", help="Path to simulation results file")

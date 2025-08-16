@@ -1,4 +1,4 @@
-#!/Users/brunoviola/bruvio-tools/.venv/bin/python3
+#!/usr/bin/env python3
 
 """
 Final Validation Test: Large Population (5000 employees) with Comprehensive Dashboard Export
@@ -14,7 +14,9 @@ import psutil
 
 
 def get_memory_usage():
-    """Get current memory usage in MB."""
+    """
+    Get current memory usage in MB.
+    """
     try:
         process = psutil.Process()
         return process.memory_info().rss / 1024 / 1024
@@ -23,7 +25,9 @@ def get_memory_usage():
 
 
 def test_large_population_validation():
-    """Final validation test with 5000 employees and comprehensive features."""
+    """
+    Final validation test with 5000 employees and comprehensive features.
+    """
 
     print("🚀 FINAL VALIDATION: Large Population Test (5000 Employees)")
     print("=" * 70)

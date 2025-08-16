@@ -1,14 +1,16 @@
-#!/Users/brunoviola/bruvio-tools/.venv/bin/python3
+#!/usr/bin/env python3
+
+from typing import Any, Dict, List, Optional, Tuple
 
 import numpy as np
 import pandas as pd
-from typing import Any, Dict, List, Optional, Tuple
 
 from logger import LOGGER
 
 
 class GELPolicyConstraints:
-    """Policy-constrained intervention logic for GEL scenario.
+    """
+    Policy-constrained intervention logic for GEL scenario.
 
     Implements manager-level constraints:
     - Maximum 6 direct reports per manager
@@ -30,7 +32,8 @@ class GELPolicyConstraints:
         self.logger.info(f"Initialized GEL policy constraints with {len(population_data)} employees")
 
     def identify_managers_and_teams(self) -> Dict[int, Dict[str, Any]]:
-        """Identify managers and their teams with policy compliance analysis.
+        """
+        Identify managers and their teams with policy compliance analysis.
 
         Returns:
             Dictionary mapping manager IDs to team information and constraints
@@ -85,7 +88,8 @@ class GELPolicyConstraints:
         return managers
 
     def prioritize_interventions(self, manager_teams: Dict[int, Dict]) -> Dict[int, List[Dict]]:
-        """Prioritize intervention opportunities for each manager's team.
+        """
+        Prioritize intervention opportunities for each manager's team.
 
         Priority order:
         1. Below-median AND high performer
@@ -157,7 +161,8 @@ class GELPolicyConstraints:
         return all_interventions
 
     def optimize_budget_allocation(self, manager_interventions: Dict[int, List[Dict]]) -> Dict[int, Dict[str, Any]]:
-        """Optimize budget allocation within manager constraints.
+        """
+        Optimize budget allocation within manager constraints.
 
         Args:
             manager_interventions: Prioritized interventions from prioritize_interventions
@@ -211,7 +216,7 @@ class GELPolicyConstraints:
                 else 0,
             }
 
-        self.logger.info(f"Budget optimization complete:")
+        self.logger.info("Budget optimization complete:")
         self.logger.info(f"  Total employees affected: {total_employees_affected}")
         self.logger.info(f"  Total intervention cost: £{total_cost:,.2f}")
         self.logger.info(

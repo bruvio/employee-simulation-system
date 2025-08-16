@@ -1,4 +1,4 @@
-#!/Users/brunoviola/bruvio-tools/.venv/bin/python3
+#!/usr/bin/env python3
 
 """
 🏢 Employee Simulation Explorer
@@ -38,6 +38,8 @@ except ImportError:
 
 # Try to import the orchestrator and new analysis modules
 try:
+    # Import path management
+    from app_paths import override_output_base, validate_output_path
     from employee_simulation_orchestrator import EmployeeSimulationOrchestrator
     from individual_progression_simulator import IndividualProgressionSimulator
     from intervention_strategy_simulator import InterventionStrategySimulator
@@ -50,7 +52,9 @@ except ImportError as e:
 
 
 class EmployeeStoryExplorer:
-    """Interactive employee story explorer with human-readable output."""
+    """
+    Interactive employee story explorer with human-readable output.
+    """
 
     def __init__(self):
         self.population_data = []
@@ -71,7 +75,8 @@ class EmployeeStoryExplorer:
         gender_pay_gap_percent=None,
         salary_constraints=None,
     ):
-        """Run employee simulation and return human-readable analysis.
+        """
+        Run employee simulation and return human-readable analysis.
 
         Args:
           population_size:  (Default value = 1000)
@@ -121,7 +126,7 @@ class EmployeeStoryExplorer:
 
         try:
             print("🔄 Generating employee population and running simulation...")
-            orchestrator = EmployeeSimulationOrchestrator(config=config)
+            orchestrator = EmployeeSimulationOrchestrator(config=config, cli_population_size=population_size)
 
             # Get results - handle the orchestrator's return format
             raw_results = orchestrator.run_with_story_tracking()
@@ -170,7 +175,8 @@ class EmployeeStoryExplorer:
             return False
 
     def _analyze_population(self, target_salary, target_level):
-        """Analyze the generated population with human narrative.
+        """
+        Analyze the generated population with human narrative.
 
         Args:
           target_salary:
@@ -255,7 +261,8 @@ class EmployeeStoryExplorer:
         print()
 
     def _is_employee_tracked(self, employee_id):
-        """Check if an employee is being tracked and return category.
+        """
+        Check if an employee is being tracked and return category.
 
         Args:
           employee_id:
@@ -270,7 +277,9 @@ class EmployeeStoryExplorer:
         return None
 
     def _analyze_tracked_stories(self):
-        """Analyze tracked employee stories with narrative."""
+        """
+        Analyze tracked employee stories with narrative.
+        """
 
         if not self.tracked_stories:
             print("📚 No employee stories tracked")
@@ -319,7 +328,9 @@ class EmployeeStoryExplorer:
             print()
 
     def _create_visualizations(self):
-        """Create population distribution visualizations."""
+        """
+        Create population distribution visualizations.
+        """
 
         if not self.population_data:
             print("📊 No data available for visualizations")
@@ -384,7 +395,9 @@ class EmployeeStoryExplorer:
         plt.tight_layout()
 
         # Save the plot
-        plot_path = Path("employee_population_analysis.png")
+        from app_paths import get_chart_path
+
+        plot_path = get_chart_path("employee_population_analysis.png")
         plt.savefig(plot_path, dpi=300, bbox_inches="tight")
         plt.show()
 
@@ -416,7 +429,9 @@ class EmployeeStoryExplorer:
             print(f"• Story tracking: {total_tracked} employees ({tracked_pct:.1f}%) identified as interesting cases")
 
     def _initialize_analysis_components(self):
-        """Initialize advanced analysis components with population data."""
+        """
+        Initialize advanced analysis components with population data.
+        """
         if not self.population_data:
             LOGGER.warning("No population data available for advanced analysis")
             return
@@ -432,7 +447,8 @@ class EmployeeStoryExplorer:
     def analyze_individual_progression(
         self, employee_id: int, years: int = 5, scenarios: List[str] = None
     ) -> Optional[Dict]:
-        """Analyze individual employee salary progression.
+        """
+        Analyze individual employee salary progression.
 
         Args:
           employee_id: int:
@@ -488,7 +504,8 @@ class EmployeeStoryExplorer:
             return None
 
     def analyze_median_convergence(self, min_gap_percent: float = 5.0) -> Optional[Dict]:
-        """Analyze median salary convergence for below-median employees.
+        """
+        Analyze median salary convergence for below-median employees.
 
         Args:
           min_gap_percent: float:  (Default value = 5.0)
@@ -540,7 +557,8 @@ class EmployeeStoryExplorer:
     def model_gender_gap_remediation(
         self, target_gap: float = 0.0, max_years: int = 3, budget_limit: float = 0.5
     ) -> Optional[Dict]:
-        """Model gender pay gap remediation strategies.
+        """
+        Model gender pay gap remediation strategies.
 
         Args:
           target_gap: float:  (Default value = 0.0)
@@ -556,7 +574,8 @@ class EmployeeStoryExplorer:
         print("\n💼 GENDER PAY GAP REMEDIATION ANALYSIS")
         print(f"={'='*60}")
         print(
-            f"Target gap: {target_gap:.1f}%, Max timeline: {max_years} years, Budget limit: {budget_limit:.1f}% of payroll"
+            f"Target gap: {target_gap:.1f}%, Max timeline: {max_years} years, "
+            f"Budget limit: {budget_limit:.1f}% of payroll"
         )
 
         try:
@@ -575,7 +594,8 @@ class EmployeeStoryExplorer:
             print("\n✅ RECOMMENDED STRATEGY:")
             print(f"   Strategy: {recommended['strategy_name'].replace('_', ' ').title()}")
             print(
-                f"   Total cost: £{recommended['total_cost']:,.2f} ({recommended['cost_as_percent_payroll']*100:.2f}% of payroll)"
+                f"   Total cost: £{recommended['total_cost']:,.2f} "
+                f"({recommended['cost_as_percent_payroll']*100:.2f}% of payroll)"
             )
             print(f"   Timeline: {recommended['timeline_years']} years")
             print(f"   Gap reduction: {recommended['gap_reduction_percent']:.1f}%")
@@ -596,7 +616,9 @@ class EmployeeStoryExplorer:
 
 
 def main():
-    """Main execution function with command-line interface."""
+    """
+    Main execution function with command-line interface.
+    """
     parser = argparse.ArgumentParser(
         description="Employee Simulation Explorer with Advanced Analysis",
         formatter_class=argparse.RawDescriptionHelpFormatter,
@@ -620,7 +642,8 @@ Examples:
     )
 
     # Population generation parameters
-    parser.add_argument("--population-size", type=int, default=1000, help="Population size to generate (default: 1000)")
+    parser.add_argument("--population-size", type=int, help="Population size to generate (required)")
+    parser.add_argument("--out", help="Output directory for all simulation results")
     parser.add_argument(
         "--random-seed", type=int, default=42, help="Random seed for reproducible results (default: 42)"
     )
@@ -668,6 +691,28 @@ Examples:
         return
 
     args = parser.parse_args()
+
+    # Handle output directory override with enhanced integration
+    if args.out:
+        try:
+            validate_output_path(Path(args.out))
+            override_output_base(args.out)
+            print(f"✅ Output directory set to: {args.out}")
+            print(f"    → All simulation outputs will be saved to: {args.out}/run_YYYYMMDD_HHMMSS/")
+            print("    → This overrides SIM_OUTPUT_DIR environment variable")
+        except (PermissionError, OSError, ValueError) as e:
+            print(f"❌ Error with output directory '{args.out}': {e}")
+            print("💡 Tips:")
+            print("   - Ensure the parent directory exists and is writable")
+            print("   - Use absolute paths for clarity (e.g., /home/user/results)")
+            print("   - Check disk space and permissions")
+            sys.exit(1)
+
+    # Validate population size requirement
+    if not args.population_size:
+        print("❌ Error: --population-size is required")
+        parser.print_help()
+        sys.exit(1)
 
     explorer = EmployeeStoryExplorer()
 
@@ -747,7 +792,9 @@ Examples:
 
 
 def run_example_scenarios():
-    """Run example scenarios for backwards compatibility."""
+    """
+    Run example scenarios for backwards compatibility.
+    """
     print("🏢 EMPLOYEE SIMULATION EXPLORER")
     print("=" * 60)
     print("Running example scenarios...")
@@ -802,7 +849,8 @@ def run_example_scenarios():
 
 
 def create_comprehensive_report(explorer, scenario, analysis_results):
-    """Create a comprehensive markdown report with all analysis results.
+    """
+    Create a comprehensive markdown report with all analysis results.
 
     Args:
       explorer:
@@ -818,9 +866,10 @@ def create_comprehensive_report(explorer, scenario, analysis_results):
         f.write("# Comprehensive Employee Analysis Report\n\n")
         f.write("## Executive Summary\n\n")
         f.write(
-            f"This comprehensive analysis examines a simulated employee population of {scenario['population_size']:,} employees "
-            f"generated with random seed {scenario['random_seed']}. The analysis includes population overview, "
-            f"story tracking, and advanced salary progression modeling.\n\n"
+            f"This comprehensive analysis examines a simulated employee population of "
+            f"{scenario['population_size']:,} employees generated with random seed {scenario['random_seed']}. "
+            f"The analysis includes population overview, story tracking, and advanced salary "
+            f"progression modeling.\n\n"
         )
 
         if analysis_results:
@@ -845,7 +894,7 @@ def create_comprehensive_report(explorer, scenario, analysis_results):
             f.write("## Key Findings\n\n")
 
             # Population overview
-            f.write(f"### Population Overview\n")
+            f.write("### Population Overview\n")
             f.write(f"- **Total Employees**: {len(df):,}\n")
             f.write(f"- **Organizational Levels**: {df['level'].nunique()}\n")
             f.write(f"- **Salary Range**: £{df['salary'].min():,.0f} - £{df['salary'].max():,.0f}\n")
@@ -865,7 +914,7 @@ def create_comprehensive_report(explorer, scenario, analysis_results):
 
                 # Performance breakdown
                 perf_dist = target_employees["performance_rating"].value_counts()
-                f.write(f"- **Performance Distribution**:\n")
+                f.write("- **Performance Distribution**:\n")
                 for perf, count in perf_dist.items():
                     pct = (count / len(target_employees)) * 100
                     f.write(f"  - {perf}: {count} employees ({pct:.1f}%)\n")
@@ -882,7 +931,8 @@ def create_comprehensive_report(explorer, scenario, analysis_results):
 
 
 def create_markdown_report(explorer, scenario):
-    """Create a markdown report with narrative analysis.
+    """
+    Create a markdown report with narrative analysis.
 
     Args:
       explorer:
@@ -909,7 +959,7 @@ def create_markdown_report(explorer, scenario):
             f.write("## Key Findings\n\n")
 
             # Population overview
-            f.write(f"### Population Overview\n")
+            f.write("### Population Overview\n")
             f.write(f"- **Total Employees**: {len(df):,}\n")
             f.write(f"- **Organizational Levels**: {df['level'].nunique()}\n")
             f.write(f"- **Salary Range**: £{df['salary'].min():,.0f} - £{df['salary'].max():,.0f}\n")
@@ -929,7 +979,7 @@ def create_markdown_report(explorer, scenario):
 
                 # Performance breakdown
                 perf_dist = target_employees["performance_rating"].value_counts()
-                f.write(f"- **Performance Distribution**:\n")
+                f.write("- **Performance Distribution**:\n")
                 for perf, count in perf_dist.items():
                     pct = (count / len(target_employees)) * 100
                     f.write(f"  - {perf}: {count} employees ({pct:.1f}%)\n")

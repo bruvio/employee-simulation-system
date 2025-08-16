@@ -1,4 +1,4 @@
-#!/Users/brunoviola/bruvio-tools/.venv/bin/python3
+#!/usr/bin/env python3
 
 import argparse
 from datetime import datetime
@@ -15,7 +15,8 @@ from salary_forecasting_engine import SalaryForecastingEngine
 
 
 class IndividualProgressionSimulator:
-    """Individual employee salary progression simulator with multi-year forecasting.
+    """
+    Individual employee salary progression simulator with multi-year forecasting.
 
     Provides scenario modeling, performance path generation, and detailed analysis for individual employees including
     confidence intervals and market adjustments.
@@ -47,7 +48,8 @@ class IndividualProgressionSimulator:
     def project_salary_progression(
         self, employee_data: Dict, years: int = 5, scenarios: List[str] = None, include_market_adjustments: bool = True
     ) -> Dict:
-        """Project individual employee salary progression over multiple years.
+        """
+        Project individual employee salary progression over multiple years.
 
         Args:
           employee_data: Current employee state (level, salary, performance_rating, etc.)
@@ -135,7 +137,8 @@ class IndividualProgressionSimulator:
     def analyze_multiple_employees(
         self, employee_ids: List[int], years: int = 5, output_format: str = "summary"
     ) -> Dict:
-        """Analyze salary progression for multiple employees.
+        """
+        Analyze salary progression for multiple employees.
 
         Args:
           employee_ids: List of employee IDs to analyze
@@ -179,7 +182,8 @@ class IndividualProgressionSimulator:
         return results
 
     def _generate_performance_path(self, employee_data: Dict, years: int, scenario: str) -> List[str]:
-        """Generate realistic performance rating progression for specific scenario.
+        """
+        Generate realistic performance rating progression for specific scenario.
 
         Uses the existing forecasting engine's scenario generation with adaptations for individual context and career
         stage.
@@ -219,7 +223,8 @@ class IndividualProgressionSimulator:
         return adapted_path
 
     def _adapt_performance_path(self, base_path: List[str], level: int, tenure: float, target_years: int) -> List[str]:
-        """Adapt base performance path based on individual context.
+        """
+        Adapt base performance path based on individual context.
 
         Considers career stage, level, and tenure to make realistic adjustments.
 
@@ -270,7 +275,8 @@ class IndividualProgressionSimulator:
         return adapted_path
 
     def _calculate_salary_path(self, employee_data: Dict, performance_path: List[str]) -> List[float]:
-        """Calculate year-by-year salary progression based on performance path.
+        """
+        Calculate year-by-year salary progression based on performance path.
 
         Uses UPLIFT_MATRIX calculations with compound growth effects.
 
@@ -296,7 +302,9 @@ class IndividualProgressionSimulator:
         return salary_path
 
     def _calculate_level_medians(self) -> Dict[int, float]:
-        """Calculate median salary by level from population data."""
+        """
+        Calculate median salary by level from population data.
+        """
         medians = {}
         for level in sorted(self.population_df["level"].unique()):
             level_data = self.population_df[self.population_df["level"] == level]
@@ -306,7 +314,9 @@ class IndividualProgressionSimulator:
         return medians
 
     def _calculate_market_trends(self) -> Dict:
-        """Calculate market trends and benchmarks from population data."""
+        """
+        Calculate market trends and benchmarks from population data.
+        """
         return {
             "overall_median": self.population_df["salary"].median(),
             "overall_mean": self.population_df["salary"].mean(),
@@ -324,7 +334,8 @@ class IndividualProgressionSimulator:
         }
 
     def _calculate_tenure(self, employee_data: Dict) -> float:
-        """Calculate employee tenure in years.
+        """
+        Calculate employee tenure in years.
 
         Args:
           employee_data: Dict:
@@ -340,7 +351,8 @@ class IndividualProgressionSimulator:
         return tenure_days / 365.25
 
     def _analyze_median_position(self, employee_data: Dict, projections: Dict) -> Dict:
-        """Analyze employee's position relative to level median.
+        """
+        Analyze employee's position relative to level median.
 
         Args:
           employee_data: Dict:
@@ -370,7 +382,8 @@ class IndividualProgressionSimulator:
         }
 
     def _analyze_market_competitiveness(self, employee_data: Dict, projections: Dict) -> Dict:
-        """Analyze employee's market competitiveness.
+        """
+        Analyze employee's market competitiveness.
 
         Args:
           employee_data: Dict:
@@ -402,7 +415,8 @@ class IndividualProgressionSimulator:
         }
 
     def _get_quartile(self, salary: float, level_range: Dict) -> str:
-        """Determine quartile position within level.
+        """
+        Determine quartile position within level.
 
         Args:
           salary: float:
@@ -420,7 +434,8 @@ class IndividualProgressionSimulator:
             return "top_quartile"
 
     def _identify_risk_factors(self, employee_data: Dict, projections: Dict) -> List[str]:
-        """Identify potential risk factors for salary progression.
+        """
+        Identify potential risk factors for salary progression.
 
         Args:
           employee_data: Dict:
@@ -459,7 +474,8 @@ class IndividualProgressionSimulator:
         return risks
 
     def _generate_recommendations(self, employee_data: Dict, projections: Dict) -> Dict:
-        """Generate actionable recommendations based on analysis.
+        """
+        Generate actionable recommendations based on analysis.
 
         Args:
           employee_data: Dict:
@@ -517,7 +533,8 @@ def create_test_employee(
     performance_rating: str = "High Performing",
     gender: str = "Female",
 ) -> Dict:
-    """Create test employee data for validation and testing.
+    """
+    Create test employee data for validation and testing.
 
     Args:
       employee_id: int:  (Default value = 123)
@@ -540,7 +557,9 @@ def create_test_employee(
 
 
 def main():
-    """Main function for testing and validation."""
+    """
+    Main function for testing and validation.
+    """
     parser = argparse.ArgumentParser(description="Individual Employee Progression Simulator")
     parser.add_argument("--test-simulation", action="store_true", help="Run test simulation")
     parser.add_argument("--employee-id", type=int, help="Analyze specific employee")
