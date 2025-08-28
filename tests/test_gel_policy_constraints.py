@@ -180,10 +180,8 @@ class TestGELPolicyConstraints:
             for intervention in manager_interventions:
                 if intervention["priority"] == 1:
                     found_priority_1 = True
-                    # Debug print
-                    print(f"Priority 1 intervention: {intervention}")
-                    assert intervention["is_below_median"] is True, f"Expected below_median=True, got {intervention['is_below_median']}"
-                    assert intervention["is_high_performer"] is True, f"Expected high_performer=True, got {intervention['is_high_performer']}"
+                    assert intervention["is_below_median"] == True, f"Expected below_median=True, got {intervention['is_below_median']}"
+                    assert intervention["is_high_performer"] == True, f"Expected high_performer=True, got {intervention['is_high_performer']}"
                     break
             if found_priority_1:
                 break
@@ -307,12 +305,12 @@ class TestGELPolicyConstraints:
 
         policy = GELPolicyConstraints(no_manager_population, self.config)
 
-        # Should generate synthetic hierarchy
-        assert "manager_id" in policy.population_df.columns
-
-        # Check managers are identified
+        # Check managers are identified (this should trigger synthetic hierarchy generation)
         managers = policy.identify_managers_and_teams()
         assert len(managers) > 0
+
+        # Should have generated synthetic hierarchy
+        assert "manager_id" in policy.population_df.columns
 
     def test_edge_cases(self):
         """
